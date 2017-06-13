@@ -8,6 +8,19 @@
   \image html frameworkOverview.jpg
   To use the framework you have to modify your .bashrc script. You find a example .bashrc in the doc directory.
 
+ \section Build
+
+ \code
+ git clone MAPT-Framework.git
+ cd MAPT-Framework
+ mkdir build
+ cd build
+ cmake .. -DGeant4_DIR=/nfs/hicran/project/e18sat/geant4.10.2/geant4.10.2-install/lib64/Geant4-10.2.1/ -DCGAL_DIR=/nfs/hicran/project/e18sat/analysis/CGAL/CGAL-4.7_2/build/ -Dcadmesh_DIR=/nfs/hicran/project/e18sat/CADmesh/CADMesh-1.0_2/install/lib/cmake/cadmesh-./ -DCMAKE_INSTALL_PREFIX=/tmp/MAPT/
+ make
+ make install
+ \endcode
+
+ replace /tmp/MAPT with your final path, do not install into /tmp!
 
  \section sec_repo Set up a local repository
  To create a running local repository of the framework, clone it from lrz gitlab:
