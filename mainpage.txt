@@ -1,0 +1,344 @@
+
+/*! \mainpage MAPT-Framework Documentation
+
+
+ \section sec_overview Overview
+  The MAPT-Framework contains all the libraries and applications, which build the basis for the data analysis of the MAPT detector.
+  This includes the simulation, the event display, the geometry representation of the detector and the data structure.
+  \image html frameworkOverview.jpg
+  To use the framework you have to modify your .bashrc script. You find a example .bashrc in the doc directory.
+
+
+ \section sec_repo Set up a local repository
+ To create a running local repository of the framework, clone it from lrz gitlab:
+ \code
+ git clone git@gitlab.lrz.de:E18SDS/MAPT-Framework.git
+ \endcode
+ To ensure a correctly setup repository, you should rebuild the libraries and applications.
+
+ First rebuild the data management shared libraries:
+ \code
+ cd sharedLibraries/
+ . createSharedLibs.sh
+ cd ..
+ \endcode
+ Export the library path in your .bashrc
+ \code
+ export LD_LIBRARY_PATH+=--path_to_shared_lib--
+ \endcode
+
+ Then rebuild the geometry shared libraries:
+ \code
+ cd geometry/build/
+ cmake -DCMAKE_CXX_COMPILER=$(which g++) -DCMAKE_CXX_FLAGS="-std=c++11"  -DGeant4_DIR=/nfs/hicran/project/e18sat/geant4.10.2/geant4.10.2-install/lib64/Geant4-10.2.1/ -Dcadmesh_DIR=/nfs/hicran/project/e18sat/CADmesh/CADMesh-1.0_2/install/lib/cmake/cadmesh-./  -DCGAL_DIR=/nfs/hicran/project/e18sat/analysis/CGAL/CGAL-4.7_2/build/  ../
+ make
+ cd ..
+ cd ..
+ \endcode
+
+ Export the library path in your .bashrc
+ \code
+  export LD_LIBRARY_PATH+=--path_to_geometry_lib--
+  export LD_LIBRARY_PATH+=$LD_LIBRARY_PATH:/nfs/hicran/project/e18sat/geant4.10.2/geant4.10.2-install/lib64
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/nfs/hicran/project/e18sat/CADmesh/CADMesh-1.0_2/install/lib
+
+ \endcode
+
+
+ Rebuild the simulation
+ \code
+ cd Simulation/
+ mkdir build
+ cd build
+ cmake -DCMAKE_CXX_COMPILER=$(which g++) -DCMAKE_CXX_FLAGS="-std=c++11"  -DGeant4_DIR=/nfs/hicran/project/e18sat/geant4.10.2/geant4.10.2-install/lib64/Geant4-10.2.1/ -Dcadmesh_DIR=/nfs/hicran/project/e18sat/CADmesh/CADMesh-1.0_2/install/lib/cmake/cadmesh-./  ../
+ make
+ cd ..
+ cd ..
+ \endcode
+
+ Rebuild the event display
+ \code
+ cd EventDisplay
+ qmake-qt4 Prototype1.pro
+ make
+ cd ..
+ \endcode
+
+
+ \section sec_geometry Geometry
+ For the implementation of the geometry representation we state the following requirements:
+ The geometry representation has to be as exact as possible due to the strong influence of
+ the geometry on the detector response. This additionally implies that the geometry in
+ simulation and analysis should have the same level of detail. Therefore, the same representation
+ should be used in all framework applications.
+
+ The main task of the geometry representation is to localize a given point and identify
+ its surrounding volume. Further, for a given position and direction, the entry and
+ exit points of the volume, that will be traversed next by the particle, have to be found.
+
+ The geometry should be easily controllable by the user, who should be able to select which
+ detector parts are considered. This should be done without modifying the compiled code.
+ The geometric detector model should be easily adjustable, including changes of size,
+ orientation, and position of detector parts and adding completely new parts.
+
+ In particle physics detector simulations are performed usually with the Geant4 framework.
+ To use its predefined functionalities and validated physics implementations, our
+ geometry description must be compatible to Geant4. We decided to use the Geant4
+ geometry modeling as a basis of the MAPT analysis framework.
+
+ To achieve an accurate implementation of the detector's geometry, we import
+ it from computer-aided-design (CAD) data. CAD data is the most precise digital
+ representation of the detector, as the detector is fabricated according to it.
+ Additionally, CAD software is highly specialized to provide the user an easy
+ way to design his geometries. Changes in the geometry can be conducted directly
+ in the CAD software. This is huge advantage over the traditional code-based
+ geometry description.
+
+ We use the STereoLithography (STL) file format to import CAD data from the CAD
+ software into our framework. The STL format is open source and supported by
+ many CAD software producers and libraries. It represents volumes by approximating
+ their surfaces by a triangle mesh.
+
+ Although Geant4 uses the constructive solid geometry (CSG) representation,
+ where volumes are modeled with binary operation of standard volumes, it provides
+ the G4TesselatedSolid class, which can represent a volume by its meshed
+ surface. Unfortunately a geometry built with G4TesselatedSolid has a
+ worse performance in navigation than a CSG representation.
+
+ A CAD import via STL files provides the geometrical information about a detector
+ part. For a complete description also material properties have to be defined.
+ Additionally some parts can have part specific information, like the active
+ part of the scintillating fibers, which provide their position in the Hits30x30, to map them selfs to the measured values.
+
+ For each detector part with individual material properties and specific information
+ a own CAD model must be imported to identify the part in simulation and analysis.
+ The user defines these information for a detector part in a geometry text, where
+ he provides a path to the STL file with the geometrical information of the individual
+ parts, a material name and a identifier flag for part specific information.
+ Material properties and part specific information are defined in the framework
+ implementation. With the geometry text file the user is able to define the detector
+ geometry variably without changing the framework source code.
+
+ With the mentioned thoughts we can fulfill the requirements for a geometry
+ representation. We built a geometry representation based on the Geant4 geometry
+ description and its navigation functionalities. Geometrical information is included
+ via CAD data. Material properties and part-specific information are implemented in
+ the framework and are combined with the geometrical information from CAD to generate
+ a complete representation of a detector part. The user can describe this combination
+ in a geometry text file for the number of parts he wants to consider.
+
+ In the MAPT analysis framework we wrap the Geant4 implementation to add the
+ functionalities we need. An overview of the class structure of the framework is
+ given in the figure below. In Geant4 a detector part is described as a solid, which contains
+ the geometrical information of the part. A G4LogicalVolume combines the
+ information of the solid with a G4Material object, representing the material
+ properties, as parameter. The G4LogicalVolume object is then placed in a
+ world volume. In the MAPT analysis framework we describe detector parts in general
+ with the abstract class AbsPart. It contains all information a detector
+ part in MAPT has to have, like a G4LogicalVolume, a material represented
+ by a Material object and an integer as identifier for the volume. A
+ CADPart object represents a detector part which is based on CAD data.
+ The CADPart::Init function receives the path to the corresponding STL file
+ and a material name as parameter. The data from the STL file is loaded using the cadmesh
+ library, which creates a Geant4 solid. The material name is parsed and a Material
+ object representing the material properties is created. The active material in the
+ fibers are also based on geometrical information from CAD, but own some additional
+ part specific information. The CADFiber class inherits from the CADPart
+ class and implements some further functions. A fiber knows its position in the
+ Hits30x30 array, represented by a x and y value. Further, in the simulation,
+ the maximal step length in fibers is set manually to achieve a higher accuracy
+ in the active detector region. This limitation is implemented in the CADFiber
+ class. The described inheritance concept provides the basis for further
+ development of the geometry representation.
+
+ The UserGeant4Geometry class represents the whole detector geometry
+ inside a world volume by holding a list of the individual detector parts. It is
+ responsible to read-in the geometry text file and to set up of the geometry inside
+ the UserGeant4Geometry::construct method. An UserGeant4Geometry object is the
+ central access point for applications to the geometry representation. Navigation
+ functionalities are provided by wrapping the G4Navigator functions.
+ The UserGeant4Geometry::getPart(TVector3 point) function returns an AbsPart object of
+ the part, which contains the submitted point. The UserGeant4Geometry::getNextStep method
+ provides the next traversed detector part, starting from a submitted position and
+ direction. Also the entry and exit points are returned by the function.
+
+ \image html geometryUML.jpg
+
+ Although the implemented geometry representation fulfills all requirements and
+ works as expected, there is drawback. The internal used Geant4 geometry description
+ is optimized for the use in the Geant4 simulation framework. We use its navigation
+ functionalities as a black box, which give the expected results but we have no possibility
+ to optimize the underlying algorithms to requirements coming up in the analysis
+ application. We solve that issue by dropping the Geant4 basis but staying with
+ the general geometry representation layout to ensure exactness. Doing this,
+ prevents the usage of this additional implementation in simulation.
+
+ We use the the Computational Geometry Algorithms Library (CGAL) to represent
+ the detector geometry and to calculate intersections with detector parts. CGAL
+ uses a axis aligned bounding box (AABB) tree as a data structure to hold
+ three-dimensional objects, which are represented as a triangular mesh. We use the
+ same read-in structure for STL files, but we insert the model's triangle meshes to
+ the tree instead of constructing a G4TesselatedSolid. For navigation we
+ wrap the AABB tree's navigation functions to preserve the same function calls,
+ we implemented in the Geant4 based geometry representation. The overall structure
+ and the usage of the CGAL based implementation stays nearly the same. Also the
+ exactness of the geometry representation is conserved as we can use the same
+ CAD models and the same geometry text file.
+
+
+ \subsection secGeo_geometryTextFile The geometry text file
+
+ The geometry text file specifies the detector parts, which should be considered
+ in the geometry representation. We define a part by combining several properties:
+ - Path to CAD file (STL format)
+ - Material
+ - An identifier flag (=1, if the part is a active fiber core)
+ - A color in which the part is rendered (not implemented)
+
+The geometry text file is seperated in two sections, which are divided by the key
+word "Repeat" in the file. Before the key word, for each line with a vaild detector
+part specification, one detector part is loaded and added to the geometry representation.
+The part specification in this section looks like:
+\code
+"--path_to_CAD_file--","--material--","--identifier--","--color--"
+\endcode
+
+After the key word, each detector part specification has two additional parameters,
+a start number and an end number:
+\code
+"--path_to_CAD_file--","--material--","--identifier--","--color--","--start_number--","--end_number--"
+\endcode
+
+For each part specification, several detector parts are created and added to the
+geometry representation. We iterate from the start number to the end number and
+create detector parts with the same properties, but different CAD files. The file
+path to the CAD file is modified with the current number of the iteration. See
+GeometryReadIn::loadPart for detailed information.
+
+You can mark lines as comments by writing a # before a line in the geometry text
+file.
+
+
+ \subsection secGeo_compilation Compilation
+ We compile the geometry library with cmake. The geometry/CMakeLists.txt contains
+ the information cmake needs to compile the library. The compiled library is then
+ geometry/build/libgeometry.so. We have to specify the paths to Geant4, cadmesh and
+ CGAL during compilation with cmake. To compile go to geometry/build and type:
+
+ \code
+cmake -DCMAKE_CXX_COMPILER=$(which g++) -DCMAKE_CXX_FLAGS="-std=c++11"  -DGeant4_DIR=/nfs/hicran/project/e18sat/geant4.10.2/geant4.10.2-install/lib64/Geant4-10.2.1/ -Dcadmesh_DIR=/nfs/hicran/project/e18sat/CADmesh/CADMesh-1.0_2/install/lib/cmake/cadmesh-./  -DCGAL_DIR=/nfs/hicran/project/e18sat/analysis/CGAL/CGAL-4.7_2/build/  ../
+ \endcode
+
+ Cmake now creates/updates the Makefile. Now type:
+
+ \code
+ make
+ \endcode
+
+
+
+ \subsection secGeo_link Link against the geometry lib
+ To link against the geometry we have to modify the CMakeLists.txt of our project.
+ Add the following lines to the CMakeLists.txt:
+ \code
+ # Link directories for libgeometry.so
+ link_directories(--path_to_framework--/geometry/build)
+ include_directories(--path_to_framework--/geometry/include)
+
+ target_link_libraries(--project_name-- geometry)
+ \endcode
+
+
+
+ \section sec_dataManagement Data management (sharedLibraries)
+ The Event class represents all the information we have about one event. It contains
+ the 900 measurements, represented by a Hits30x30 object, the information we extract
+ in the pattern recognition, represented by a PatternRecData object, and the information
+ we extract in the analysis, represented by a analysisData object. If the event has been
+ simulated the Monte Carlo truth is also saved and represented by a simulatedEvent
+ object.
+
+ We save several events in root trees, which we save in .root files. The DataManager
+ class implements all read and write functionalities to access the events. The DataManager
+ has two root trees as member variables: a tree to read in data from a file
+ (DataManager::openTree) and a tree to save events to another file (DataManager::saveTree).
+ The DataManager::event member variable contains the current event information. The
+ DataManager::fill function fills this event to the DataManager::saveTree.
+ DataManager::getEntry fills DataManager::event with the i'th entry of DataManager::openTree.
+
+ A new DataManager::saveTree is created with the DataManager::book function and writen with
+ DataManager::write.
+
+ A existing data set in a file is loaded with DataManager::open.
+
+ The shared libraries are created using root. A description is found here:
+ https://root.cern.ch/interacting-shared-libraries-rootcint
+
+
+ \subsection secDM_compilation Compilation
+ We use the root interpreter to compile the data management code to a shared
+ library. A detailed description how to compile the library is found here:
+ https://root.cern.ch/interacting-shared-libraries-rootcint
+
+ We collected the needed commands for a compilation in the createSharedLibs.sh
+ shell script. To compile the library just execute the shell script:
+ \code
+ . createSharedLibs.sh
+ \endcode
+
+ \subsection secDM_link Link against the shared libraries
+ To link against the data management we have to modify the CMakeLists.txt of our project.
+ Add the following lines to the CMakeLists.txt:
+ \code
+ # Link directories for libEvent.so
+ link_directories(--path_to_framework--/sharedLibraries)
+ include_directories(--path_to_framework--/sharedLibraries)
+
+ target_link_libraries(--project_name-- Event)
+ \endcode
+
+
+
+ \section sec_simulation Simulation
+ We use Geant4 to simulate events. The simulation uses the data management functionalities
+of the framework and fills the MC truth in the simulatedEvent object of an event and
+the detector response - the 900 measured values - in the Hits30x30 object.
+
+The simulation uses the geometry representation of the framework. In B1DetectorConstruction::construct
+we initialize a instance of UserGeant4Geometry and call UserGeant4Geometry::construct. We return the
+world volume at the end of B1DetectorConstruction::construct as required by Geant4.
+
+The simulation links to the framework in its CMakeList.txt with relative paths (paths as they are in
+the repository).
+
+To compile the simulation, create a build directory in the simulation directory (simulation/build/).
+Create a Makefile calling cmake:
+\code
+cmake -DCMAKE_CXX_COMPILER=$(which g++) -DCMAKE_CXX_FLAGS="-std=c++11"  -DGeant4_DIR=/nfs/hicran/project/e18sat/geant4.10.2/geant4.10.2-install/lib64/Geant4-10.2.1/ -Dcadmesh_DIR=/nfs/hicran/project/e18sat/CADmesh/CADMesh-1.0_2/install/lib/cmake/cadmesh-./  ../
+\endcode
+Use make to compile the Makefile:
+\code
+make
+\endcode
+Run the simulation with its config file:
+\code
+./exampleB1 ../Config.txt
+\endcode
+
+
+
+
+ \section sec_eventDisplay Event Display
+ The event display is the modifed version of the AFIS-P Live Event Display (LED).
+ In the EventDisplay directory you find the documentation for the LED. The event
+ display drops the Bragg peak view. In the 3D view the MC truth start and end points
+ are used to draw the particle track. The data is managed with the data management
+ libraries.
+
+ \section sec_doc Documentation
+ To rebuild this documentation, use the following command:
+ \code
+ doxygen Doxyfile
+ \endcode
+
+ */
