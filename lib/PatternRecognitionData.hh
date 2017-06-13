@@ -1,5 +1,5 @@
-#ifndef patternRecognitionData_h
-#define patternRecognitionData_h
+#ifndef PATTERNRECOGNITIONDATA_H
+#define PATTERNRECOGNITIONDATA_H
 
 #include <string>
 #include <vector>
@@ -13,23 +13,21 @@ class TObject;
 /*!
 
 */
-class patternRecognitionData: public TObject {
+class PatternRecognitionData: public TObject
+{
 public:
-    patternRecognitionData ();
-    ~patternRecognitionData ();
+    PatternRecognitionData() : numberOfTracks(0) {}
+    virtual ~PatternRecognitionData() {}
 
     void addTrack(Track* t);
-    void clear ();
+    void clear();
 
     // Needed for creation of shared library
-     ClassDef(patternRecognitionData, 2);
-
-protected:
+    ClassDef(PatternRecognitionData, 2);
 
 private:
     int numberOfTracks;
     std::vector<Track*> tracks;
-
 };
 
-#endif
+#endif /* PATTERNRECOGNITIONDATA_H */

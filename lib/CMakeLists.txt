@@ -4,28 +4,28 @@ cmake_minimum_required(VERSION 3.4 FATAL_ERROR)
 project(MAPT-Framework-Library CXX)
 
 SET (LIBRARY_HDRS
-    analysisData.h
+    AnalysisData.h
     B1DetectorResponse.hh
     B1Particle.hh
     DataManager.hh
     Event.h
     EventSim.h
     Hits30x30.h
-    particlePF.hh
-    patternRecognitionData.hh
+    ParticlePF.hh
+    PatternRecognitionData.hh
     Track.h
 )
 
 SET(LIBRARY_SRCS
-    analysisData.cc
+    AnalysisData.cc
     B1DetectorResponse.cc
     B1Particle.cc
     DataManager.cc
     Event.cc
     EventSim.cc
     Hits30x30.cc
-    particlePF.cc
-    patternRecognitionData.cc
+    ParticlePF.cc
+    PatternRecognitionData.cc
     Track.cc
 )
 

@@ -311,8 +311,8 @@ void C_view_3D::update3D()
         // Tracks einzeichnen und Endpunkte zeichnen
         for (int i = 0; i< 1; i++)					// Alle Tracks im Event durchgehen
         {
-            QVector3D startPos (simEv->getPrimary()->Get_start_position().X(),simEv->getPrimary()->Get_start_position().Y(),simEv->getPrimary()->Get_start_position().Z());
-            QVector3D endPos (simEv->getPrimary()->Get_end_position().X(),simEv->getPrimary()->Get_end_position().Y(),simEv->getPrimary()->Get_end_position().Z());
+            QVector3D startPos (simEv->getPrimary()->getStartPosition().X(),simEv->getPrimary()->getStartPosition().Y(),simEv->getPrimary()->getStartPosition().Z());
+            QVector3D endPos (simEv->getPrimary()->getEndPosition().X(),simEv->getPrimary()->getEndPosition().Y(),simEv->getPrimary()->getEndPosition().Z());
 
             line << startPos << endPos;		// in line alle Start- und Endpositionen speichern
 
@@ -329,14 +329,14 @@ void C_view_3D::update3D()
         for (uint i = 0; i < secs_num; ++i)
         {
             B1Particle * p = secs[i];
-            QVector3D sta(p->Get_start_position().X(), p->Get_start_position().Y(), p->Get_start_position().Z());
-            QVector3D sto(p->Get_end_position().X(), p->Get_end_position().Y(), p->Get_end_position().Z());
+            QVector3D sta(p->getStartPosition().X(), p->getStartPosition().Y(), p->getStartPosition().Z());
+            QVector3D sto(p->getEndPosition().X(), p->getEndPosition().Y(), p->getEndPosition().Z());
 
             line << sta << sto;
             end_point << sto;
 
             QVector3D col;
-            int geant_id = p->Get_geant4_number();
+            int geant_id = p->getG4Number();
             switch (geant_id)
             {
                 case 211:

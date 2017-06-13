@@ -1,5 +1,5 @@
-#ifndef Track_h
-#define Track_h
+#ifndef TRACK_H
+#define TRACK_H
 
 #include <string>
 #include <vector>
@@ -12,24 +12,19 @@ class TObject;
 /*!
 
 */
-class Track: public TObject {
+class Track: public TObject
+{
 public:
-    Track ();
-    Track (const TVector3 & intersectionPoint1_, const TVector3 & intersectionPoint2_);
-    ~Track ();
+    Track(const TVector3 & intersectionPoint1_, const TVector3 & intersectionPoint2_);
+    virtual ~Track() {};
 
     // Needed for creation of shared library
      ClassDef(Track, 1);
-
-protected:
 
 private:
     TVector3 intersectionPoint1;
     TVector3 intersectionPoint2;
     TVector3 direction;
-
-    // std::vector<int> fibersOnTrack;
-
 };
 
-#endif
+#endif /* TRACK_H */

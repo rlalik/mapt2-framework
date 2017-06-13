@@ -26,23 +26,21 @@
 
 class B1DetectorConstruction : public G4VUserDetectorConstruction
 {
-  public:
+public:
     B1DetectorConstruction(B1Config* conf);
     virtual ~B1DetectorConstruction();
+
     virtual G4VPhysicalVolume* Construct();
     G4LogicalVolume* GetScoringVolume() const { return fScoringVolume; }
     UserGeant4Geometry* getGeo () {return geo;};
 
-  private:
-
+private:
       UserGeant4Geometry* geo;
       B1Config* config;
       string geometry_filename;
 
-  protected:
+protected:
       G4LogicalVolume*  fScoringVolume;
 };
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif

@@ -1,5 +1,5 @@
-#ifndef particlePF_h
-#define particlePF_h
+#ifndef PARTICLEPF_H
+#define PARTICLEPF_H
 
 #include "TROOT.h"
 
@@ -10,11 +10,18 @@ class TObject;
  Needed to save the output of the particle filter. Is just a first prototype and
  not used in the particle filter analysis.
 */
-class particlePF: public TObject {
+class ParticlePF: public TObject
+{
 public:
-    particlePF ();
-    ~particlePF ();
+    ParticlePF() : weight(0) {}
+    virtual ~ParticlePF() {}
 
+    void fill(double weight_, double pX_, double pY_, double pZ_, double theta_, double phi_, double energy_);
+
+    // Needed for creation of shared library
+    ClassDef(ParticlePF, 1);
+
+private:
     double weight;
     double pX;
     double pY;
@@ -22,16 +29,6 @@ public:
     double theta;
     double phi;
     double energy;
-    void fill (double weight_, double pX_, double pY_, double pZ_, double theta_, double phi_, double energy_);
-
-    // Needed for creation of shared library
-     ClassDef(particlePF, 1);
-
-protected:
-
-private:
-
-
 };
 
-#endif
+#endif /* PARTICLEPF_H */

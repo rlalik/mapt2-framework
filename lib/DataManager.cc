@@ -1,13 +1,8 @@
 #include "DataManager.hh"
 
-
 // Needed for Creation of shared libs
 ClassImp(DataManager);
 
-//
-// Constructor
-//
-//
 DataManager::DataManager()
 {
     saveTreeTitle   = "saveTreeTitle";
@@ -20,10 +15,6 @@ DataManager::DataManager()
     numberOfEntries = -1;
     currentEntry = -1;
 }
-//
-//
-
-
 
 bool DataManager::book(string path) {
     saveFileName = path;

@@ -1,12 +1,12 @@
-#ifndef Event_h
-#define Event_h
+#ifndef EVENT_H
+#define EVENT_H
 
 #include <string>
 
 #include "Hits30x30.h"
 #include "EventSim.h"
-#include "patternRecognitionData.hh"
-#include "analysisData.h"
+#include "PatternRecognitionData.hh"
+#include "AnalysisData.h"
 
 #include "TROOT.h"
 #include "TFile.h"
@@ -17,35 +17,34 @@ class TObject;
 /*!
   Contains all information of an event. Also the MC truth is saved here.
 */
-class Event: public TObject {
+class Event: public TObject
+{
 public:
-    Event ();
-    ~Event ();
+    Event();
+    virtual ~Event();
 
-    Hits30x30*              getHits()               {return hits;};
-    EventSim*         getSimulatedEvent ()    {return simData;};
-    patternRecognitionData* getPatternRecData ()    {return patternRecData;};
-    analysisData*           getFitData ()           {return fitData;};
+    Hits30x30*              getHits()               { return hits; }
+    EventSim*               getSimulatedEvent()     { return simData; }
+    PatternRecognitionData* getPatternRecData()     { return patternRecData; }
+    AnalysisData*           getFitData()            { return fitData; }
 
-    void setHits (Hits30x30* h);
-    void setHits (double hitMatrix[30][30]);
+    void setHits(const Hits30x30 & h);
+    void setHits(double hitMatrix[30][30]);
 
-    bool getIsHits ()       {return isHits;};
-    bool getIsSim ()        {return isSim;};
-    bool getIsPattern ()    {return isPattern;};
-    bool getIsFit ()        {return isFit;};
+    bool getIsHits()        { return isHits; }
+    bool getIsSim()         { return isSim; }
+    bool getIsPattern()     { return isPattern; }
+    bool getIsFit()         { return isFit; }
 
-    void setIsHits (bool b)     {isHits = b;};
-    void setIsSim (bool b)      {isSim = b;};
-    void setIsPattern (bool b)  {isPattern = b;};
-    void setIsFit (bool b)      {isFit = b;};
+    void setIsHits(bool b)      { isHits = b; }
+    void setIsSim(bool b)       { isSim = b; }
+    void setIsPattern(bool b)   { isPattern = b; }
+    void setIsFit(bool b)       { isFit = b; }
 
-    void clear ();
+    void clear();
 
     // Needed for creation of shared library
     ClassDef(Event, 2);
-
-protected:
 
 private:
     //! \brief Representing the 900 fiber measurements.
@@ -55,10 +54,10 @@ private:
     EventSim* simData;
 
     //! \brief Data from pattern recognition.
-    patternRecognitionData* patternRecData;
+    PatternRecognitionData* patternRecData;
 
     //! \brief Data from analysis.
-    analysisData* fitData;
+    AnalysisData* fitData;
                 
     bool isHits;
     bool isSim;
@@ -66,4 +65,4 @@ private:
     bool isFit;
 };
 
-#endif
+#endif /* EVENT_H */
