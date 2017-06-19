@@ -34,7 +34,9 @@
 #include "G4Event.hh"
 #include "G4RunManager.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+#include "DataManager.hh"
+#include "Event.h"
+#include "EventSim.h"
 
 B1EventAction::B1EventAction(DataManager* root)
 : G4UserEventAction()
@@ -42,12 +44,8 @@ B1EventAction::B1EventAction(DataManager* root)
   data_manager = root;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 B1EventAction::~B1EventAction()
 {}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void B1EventAction::BeginOfEventAction(const G4Event* evt)
 {
@@ -55,8 +53,6 @@ void B1EventAction::BeginOfEventAction(const G4Event* evt)
   G4int evtNb = evt->GetEventID();
 
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void B1EventAction::EndOfEventAction(const G4Event*)
 {
@@ -67,5 +63,3 @@ void B1EventAction::EndOfEventAction(const G4Event*)
   event->setIsHits(true);
   data_manager->fill();
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -1,5 +1,10 @@
 #include "Event.h"
 
+#include "Hits30x30.h"
+#include "EventSim.h"
+#include "PatternRecognitionData.hh"
+#include "AnalysisData.h"
+
 // Needed for Creation of shared libs
 ClassImp(Event);
 

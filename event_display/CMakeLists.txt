@@ -23,12 +23,10 @@ set (SOURCES
     C_mainwindow.cpp
     C_quader.cpp
     C_view_3D.cpp
+    C_view_2D.cpp
     C_view_coordinatesystem.cpp
-    C_view_xz.cpp
-    C_view_yz.cpp
     C_window_3D.cpp
-    C_window_xz.cpp
-    C_window_yz.cpp
+    C_window_2D.cpp
     main.cpp
 )
 
@@ -36,12 +34,10 @@ set (MOC_HEADERS
     C_mainwindow.h
     C_quader.h
     C_view_3D.h
+    C_view_2D.h
     C_view_coordinatesystem.h
-    C_view_xz.h
-    C_view_yz.h
     C_window_3D.h
-    C_window_xz.h
-    C_window_yz.h
+    C_window_2D.h
 )
 
 set (UIS
@@ -56,7 +52,6 @@ find_package(Qt4 REQUIRED COMPONENTS QTCORE QTGUI QTOPENGL)
 include(${QT_USE_FILE})
 add_definitions(${QT_DEFINITIONS})
 include_directories(${CMAKE_BINARY_DIR})
-
 
 # Next, using precompiler, compiler and linker
 

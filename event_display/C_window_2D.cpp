@@ -1,18 +1,16 @@
-#include "C_window_yz.h"
-
+#include "C_window_2D.h"
 
 //
 // Konstruktor
 // ----------------------------------------------------------------------------------------------------------------------------------
 //
-C_window_yz::C_window_yz(QWidget *parent, DataManager* d) :
+C_window_2D::C_window_2D(QWidget *parent, DataManager* d) :
     QMainWindow(parent)
 {
     // Fenster einrichten
     resize(450,450);
-    setWindowTitle("z y View");
+    setWindowTitle("Plane View");
     m_isopen = false;
-
 
     // Menu erstellen, Close einbauen
     m_fileMenu = menuBar()->addMenu(tr("&File"));
@@ -23,7 +21,7 @@ C_window_yz::C_window_yz(QWidget *parent, DataManager* d) :
 
     dataManager = d;
 
-    m_center = new C_view_yz(0,dataManager);
+    m_center = new C_view_2D(0,dataManager);
     setCentralWidget(m_center);
 
     // Close Slot einrichten
@@ -37,7 +35,7 @@ C_window_yz::C_window_yz(QWidget *parent, DataManager* d) :
 // IsOpen
 // ----------------------------------------------------------------------------------------------------------------------------------
 //
-bool C_window_yz::IsOpen()
+bool C_window_2D::IsOpen()
 {
     return m_isopen;
 }
@@ -49,7 +47,7 @@ bool C_window_yz::IsOpen()
 // close
 // ----------------------------------------------------------------------------------------------------------------------------------
 //
-bool C_window_yz::close()
+bool C_window_2D::close()
 {
     m_isopen = false;
     return true;
@@ -62,7 +60,7 @@ bool C_window_yz::close()
 // update
 // ----------------------------------------------------------------------------------------------------------------------------------
 //
-void C_window_yz::update()
+void C_window_2D::update()
 {
     m_center->update();
 }
@@ -74,9 +72,8 @@ void C_window_yz::update()
 // Destruktor
 // ----------------------------------------------------------------------------------------------------------------------------------
 //
-C_window_yz::~C_window_yz()
+C_window_2D::~C_window_2D()
 {
-
     delete m_fileMenu;
     delete m_action;
     delete m_center;

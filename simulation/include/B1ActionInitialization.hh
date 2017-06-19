@@ -32,11 +32,12 @@
 #define B1ActionInitialization_h 1
 
 #include "G4VUserActionInitialization.hh"
-#include "DataManager.hh"
 #include "B1Config.hh"
 #include "B1DetectorConstruction.hh"
 
 /// Action initialization class.
+
+class DataManager;
 
 class B1ActionInitialization : public G4VUserActionInitialization
 {

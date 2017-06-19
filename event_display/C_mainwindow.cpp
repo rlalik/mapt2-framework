@@ -29,19 +29,19 @@ C_MainWindow::C_MainWindow(QWidget *parent)
     // event->getHits()->print();
 
 
-    m_win1 = new C_window_xz(0, dataManager);
-    m_win1->move(this->pos()+QPoint(0,140));
-    m_win1->show();
+    m_winXZ = new C_window_2D(0, dataManager);
+    m_winXZ->move(this->pos()+QPoint(0,140));
+    m_winXZ->setWindowTitle("X-Z plane");
+    m_winXZ->show();
 
-    m_winYZ = new C_window_yz(0, dataManager);
+    m_winYZ = new C_window_2D(0, dataManager);
     m_winYZ->move(this->pos()+QPoint(450,140));
+    m_winXZ->setWindowTitle("Y-Z plane");
     m_winYZ->show();
-
 
     m_win3D = new C_window_3D(0,dataManager);
     m_win3D->move(this->pos()+QPoint(900,140));
     m_win3D->show();
-
 
     QWidget *widget = new QWidget;
     setCentralWidget(widget);
@@ -51,10 +51,6 @@ C_MainWindow::C_MainWindow(QWidget *parent)
 
     m_last = new QPushButton("&previous");
     m_last->setEnabled(false);
-
-
-
-
 
     // Layout einrichten
     QWidget *topFiller = new QWidget;
@@ -75,8 +71,6 @@ C_MainWindow::C_MainWindow(QWidget *parent)
     QHBoxLayout* whole_layout = new QHBoxLayout;
     QHBoxLayout* under_layout = new QHBoxLayout;
     QHBoxLayout* spin_layout = new QHBoxLayout;
-
-
 
     m_Label2 = new QLabel("eventnumber: 0");
 
@@ -182,67 +176,22 @@ void C_MainWindow::OpenEvent()
 
 }
 
-
-//
-// OpenXZ
-// ----------------------------------------------------------------------------------------------------------------------------------
-//
 void C_MainWindow::OpenXZ()
 {
-
-    if (m_win1->IsOpen())
-    {
-
-    }
-    else
-    {
-        m_win1->show();
-    }
-
+    if (!m_winXZ->IsOpen())
+        m_winXZ->show();
 }
-// ----------------------------------------------------------------------------------------------------------------------------------
-// OpenXZ ENDE
 
-
-
-//
-// OpenZY
-// ----------------------------------------------------------------------------------------------------------------------------------
-//
 void C_MainWindow::OpenYZ()
 {
-
-    if (m_winYZ->IsOpen())
-    {
-
-    }
-    else
-    {
+    if (!m_winYZ->IsOpen())
         m_winYZ->show();
-    }
-
 }
-// ----------------------------------------------------------------------------------------------------------------------------------
-// OpenYZ ENDE
 
-
-//
-// Open3D
-// ----------------------------------------------------------------------------------------------------------------------------------
-//
 void C_MainWindow::Open3D()
 {
     m_win3D->show();
 }
-// ----------------------------------------------------------------------------------------------------------------------------------
-// Open3D ENDE
-
-
-
-
-
-
-
 
 //
 // next
@@ -291,7 +240,7 @@ void C_MainWindow::update()
     // update an window-Klassen weitergeben
     m_win3D->update();
     m_winYZ->update();
-    m_win1->update();
+    m_winXZ->update();
 
     // Ansicht und Informationen im Hauptfenster aktualisieren
 

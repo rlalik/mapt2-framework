@@ -3,15 +3,14 @@
 
 #include <string>
 
-#include "Hits30x30.h"
-#include "EventSim.h"
-#include "PatternRecognitionData.hh"
-#include "AnalysisData.h"
-
-#include "TROOT.h"
-#include "TFile.h"
+#include <TObject.h>
 
 class TObject;
+
+class Hits30x30;
+class EventSim;
+class PatternRecognitionData;
+class AnalysisData;
 
 //! \brief Data structure representing an event.
 /*!

@@ -1,5 +1,8 @@
 #include "EventSim.h"
 
+#include "B1Particle.hh"
+#include "B1DetectorResponse.hh"
+
 // Needed for Creation of shared libs
 ClassImp(EventSim);
 
@@ -54,15 +57,13 @@ B1Particle* EventSim::getParticle(int trackID) const
     return NULL;
 }
 
-void EventSim::addSecondaryID(int parentID, int secID)
-{
-    B1Particle* particle = getParticle(parentID);
-    particle->addDaughterID(secID);
-}
+// void EventSim::addSecondaryID(int parentID, int secID)
+// {
+//     B1Particle* particle = getParticle(parentID);
+//     particle->addDaughterID(secID);
+// }
 
-void EventSim::addSecondary(int ID)
+void EventSim::addSecondary(B1Particle* sec)
 {
-    B1Particle* particle = new B1Particle();
-    particle->setTrackID(ID);
-    secondaries.push_back(particle);
+    secondaries.push_back(sec);
 }

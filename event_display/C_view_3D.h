@@ -9,11 +9,6 @@
 #include "C_view_coordinatesystem.h"
 #include <iostream>
 
-// MAPT-framework
-#include "DataManager.hh"
-#include "Event.h"
-#include "Hits30x30.h"
-
 // geometry shared library
 #include <G4ThreeVector.hh>
 #include <UserGeant4Geometry.h>
@@ -22,6 +17,9 @@
 #include <CADFiber.h>
 #include <vector>
 #include <TVector3.h>
+
+class DataManager;
+class Event;
 
 class C_view_3D : public QGLWidget
 {
@@ -35,11 +33,7 @@ public:
     void paintGL();
     void update3D();
 
-
-
-
 private:
-
     //G4ThreeVector geometry;
     UserGeant4Geometry* geometry;
 
@@ -69,20 +63,10 @@ private:
     QVector<QVector4D> color_alpha;     // Farbe Wuerfelflaechen
     QVector<QVector4D> end_point_color; // Farbe Endpunkt
 
-
 protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent *event);
-
-
-public slots:
-
-
-
-signals:
-
-
 };
 
 #endif // VIEW3D_H

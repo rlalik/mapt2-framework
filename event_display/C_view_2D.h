@@ -1,5 +1,5 @@
-#ifndef C_VIEW_XZ_H
-#define C_VIEW_XZ_H
+#ifndef C_VIEW_2D_H
+#define C_VIEW_2D_H
 
 #include "C_data.h"
 #include <QtGui>
@@ -9,12 +9,12 @@
 #include "DataManager.hh"
 #include "Event.h"
 
-class C_view_xz : public QWidget
+class C_view_2D : public QWidget
 {
     Q_OBJECT
 public:
-    explicit C_view_xz(QWidget *parent = 0, DataManager* d = 0);
-    ~C_view_xz();
+    explicit C_view_2D(QWidget *parent = 0, DataManager* d = 0);
+    ~C_view_2D();
 
 
 private:
@@ -39,4 +39,4 @@ public slots:
 
 };
 
-#endif // C_VIEW_XZ_H
+#endif // C_VIEW_2D_H

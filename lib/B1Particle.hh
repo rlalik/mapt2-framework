@@ -28,41 +28,43 @@ public:
     void addProcess(string name);
     void addDaughterID(int ID);
 
-    TVector3 getStartPosition() const;
-    void setStartPosition(TVector3 p);
+    TVector3 getStartPosition() const { return startPosition; }
+    void setStartPosition(const TVector3 & p) { startPosition = p; }
 
-    TVector3 getEndPosition() const;
-    void setEndPosition(TVector3 p);
+    TVector3 getEndPosition() const { return endPosition; }
+    void setEndPosition(const TVector3 & p) { endPosition = p; }
 
-    TVector3 getStartDirection() const;
-    void setStartDirection(TVector3 p);
+    TVector3 getStartDirection() const { return startDirection; }
+    void setStartDirection(const TVector3 & p) { startDirection = p; }
 
-    TVector3 getEndDirection() const;
-    void setEndDirection(TVector3 p);
+    TVector3 getEndDirection() const { return endDirection; }
+    void setEndDirection(const TVector3 & p) { endDirection = p; }
 
-    bool getScattering() const;
-    void setScattering(bool b);
+    bool getScattering() const { return scattering; }
+    void setScattering(bool b) { scattering = b; }
 
-    std::vector<string> getProcesses() const;
-    void setProcesses(const std::vector<string> & v);
+    std::vector<string> getProcesses() const { return processes; }
+    void setProcesses(const std::vector<string> & v) { processes = v; }
 
-    int getG4Number() const;
-    void setG4Number(int i);
+    int getG4Number() const { return g4Number; }
+    void setG4Number(int i) { g4Number = i; }
 
-    bool getStopInDetector() const;
-    void setStopInDetector(bool b);
+    bool getStopInDetector() const { return stopInDetector; }
+    void setStopInDetector(bool b) { stopInDetector = b; }
 
-    int getTrackID() const;
-    void setTrackID(int i);
+    int getTrackID() const { return trackID; }
+    void setTrackID(int i) { trackID = i; }
+    int getParentID() const { return parentID; }
+    void setParentID(int i) { parentID = i; }
 
-    string getGenerationProcess() const;
-    void setGenerationProcess(string i);
+    string getGenerationProcess() const { return generationProcess; }
+    void setGenerationProcess(string i) { generationProcess = i; }
 
-    double getStartEnergy() const;
-    void setStartEnergy(double i);
+    double getStartEnergy() const { return startEnergy; }
+    void setStartEnergy(double i) { startEnergy = i; }
 
-    double getEndEnergy() const;
-    void setEndEnergy(double i);
+    double getEndEnergy() const { return endEnergy; }
+    void setEndEnergy(double i) { endEnergy = i; }
 
     void print() const;
     bool isPim() const { return g4Number == -211; }
@@ -85,6 +87,7 @@ private:
     bool stopInDetector;
     std::vector<int> secondariesID;
     int trackID;
+    int parentID;
     string generationProcess;
     double startEnergy;
     double endEnergy;

@@ -7,9 +7,8 @@
 #include <QMainWindow>
 #include <QtGui>
 #include <QMessageBox>
-#include "C_window_xz.h"
 #include "C_window_3D.h"
-#include "C_window_yz.h"
+#include "C_window_2D.h"
 
 // MAPT Framework
 #include "DataManager.hh"
@@ -28,16 +27,10 @@ class C_MainWindow : public QMainWindow
 public:
     C_MainWindow(QWidget *parent = 0);
     ~C_MainWindow();
-
     void update();
-
     C_dat* getdaten();
 
-
-
-
 private:
-
     DataManager* dataManager;
     Event* event;
 
@@ -45,7 +38,6 @@ private:
     QPushButton* m_last;
 
     QLabel *m_Label2;
-
 
     QMenu *fileMenu;
     QMenu *fileMenu2;
@@ -56,12 +48,9 @@ private:
     QAction* open;
     QAction* openEvent;
 
-
-    C_window_xz* m_win1;
-    C_window_yz* m_winYZ;
+    C_window_2D* m_winXZ;
+    C_window_2D* m_winYZ;
     C_window_3D* m_win3D;
-
-
 
 private slots:
     void OpenXZ ();
@@ -71,12 +60,6 @@ private slots:
     void OpenEvent();
     void next();
     void last();
-
-
-protected:
-
-
-
 };
 
 #endif // MAINWINDOW_H

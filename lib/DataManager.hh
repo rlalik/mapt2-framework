@@ -3,7 +3,6 @@
 
 using namespace std;
 
-
 #include <string>
 #include <fstream>
 
@@ -11,10 +10,7 @@ using namespace std;
 #include "TFile.h"
 #include "TTree.h"
 
-#include "Event.h"
-#include "B1Particle.hh"
-#include "B1DetectorResponse.hh"
-#include "Hits30x30.h"
+class Event;
 
 //! \brief Access point to load, read and write data.
 /*!

@@ -4,6 +4,11 @@
 
 #include "B1TrackingAction.hh"
 
+#include <DataManager.hh>
+#include <Event.h>
+#include <EventSim.h>
+#include <B1Particle.hh>
+
 B1TrackingAction::B1TrackingAction(DataManager* root, B1DetectorConstruction* det)
 {
     data_manager = root;
@@ -32,18 +37,16 @@ void B1TrackingAction::PreUserTrackingAction(const G4Track* track)
     }
     else //secondary
     {
-        // current particle is secondary. Add a secondary to event
-        current_event->addSecondary(track_ID);
-        
-        // Get the pointer to the secondary with the right track ID
-        current_particle = current_event->getParticle(track_ID);
-        
+        current_particle = new B1Particle;
+        current_particle->setTrackID(track_ID);
+        current_particle->setParentID(track->GetParentID());
+
         // set particle creation process
         const G4String creator_process_name = track->GetCreatorProcess()->GetProcessName();
         current_particle->setGenerationProcess(creator_process_name);
-        
-        // Add own ID to parents secondary list
-        current_event->addSecondaryID(track->GetParentID(), track_ID);
+
+        // current particle is secondary. Add a secondary to event
+        current_event->addSecondary(current_particle);
     }
     
     // Optical Photons

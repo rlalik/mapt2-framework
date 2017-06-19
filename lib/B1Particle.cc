@@ -22,6 +22,7 @@ void B1Particle::clear()
     stopInDetector                      = false;
     secondariesID.clear();
     trackID                             = 0;
+    parentID                            = -1;
     generationProcess                   = "";
 }
 
@@ -43,115 +44,13 @@ void B1Particle::random()
     stopInDetector                      = false;
     secondariesID.push_back((int) getRandomNumber()*100);
     trackID                             = (int)getRandomNumber()*100;
+    parentID                            = -1;
 }
 
 double B1Particle::getRandomNumber()
 {
     return randGen.Rndm();
 }
-
-
-TVector3 B1Particle::getStartPosition() const
-{
-    return startPosition;
-}
-
-void B1Particle::setStartPosition(TVector3 p)
-{
-    startPosition = p;
-}
-
-
-TVector3 B1Particle::getEndPosition() const
-{
-    return endPosition;
-}
-
-void B1Particle::setEndPosition(TVector3 p)
-{
-    endPosition = p;
-}
-
-TVector3 B1Particle::getStartDirection() const
-{
-    return startDirection;
-}
-
-void B1Particle::setStartDirection(TVector3 p)
-{
-    startDirection = p;
-}
-
-TVector3 B1Particle::getEndDirection() const
-{
-    return endDirection;
-}
-
-void B1Particle::setEndDirection(TVector3 p)
-{
-    endDirection = p;
-}
-
-bool B1Particle::getScattering() const
-{
-    return scattering;
-}
-
-void B1Particle::setScattering(bool b)
-{
-    scattering = b;
-}
-
-std::vector<string> B1Particle::getProcesses() const
-{
-    return processes;
-}
-
-void B1Particle::setProcesses(const std::vector<string> & v)
-{
-    processes = v;
-}
-
-int B1Particle::getG4Number() const
-{
-    return g4Number;
-}
-
-void B1Particle::setG4Number(int i)
-{
-    g4Number = i;
-}
-
-bool B1Particle::getStopInDetector() const
-{
-    return stopInDetector;
-}
-
-void B1Particle::setStopInDetector(bool b)
-{
-    stopInDetector = b;
-}
-
-int B1Particle::getTrackID() const
-{
-    return trackID;
-}
-
-void B1Particle::setTrackID(int i)
-{
-    trackID = i;
-}
-
-string B1Particle::getGenerationProcess() const
-{
-    return generationProcess;
-}
-
-void B1Particle::setGenerationProcess(string i)
-{
-    generationProcess = i;
-}
-
 
 void B1Particle::addProcess(string name)
 {
@@ -162,28 +61,6 @@ void B1Particle::addProcess(string name)
 void B1Particle::addDaughterID(int ID)
 {
     secondariesID.push_back(ID);
-}
-
-
-double B1Particle::getStartEnergy() const
-{
-    return startEnergy;
-}
-
-void B1Particle::setStartEnergy(double i)
-{
-    startEnergy = i;
-}
-
-
-double B1Particle::getEndEnergy() const
-{
-    return endEnergy;
-}
-
-void B1Particle::setEndEnergy(double i)
-{
-    endEnergy = i;
 }
 
 void B1Particle::print() const

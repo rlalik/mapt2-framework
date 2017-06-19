@@ -2,6 +2,13 @@
 #include <QtGui>
 #include <QDebug>
 
+// MAPT-framework
+#include "DataManager.hh"
+#include "B1Particle.hh"
+#include "Hits30x30.h"
+#include "Event.h"
+#include "EventSim.h"
+
 //
 // Konstruktor
 // ----------------------------------------------------------------------------------------------------------------------------------

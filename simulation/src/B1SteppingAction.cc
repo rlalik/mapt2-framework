@@ -38,6 +38,11 @@
 #include "G4OpticalPhoton.hh"
 #include "G4EmCalculator.hh"
 
+#include "DataManager.hh"
+#include "B1Particle.hh"
+#include "Event.h"
+#include "EventSim.h"
+#include "B1DetectorResponse.hh"
 
 B1SteppingAction::B1SteppingAction(B1EventAction* eventAction, DataManager* root, B1DetectorConstruction* det, double kB_)
 : G4UserSteppingAction(),

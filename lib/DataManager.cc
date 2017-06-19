@@ -1,5 +1,9 @@
 #include "DataManager.hh"
 
+#include "Event.h"
+
+#include <iostream>
+
 // Needed for Creation of shared libs
 ClassImp(DataManager);
 

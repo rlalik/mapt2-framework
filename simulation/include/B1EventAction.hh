@@ -33,9 +33,9 @@
 
 #include "G4UserEventAction.hh"
 #include "globals.hh"
-#include "DataManager.hh"
 #include "B1DetectorResponse.hh"
-#include "Event.h"
+
+class DataManager;
 
 /// Event action class
 ///
@@ -53,7 +53,5 @@ class B1EventAction : public G4UserEventAction
   private:
     DataManager* data_manager;
 };
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif

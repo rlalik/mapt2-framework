@@ -36,12 +36,13 @@
 #include "G4ParticleDefinition.hh"
 #include "globals.hh"
 
-// shared libraries Event.so
-#include "DataManager.hh"
-#include "B1Particle.hh"
-#include "Event.h"
 #include "B1DetectorConstruction.hh"
-#include "B1DetectorResponse.hh"
+
+// shared libraries Event.so
+class B1DetectorResponse;
+class B1Particle;
+class DataManager;
+class EventSim;
 
 // geometry shared library geometry.so
 #include <AbsPart.h>
@@ -75,9 +76,6 @@ class B1SteppingAction : public G4UserSteppingAction
     double kB;
 };
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-
 G4double calculate_quenched_energy(const G4Step*, G4double, G4double);
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 #endif
