@@ -125,11 +125,13 @@ int main(int argc,char** argv)
     TH1I * h_pim_mult = new TH1I("h_pim_mult", "h_pim_mult", 10, 0, 10);
     TH1I * h_pip_mult = new TH1I("h_pip_mult", "h_pip_mult", 10, 0, 10);
     TH1I * h_piz_mult = new TH1I("h_piz_mult", "h_piz_mult", 10, 0, 10);
+    TH1I * h_pic_mult = new TH1I("h_pic_mult", "h_pic_mult", 10, 0, 10);
 
     TH1I * h_pi_mult_1stgen = new TH1I("h_pi_mult_1stgen", "h_pi_mult_1stgen", 20, 0, 20);
     TH1I * h_pim_mult_1stgen = new TH1I("h_pim_mult_1stgen", "h_pim_mult_1stgen", 10, 0, 10);
     TH1I * h_pip_mult_1stgen = new TH1I("h_pip_mult_1stgen", "h_pip_mult_1stgen", 10, 0, 10);
     TH1I * h_piz_mult_1stgen = new TH1I("h_piz_mult_1stgen", "h_piz_mult_1stgen", 10, 0, 10);
+    TH1I * h_pic_mult_1stgen = new TH1I("h_pic_mult_1stgen", "h_pic_mult_1stgen", 10, 0, 10);
 
     std::cout << dataManager.getEntriesFast() << " Events" << "\n";
     int secs = 0;
@@ -150,9 +152,11 @@ int main(int argc,char** argv)
         int pim_mult = 0;
         int pip_mult = 0;
         int piz_mult = 0;
+        int pic_mult = 0;
         int pim_mult_1stgen = 0;
         int pip_mult_1stgen = 0;
         int piz_mult_1stgen = 0;
+        int pic_mult_1stgen = 0;
 
         if (sec_num)
         {
@@ -164,18 +168,30 @@ int main(int argc,char** argv)
                 B1Particle * s = event->getSimulatedEvent()->getSecondaries()[i];
 
                 if (s->isPim())
+                {
                     ++pim_mult;
+                    ++pic_mult;
+                }
                 else if (s->isPip())
+                {
                     ++pip_mult;
+                    ++pic_mult;
+                }
                 else if (s->isPiz())
                     ++piz_mult;
 
                 if (s->getParentID() == 1)
                 {
                     if (s->isPim())
+                    {
                         ++pim_mult_1stgen;
+                        ++pic_mult_1stgen;
+                    }
                     else if (s->isPip())
+                    {
                         ++pip_mult_1stgen;
+                        ++pic_mult_1stgen;
+                    }
                     else if (s->isPiz())
                         ++piz_mult_1stgen;
                 }
@@ -185,11 +201,13 @@ int main(int argc,char** argv)
             h_pim_mult->Fill(pim_mult);
             h_pip_mult->Fill(pip_mult);
             h_piz_mult->Fill(piz_mult);
+            h_pic_mult->Fill(pic_mult);
 
             h_pi_mult_1stgen->Fill(pim_mult_1stgen + pim_mult_1stgen + piz_mult_1stgen);
             h_pim_mult_1stgen->Fill(pim_mult_1stgen);
             h_pip_mult_1stgen->Fill(pip_mult_1stgen);
             h_piz_mult_1stgen->Fill(piz_mult_1stgen);
+            h_pic_mult_1stgen->Fill(pic_mult_1stgen);
         }
 
         if (event->getSimulatedEvent()->getPrimary()->getStopInDetector())
@@ -204,11 +222,13 @@ int main(int argc,char** argv)
     h_pim_mult->Write();
     h_pip_mult->Write();
     h_piz_mult->Write();
+    h_pic_mult->Write();
 
     h_pi_mult_1stgen->Write();
     h_pim_mult_1stgen->Write();
     h_pip_mult_1stgen->Write();
     h_piz_mult_1stgen->Write();
+    h_pic_mult_1stgen->Write();
 
     dataManager.save();
 }
