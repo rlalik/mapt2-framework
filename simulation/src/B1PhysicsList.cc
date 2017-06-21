@@ -25,7 +25,7 @@ B1PhysicsList::B1PhysicsList (B1Config* conf) : G4VModularPhysicsList()
     SetVerboseLevel(ver);
 
     // EM Physics
-    RegisterPhysics( new MAPTEmStandardPhysics(ver));
+//     RegisterPhysics( new MAPTEmStandardPhysics(ver));
 
     // // EM Physics
     // RegisterPhysics( new G4EmStandardPhysics(ver));
@@ -40,7 +40,7 @@ B1PhysicsList::B1PhysicsList (B1Config* conf) : G4VModularPhysicsList()
     // RegisterPhysics( new G4HadronElasticPhysics(ver) );
     //
     // // Hadron Physics
-//     RegisterPhysics(  new G4HadronPhysicsFTFP_BERT(ver));
+    RegisterPhysics(  new G4HadronPhysicsFTFP_BERT(ver));
     //
     // // Stopping Physics
     // RegisterPhysics( new G4StoppingPhysics(ver) );

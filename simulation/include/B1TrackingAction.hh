@@ -15,9 +15,10 @@
 #include <TMath.h>
 
 // shared libraries Event.so
-#include <DataManager.hh>
-#include <Event.h>
-#include <B1Particle.hh>
+class B1DetectorResponse;
+class B1Particle;
+class DataManager;
+class EventSim;
 
 // geometry shared library
 #include <Material.h>

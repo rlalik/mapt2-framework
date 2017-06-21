@@ -52,66 +52,94 @@
 
 #include "Randomize.hh"
 
-
+#include <getopt.h>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-int main(int argc,char** argv)
+struct sim_config {
+    enum SimModel { NOMODEL = 0, CHIPS, QGSP, EM }
+        sim_model = NOMODEL;
+};
+
+int main(int argc, char** argv)
 {
-  // Initiate Simulation Config
-  B1Config* config = new B1Config ();
+    B1Config* config = new B1Config ();
+    sim_config cfg;
 
-  int modus = 0;                            // no arguments: modus = 0                  ------>  default
-                                            // one argument, config mode = 1: modus = 1
-                                            // one argument, config mode = 2: modus = 2
+    G4UIExecutive* ui = 0;          // UI
+    string config_file = "";        // Config file name
 
+    int modus = 0;      // no arguments: modus = 0                  ------>  default
+                        // one argument, config mode = 1: modus = 1
+                        // one argument, config mode = 2: modus = 2
 
-  // Detect interactive mode (if no arguments) and define UI session
-  // if one argument -> this argument is the config file name
-
-  G4UIExecutive* ui = 0;          // UI
-  string config_file = "";        // Config file name
-
-  // no arguments
-  if ( argc == 1 ) {
-    printf("no arguments provided. standard interactive mode \n");
-    ui = new G4UIExecutive(argc, argv);
-    modus = 0;
-  }
-
-  // one argument = config filename
-  else if ( argc == 2)
+    int c;
+    while(1)
     {
-      config_file  = argv[1];
+        static struct option long_options[] = {
+            { "model", required_argument, 0, 'm' },
+            { 0, 0, 0, 0 }
+        };
 
-      // set the file name of the config name
-      config->SetConfigFileName (config_file);
+        int option_index = 0;
 
-      // load the config file and read it. Return if there is an error
-      if (!config->ReadConfigFile())
-	{
-	  printf("Problems reading Config file\n");
-	  return -1;
-	}
+        c = getopt_long(argc, argv, "m:", long_options, &option_index);
 
-      // check for mode defined in config file: 1 = batch mode ; 2 = interactive mode
-      if (config->Get_mode() ==  1)
-	{
-	  modus = 1;
-	}
-      else if (config->Get_mode() ==  2)
-	{
-	  ui = new G4UIExecutive(1,argv);
-	  modus = 2;
-	}
-      else if (config->Get_mode() == 3)
-	{
+        if (c == -1)
+            break;
 
-	  modus = 3;
-	}
+        switch (c)
+        {
+            case 'm':
+                {
+                    std::string model = optarg;
+                    if (model == "chips")
+                        cfg.sim_model = sim_config::SimModel::CHIPS;
+                    else if (model == "qgsp")
+                        cfg.sim_model = sim_config::SimModel::QGSP;
+                    else
+                    {
+                        std::cerr << "Unknown model " << model << std::endl;
+                        cfg.sim_model = sim_config::SimModel::NOMODEL;
+                    }
+                }
+                break;
+            default:
+                break;
+        }
     }
 
+    if (optind < argc)
+    {
+        while (optind < argc)
+        {
+            config_file  = argv[optind];
 
+            // set the file name of the config name
+            config->SetConfigFileName (config_file);
+
+            // load the config file and read it. Return if there is an error
+            if (!config->ReadConfigFile())
+            {
+                printf("Problems reading Config file\n");
+                return -1;
+            }
+
+            // check for mode defined in config file: 1 = batch mode ; 2 = interactive mode
+            if (config->Get_mode() ==  1)
+                modus = 1;
+            else if (config->Get_mode() ==  2)
+            {
+                ui = new G4UIExecutive(1, argv);
+                modus = 2;
+            }
+            else if (config->Get_mode() == 3)
+                modus = 3;
+
+            ++optind;
+            break;
+        }
+    }
 
   // Choose the Random engine
   G4Random::setTheEngine(new CLHEP::RanecuEngine);
@@ -138,12 +166,37 @@ int main(int argc,char** argv)
   data_manager->setSaveTreeTitle (config->Get_tree_title() );
 
   // Physics list
+
+    G4VModularPhysicsList* physicsList = nullptr;
+
+    if (cfg.sim_model == sim_config::SimModel::CHIPS)
+    {
+        std::cout << "Using FTFP model" << std::endl;
+        physicsList = new FTFP_BERT;
+    }
+    else if (cfg.sim_model == sim_config::SimModel::QGSP)
+    {
+        std::cout << "Using QGSP model" << std::endl;
+        physicsList = new QGSP_BERT;
+    }
+    else
+    {
+        physicsList = new B1PhysicsList(config);
+    }
+
 //   B1PhysicsList* physicsList = new B1PhysicsList(config);
 //   G4VModularPhysicsList* physicsList = new  QGSP_BERT;
-  G4VModularPhysicsList* physicsList = new  FTFP_BERT;
+//   G4VModularPhysicsList* physicsList = new  FTFP_BERT;
   physicsList->SetVerboseLevel(0);
   physicsList->RegisterPhysics(new G4StepLimiterPhysics());
   runManager->SetUserInitialization(physicsList);
+
+//   B1PhysicsList* physicsList = new B1PhysicsList(config);
+// //   G4VModularPhysicsList* physicsList = new  QGSP_BERT;
+// //   G4VModularPhysicsList* physicsList = new  FTFP_BERT;
+//   physicsList->SetVerboseLevel(0);
+//   physicsList->RegisterPhysics(new G4StepLimiterPhysics());
+//   runManager->SetUserInitialization(physicsList);
 
   // User action initialization
   runManager->SetUserInitialization(new B1ActionInitialization(data_manager,config,detector_construction));

@@ -28,8 +28,6 @@ protected:
 
 private:
     B1Config* config;
-
-
 };
 
 
