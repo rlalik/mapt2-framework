@@ -31,6 +31,7 @@ int main(int argc,char** argv)
 {
     // OPEN AND WRITE
     DataManager dataManager;
+    TString oname;
 
     dataManager.setOpenTreeName("TreeName");
 //     dataManager.open("test.root");
@@ -61,12 +62,18 @@ int main(int argc,char** argv)
         while (optind < argc)
         {
             dataManager.open(argv[optind]);
+            oname = argv[optind];
             ++optind;
             break;
         }
     }
 
-    dataManager.book("stoppInDetector.root");
+    if (oname.EndsWith(".root"))
+        oname.ReplaceAll(".root", "_ana.root");
+    else
+        oname.Append("_ana.root");
+
+    dataManager.book(oname.Data());
 
     // // load data from root
     // // create string with file path
