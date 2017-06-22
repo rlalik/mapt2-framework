@@ -3,20 +3,10 @@
 
 #include "Hits30x30.h"
 
-//
-// Konstruktor
-// ----------------------------------------------------------------------------------------------------------------------------------
-//
-C_view_2D::C_view_2D(QWidget *parent, DataManager *d) :
-    QWidget(parent)
+C_view_2D::C_view_2D(PLANE plane, QWidget *parent, DataManager *d) :
+    QWidget(parent), pl(plane)
 {
-    //
-    // Default Werte festlegen
-    //
-
-    // Zeiger auf Datenobjekt
     dataManager = d;
-
     normfactor = 20;
 
     m_mouse_x = 0;
@@ -26,7 +16,6 @@ C_view_2D::C_view_2D(QWidget *parent, DataManager *d) :
     m_breite = (width() - 60)/30;
     m_hoehe =  (height() - 110)/30;
 
-
     // Hintergrundfarbe setzen
     QPalette Pal;
     Pal.setColor(QPalette::Background, Qt::white);
@@ -35,21 +24,24 @@ C_view_2D::C_view_2D(QWidget *parent, DataManager *d) :
 
     // MouseTracking On
     setMouseTracking(true);
+
+    switch (pl)
+    {
+        case XZ:
+            u_lab = "x";
+            v_lab = "z";
+            break;
+        case YZ:
+            u_lab = "y";
+            v_lab = "z";
+            break;
+        default:
+            u_lab = "u";
+            v_lab = "v";
+            break;
+    }
 }
-// ----------------------------------------------------------------------------------------------------------------------------------
-// Konstruktor ENDE
 
-
-
-
-
-
-
-
-//
-// PaintEvent -> Zeichnet 2D Ansicht
-// ----------------------------------------------------------------------------------------------------------------------------------
-//
 void C_view_2D::paintEvent(QPaintEvent *)
 {
     if (!dataManager->getEvent())
@@ -58,49 +50,59 @@ void C_view_2D::paintEvent(QPaintEvent *)
     // Painter anlegen
     QPainter painter(this);
 
-
-
     // Kaestchengroesse festlegen
     m_breite = (width() - 110)/30;
     m_hoehe = (height() - 110)/30;
-
 
     // Mouse-Position in fiber Koordinaten umrechnen
     int fiber_x = -1;   // Wenn Mouse nicht ueber einer Fiber liegt, dann ist Wert von fiber_x = -1
     int fiber_y = -1;   // Wenn Mouse nicht ueber einer Fiber liegt, dann ist Wert von fiber_y = -1
 
-
     if ((m_mouse_x != 0) && (m_mouse_y != 0))
     {
         fiber_x = ((m_mouse_x-(15+m_breite+5))/m_breite);
-        fiber_y = (((m_mouse_y-30)/m_hoehe));
+        switch (pl)
+        {
+            case XZ:
+                fiber_y = (((m_mouse_y-30)/m_hoehe));
+                break;
+            case YZ:
+                fiber_y = (((m_mouse_y-30)/m_hoehe)+1);
+                break;
+            default:
+                break;
+        }
 
-        if (fiber_y%2 != 0)
+        bool res = false;
+        switch (pl)
+        {
+            case XZ:
+                res = (fiber_y%2 != 0);
+                break;
+            case YZ:
+                res = (fiber_y%2 == 0);
+                break;
+            default:
+                break;
+        }
+        if (res)
         {
             fiber_y = -1;
             fiber_x = -1;
         }
     }
 
-
-
-    //
-    //  Informationen anzeigen -> Bei MouseOver wird Fiberposition und Fiberwert angezeigt
-    //
-
     QString s;  // In String s werden Texte vor dem Zeichnen eingetragen
-
-
 
     if ((fiber_x != -1) && (fiber_y != -1))     // Mouse ueber einem Kaestchen -> Position und Wert in s
     {
-        s = "x position: " + QString::number(fiber_x) +"\nz position: " + QString::number(fiber_y)
+        s = u_lab + "position: " + QString::number(fiber_x) +"\n" + v_lab + " position: " + QString::number(fiber_y)
            +"\nvalue: "  + QString::number(dataManager->getEvent()->getHits()->getValue(fiber_x,fiber_y));
     }
 
     else                                        // Mouse nicht ueber einem Kaestchen
     {
-        s = "x position: \nz position: \nvalue: " ;
+        s = u_lab + " position: \n" + v_lab + " position: \nvalue: " ;
     }
 
     // Zeichnen des Textes in s
@@ -108,30 +110,28 @@ void C_view_2D::paintEvent(QPaintEvent *)
     painter.setFont(QFont("Times", 10, QFont::Normal));
     painter.drawText(r, Qt::AlignLeft | Qt::TextWordWrap, s);
 
-    //
-    //  Informationen anzeigen ENDE
-
-
-
-    //
-    //  Fiber und Beschriftung zeichnen
-    //
-
     // Alle Fiber durchgehen
-    for (int y = 0; y<15; y++)
+    for (int y = 0; y < 15; ++y)
     {
-
-        for (int x=0; x <30;x++)
+        for (int x = 0; x < 30; ++x)
         {
-
             // Farbe einstellen
-            float color;
-            color = dataManager->getEvent()->getHits()->getXYValue(x,y)/normfactor;
+            float color = 0;
 
-            if (color >1)
+            switch (pl)
             {
-                color = 1;
+                case XZ:
+                    color = dataManager->getEvent()->getHits()->getXYValue(x,y)/normfactor;
+                    break;
+                case YZ:
+                    color = dataManager->getEvent()->getHits()->getZYValue(x,y)/normfactor;
+                    break;
+                default:
+                    break;
             }
+
+            if (color > 1)
+                color = 1;
 
             if (color != 0)     // Wenn color != 0 -> Wert ist nicht 0 -> Farbe einstellen
             {
@@ -148,15 +148,24 @@ void C_view_2D::paintEvent(QPaintEvent *)
 
             // Kaestchen zeichnen
             painter.drawRect(15+ m_breite + 5 +x*m_breite,30+y*2*m_hoehe,m_breite,m_hoehe);
-
-
         }
 
         // Farbe auf Schwarz setzen
         painter.setPen(QColor(0,0,0));
 
         // Beschriftung z-Achse
-        QString s = QString::number((y*2));
+        QString s;
+        switch (pl)
+        {
+            case XZ:
+                s = QString::number((y*2));
+                break;
+            case YZ:
+                s = QString::number((y*2+1));
+                break;
+            default:
+                break;
+        }
         QRect r(15,30 + y*2*m_hoehe,m_breite,m_hoehe);
         painter.setFont(QFont("Times", 10, QFont::Normal));
         painter.drawText(r, Qt::AlignCenter | Qt::TextWordWrap, s);
@@ -172,15 +181,6 @@ void C_view_2D::paintEvent(QPaintEvent *)
         painter.setFont(QFont("Times", 10, QFont::Normal));
         painter.drawText(r, Qt::AlignCenter | Qt::TextWordWrap, t);
     }
-
-    //
-    //  Fiber und Beschriftung zeichnen ENDE
-
-
-
-    //
-    // Legende fuer Farben
-    //
 
     // Farbverlauf zeichnen
     QLinearGradient farbverlauf(QPointF(60+30*m_breite + m_breite, 30+m_hoehe*5), QPointF(60+30*m_breite + m_breite, 30+m_hoehe*5+m_hoehe*20));
@@ -207,19 +207,8 @@ void C_view_2D::paintEvent(QPaintEvent *)
     QRect rect_M(60+30*m_breite+ m_breite*2+5,m_hoehe*10+30+m_hoehe*5 -0.5*m_hoehe,m_breite*1.5,m_hoehe*1.5);
     painter.setFont(QFont("Times", 10, QFont::Normal));
     painter.drawText(rect_M, Qt::AlignCenter | Qt::TextWordWrap, t);
-
-
 }
-// ----------------------------------------------------------------------------------------------------------------------------------
-// PaintEvent ENDE
 
-
-
-
-
-//
-// Mouseposition holen und xz-View updaten
-// ----------------------------------------------------------------------------------------------------------------------------------
 void C_view_2D::mouseMoveEvent(QMouseEvent *event)
 {
     m_mouse_x = event->x();     // aktuelle x-Koordinate der Mouse
@@ -234,16 +223,7 @@ void C_view_2D::mouseMoveEvent(QMouseEvent *event)
 
     update();   // Ruft paintevent auf -> Aktuallisierung von Mouse-Over-Anzeige
 }
-// ----------------------------------------------------------------------------------------------------------------------------------
-// mouseMoveEvent ENDE
 
-
-//
-// Destruktor
-// ----------------------------------------------------------------------------------------------------------------------------------
 C_view_2D::~C_view_2D()
 {
-
 }
-// ----------------------------------------------------------------------------------------------------------------------------------
-// Destruktor ENDE

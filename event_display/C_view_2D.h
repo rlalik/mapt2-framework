@@ -13,9 +13,10 @@ class C_view_2D : public QWidget
 {
     Q_OBJECT
 public:
-    explicit C_view_2D(QWidget *parent = 0, DataManager* d = 0);
-    ~C_view_2D();
+    enum PLANE { XZ, YZ };
 
+    explicit C_view_2D(PLANE plane, QWidget *parent = 0, DataManager* d = 0);
+    ~C_view_2D();
 
 private:
 
@@ -29,14 +30,12 @@ private:
 
     float normfactor;
 
+    PLANE pl;
+    QString u_lab, v_lab;
+
 protected:
     void paintEvent(QPaintEvent *);
     void mouseMoveEvent(QMouseEvent *event);
-
-signals:
-
-public slots:
-
 };
 
 #endif // C_VIEW_2D_H

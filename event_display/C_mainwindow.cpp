@@ -29,12 +29,12 @@ C_MainWindow::C_MainWindow(QWidget *parent)
     // event->getHits()->print();
 
 
-    m_winXZ = new C_window_2D(0, dataManager);
+    m_winXZ = new C_window_2D(C_view_2D::XZ, 0, dataManager);
     m_winXZ->move(this->pos()+QPoint(0,140));
     m_winXZ->setWindowTitle("X-Z plane");
     m_winXZ->show();
 
-    m_winYZ = new C_window_2D(0, dataManager);
+    m_winYZ = new C_window_2D(C_view_2D::YZ, 0, dataManager);
     m_winYZ->move(this->pos()+QPoint(450,140));
     m_winXZ->setWindowTitle("Y-Z plane");
     m_winYZ->show();

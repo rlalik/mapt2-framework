@@ -4,7 +4,7 @@
 // Konstruktor
 // ----------------------------------------------------------------------------------------------------------------------------------
 //
-C_window_2D::C_window_2D(QWidget *parent, DataManager* d) :
+C_window_2D::C_window_2D(C_view_2D::PLANE plane, QWidget *parent, DataManager* d) :
     QMainWindow(parent)
 {
     // Fenster einrichten
@@ -21,7 +21,7 @@ C_window_2D::C_window_2D(QWidget *parent, DataManager* d) :
 
     dataManager = d;
 
-    m_center = new C_view_2D(0,dataManager);
+    m_center = new C_view_2D(plane, 0, dataManager);
     setCentralWidget(m_center);
 
     // Close Slot einrichten
