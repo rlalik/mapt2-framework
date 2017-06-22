@@ -57,7 +57,7 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 struct sim_config {
-    enum SimModel { NOMODEL = 0, CHIPS, QGSP, EM }
+    enum SimModel { NOMODEL = 0, QGSP, FTFP, EM }
         sim_model = NOMODEL;
 };
 
@@ -93,10 +93,10 @@ int main(int argc, char** argv)
             case 'm':
                 {
                     std::string model = optarg;
-                    if (model == "chips")
-                        cfg.sim_model = sim_config::SimModel::CHIPS;
-                    else if (model == "qgsp")
+                    if (model == "qgsp")
                         cfg.sim_model = sim_config::SimModel::QGSP;
+                    else if (model == "ftfp")
+                        cfg.sim_model = sim_config::SimModel::FTFP;
                     else
                     {
                         std::cerr << "Unknown model " << model << std::endl;
@@ -108,6 +108,9 @@ int main(int argc, char** argv)
                 break;
         }
     }
+
+    if (cfg.sim_model == sim_config::SimModel::NOMODEL)
+        cfg.sim_model = sim_config::SimModel::QGSP;
 
     if (optind < argc)
     {
@@ -169,7 +172,7 @@ int main(int argc, char** argv)
 
     G4VModularPhysicsList* physicsList = nullptr;
 
-    if (cfg.sim_model == sim_config::SimModel::CHIPS)
+    if (cfg.sim_model == sim_config::SimModel::FTFP)
     {
         std::cout << "Using FTFP model" << std::endl;
         physicsList = new FTFP_BERT;
