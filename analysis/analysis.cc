@@ -27,52 +27,18 @@
 
 using namespace std;
 
-int main(int argc,char** argv)
+int analysis(const std::string & file, int events = 1000)
 {
-    // OPEN AND WRITE
-    DataManager dataManager;
-    TString oname;
-
-    dataManager.setOpenTreeName("TreeName");
-//     dataManager.open("test.root");
-
-    int c;
-    while(1)
-    {
-        static struct option long_options[] = {
-            { 0, 0, 0, 0 }
-        };
-
-        int option_index = 0;
-
-        c = getopt_long(argc, argv, "", long_options, &option_index);
-
-        if (c == -1)
-            break;
-
-        switch (c)
-        {
-            default:
-                break;
-        }
-    }
-
-    if (optind < argc)
-    {
-        while (optind < argc)
-        {
-            dataManager.open(argv[optind]);
-            oname = argv[optind];
-            ++optind;
-            break;
-        }
-    }
+    TString oname = file;
 
     if (oname.EndsWith(".root"))
         oname.ReplaceAll(".root", "_ana.root");
     else
         oname.Append("_ana.root");
 
+    DataManager dataManager;
+    dataManager.setOpenTreeName("TreeName");
+    dataManager.open(file);
     dataManager.book(oname.Data());
 
     // // load data from root
@@ -140,9 +106,11 @@ int main(int argc,char** argv)
     TH1I * h_piz_mult_1stgen = new TH1I("h_piz_mult_1stgen", "h_piz_mult_1stgen", 10, 0, 10);
     TH1I * h_pic_mult_1stgen = new TH1I("h_pic_mult_1stgen", "h_pic_mult_1stgen", 10, 0, 10);
 
-    std::cout << dataManager.getEntriesFast() << " Events" << "\n";
+    int ev_limit = events < dataManager.getEntriesFast() ? events : dataManager.getEntriesFast();
+    std::cout << dataManager.getEntriesFast() << " events, analyze " << ev_limit << std::endl;
+
     int secs = 0;
-    for (int i=0 ; i < dataManager.getEntriesFast(); ++i)
+    for (int i=0 ; i < ev_limit; ++i)
     {
         dataManager.getEntry(i);
         Event* event = dataManager.getEvent();
@@ -238,4 +206,52 @@ int main(int argc,char** argv)
     h_pic_mult_1stgen->Write();
 
     dataManager.save();
+
+    return 0;
+}
+
+int main(int argc,char** argv)
+{
+    int events = 10000;
+    int c;
+    while(1)
+    {
+        static struct option long_options[] = {
+            { "events", required_argument, 0, 'e' },
+            { 0, 0, 0, 0 }
+        };
+
+        int option_index = 0;
+
+        c = getopt_long(argc, argv, "e:", long_options, &option_index);
+
+        if (c == -1)
+            break;
+
+        switch (c)
+        {
+            case 'e':
+                events = atoi(optarg);
+                break;
+            default:
+                break;
+        }
+    }
+
+    std:vector< std::pair<std::string, int> > ana_status;
+    while (optind < argc)
+    {
+        std::cout << "Analyze " << argv[optind] << std::endl;
+        int status = analysis(argv[optind], events);
+        std::string f = argv[optind];
+        ana_status.push_back({f, status});
+        ++optind;
+    }
+
+    for (int i = 0; i < ana_status.size(); ++i)
+    {
+        std::cout << "Analysis for " << ana_status[i].first << " with status " << ana_status[i].second << std::endl;
+    }
+
+    return 0;
 }
