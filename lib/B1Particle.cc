@@ -63,6 +63,46 @@ void B1Particle::addDaughterID(int ID)
     secondariesID.push_back(ID);
 }
 
+Double_t B1Particle::getDistance() const
+{
+    TVector3 end_ = endPosition - TVector3(0, 36, 0);
+    return end_.Mag();
+}
+
+Double_t B1Particle::getDepth() const
+{
+    if (!stopInDetector)
+        return -100.;
+
+    Double_t d = 0.0;
+
+    TVector3 sta = startPosition - TVector3(0, 36, 0);
+    TVector3 end = endPosition - TVector3(0, 36, 0);
+
+    Double_t t = 0.0;
+
+    const Double_t limit = 36.0;
+    while (true)
+    {
+        if (
+            (fabs(sta.X() + t * startDirection.X()) < limit) and
+            (fabs(sta.Y() + t * startDirection.Y()) < limit) and
+            (fabs(sta.Z() + t * startDirection.Z()) < limit) )
+        {
+            break;
+        }
+
+        t += 0.1;
+    }
+
+    TVector3 intsec(sta + startDirection * t);
+
+//     printf("start = %f,%f,%f\n", sta.X(), sta.Y(), sta.Z());
+//     printf("  end = %f,%f,%f\n", end.X(), end.Y(), end.Z());
+//     printf("  int = %f,%f,%f\n", intsec.X(), intsec.Y(), intsec.Z());
+    return (intsec - end).Mag();
+}
+
 void B1Particle::print() const
 {
     printf("##### particle #####\n");
