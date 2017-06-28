@@ -9,7 +9,6 @@ class TObject;
 
 class Hits30x30;
 class EventSim;
-class PatternRecognitionData;
 class AnalysisData;
 
 //! \brief Data structure representing an event.
@@ -24,7 +23,6 @@ public:
 
     Hits30x30*              getHits()               { return hits; }
     EventSim*               getSimulatedEvent()     { return simData; }
-    PatternRecognitionData* getPatternRecData()     { return patternRecData; }
     AnalysisData*           getFitData()            { return fitData; }
 
     void setHits(const Hits30x30 & h);
@@ -51,9 +49,6 @@ private:
 
     //! \brief Data from simulation, MC truth  (secondaries cannot be read from simulated data trees).
     EventSim* simData;
-
-    //! \brief Data from pattern recognition.
-    PatternRecognitionData* patternRecData;
 
     //! \brief Data from analysis.
     AnalysisData* fitData;

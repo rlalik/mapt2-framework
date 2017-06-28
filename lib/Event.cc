@@ -2,7 +2,6 @@
 
 #include "Hits30x30.h"
 #include "EventSim.h"
-#include "PatternRecognitionData.hh"
 #include "AnalysisData.h"
 
 // Needed for Creation of shared libs
@@ -12,7 +11,6 @@ Event::Event ()
 {
     hits = new Hits30x30;
     simData = new EventSim;
-    patternRecData = new PatternRecognitionData;
     fitData = new AnalysisData;
     isHits = false;
     isSim = false;
@@ -23,7 +21,6 @@ Event::Event ()
 Event::~Event()
 {
     delete fitData;
-    delete patternRecData;
     delete simData;
     delete hits;
 }
@@ -32,7 +29,6 @@ void Event::clear()
 {
     hits->clear();
     simData->clear();
-    patternRecData->clear();
     fitData->clear();
 }
 

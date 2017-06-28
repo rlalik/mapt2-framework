@@ -12,7 +12,6 @@ SET (LIBRARY_HDRS
     EventSim.h
     Hits30x30.h
     ParticlePF.hh
-    PatternRecognitionData.hh
     Track.h
 )
 
@@ -25,7 +24,6 @@ SET(LIBRARY_SRCS
     EventSim.cc
     Hits30x30.cc
     ParticlePF.cc
-    PatternRecognitionData.cc
     Track.cc
 )
 

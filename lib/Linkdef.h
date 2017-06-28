@@ -9,7 +9,6 @@
 #pragma link C++ class EventSim+;
 #pragma link C++ class Hits30x30+;
 #pragma link C++ class ParticlePF+;
-#pragma link C++ class PatternRecognitionData+;
 #pragma link C++ class Track+;
 
 #endif
