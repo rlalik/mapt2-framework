@@ -29,9 +29,9 @@ void B1Particle::clear()
 void B1Particle::random()
 {
     
-    double x = getRandomNumber()*10;
-    double y = getRandomNumber()*10;
-    double z = getRandomNumber()*10;
+    Double_t x = getRandomNumber()*10;
+    Double_t y = getRandomNumber()*10;
+    Double_t z = getRandomNumber()*10;
     
     TVector3 p(x,y,z);
     
@@ -42,12 +42,12 @@ void B1Particle::random()
     scattering                          = false;
     g4Number                            = 1;
     stopInDetector                      = false;
-    secondariesID.push_back((int) getRandomNumber()*100);
-    trackID                             = (int)getRandomNumber()*100;
+    secondariesID.push_back((Int_t) getRandomNumber()*100);
+    trackID                             = (Int_t)getRandomNumber()*100;
     parentID                            = -1;
 }
 
-double B1Particle::getRandomNumber()
+Double_t B1Particle::getRandomNumber()
 {
     return randGen.Rndm();
 }
@@ -58,7 +58,7 @@ void B1Particle::addProcess(string name)
 }
 
 
-void B1Particle::addDaughterID(int ID)
+void B1Particle::addDaughterID(Int_t ID)
 {
     secondariesID.push_back(ID);
 }
@@ -112,14 +112,14 @@ void B1Particle::print() const
            endDirection.X(), endDirection.Y(), endDirection.Z());
     
     printf("  scat=%d  process=", scattering);
-    for (int i = 0; i < processes.size(); ++i)
+    for (Int_t i = 0; i < processes.size(); ++i)
         printf("%s,", processes[i].c_str());
     printf("\n");
     printf("  PID=%d  stop in det=%d\n", g4Number, stopInDetector);
     printf("  num of sec=%d\n", secondariesID.size());
-    //   std::vector<int> secondaries_ID;
-    //   int particle_ID;
+    //   std::vector<Int_t> secondaries_ID;
+    //   Int_t particle_ID;
     //   string generationProcess;
-    //   double startEnergy;
-    //   double endEnergy;
+    //   Double_t startEnergy;
+    //   Double_t endEnergy;
 }
