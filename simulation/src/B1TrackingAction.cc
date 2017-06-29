@@ -22,7 +22,7 @@ void B1TrackingAction::PreUserTrackingAction(const G4Track* track)
     
     // Get ID of current track
     int track_ID = track->GetTrackID();
-    
+
     // Decide if this is a primary or a secondary
     if( track_ID  == 1)  // primary
     {
@@ -111,7 +111,6 @@ void B1TrackingAction::PostUserTrackingAction(const G4Track* track)
     current_particle->setEndDirection(dir);
     
     // end energy
-    current_particle->setEndEnergy(track->GetKineticEnergy());
     if (track->GetKineticEnergy() > 0)
     {
         current_particle->setStopInDetector(false);
