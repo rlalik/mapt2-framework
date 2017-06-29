@@ -24,6 +24,10 @@ void B1Particle::clear()
     trackID                             = 0;
     parentID                            = -1;
     generationProcess                   = "";
+    inAcceptance                        = kFALSE;
+    proc_arr[COMPTON]                   = kFALSE;
+    proc_arr[INELASTIC]                 = kFALSE;
+    proc_arr[ATREST]                    = kFALSE;
 }
 
 void B1Particle::random()
@@ -45,6 +49,10 @@ void B1Particle::random()
     secondariesID.push_back((Int_t) getRandomNumber()*100);
     trackID                             = (Int_t)getRandomNumber()*100;
     parentID                            = -1;
+    inAcceptance                        = kFALSE;
+    proc_arr[COMPTON]                   = kFALSE;
+    proc_arr[INELASTIC]                 = kFALSE;
+    proc_arr[ATREST]                    = kFALSE;
 }
 
 Double_t B1Particle::getRandomNumber()

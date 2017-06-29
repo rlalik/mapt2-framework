@@ -74,6 +74,9 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
     current_event = data_manager->getEvent()->getSimulatedEvent();
     int track_ID = step->GetTrack()->GetTrackID();
     current_particle = current_event->getParticle(track_ID);
+
+    // particle passed the detector
+    current_particle->setInAcceptance(true);
     
     // get the step defining process and add it to the process list of the current particle if the process is important
     // important processes are defined in the else if section
@@ -81,14 +84,17 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
     if (process == "compt")
     {
         current_particle->addProcess(process);
+        current_particle->setProcess(B1Particle::COMPTON);
     }
     else if(process == "anti_protonInelastic") // empty example -> insert another important process name here
     {
         current_particle->addProcess(process);
+        current_particle->setProcess(B1Particle::INELASTIC);
     }
     else if(process == "hFritiofCaptureAtRest") // empty example -> insert another important process name here
     {
         current_particle->addProcess(process);
+        current_particle->setProcess(B1Particle::ATREST);
     }
     
     // stop in detektor volume

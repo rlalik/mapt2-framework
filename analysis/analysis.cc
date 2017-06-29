@@ -106,6 +106,8 @@ int analysis(const std::string & file, int events = 1000)
     TH1I * h_piz_mult_1stgen = new TH1I("h_piz_mult_1stgen", "h_piz_mult_1stgen", 10, 0, 10);
     TH1I * h_pic_mult_1stgen = new TH1I("h_pic_mult_1stgen", "h_pic_mult_1stgen", 10, 0, 10);
 
+    TH1I * h_acc = new TH1I("h_acc", "h_acc", 5, 0, 5);
+
     int ev_limit = events < dataManager.getEntriesFast() ? events : dataManager.getEntriesFast();
     std::cout << dataManager.getEntriesFast() << " events, analyze " << ev_limit << std::endl;
 
@@ -122,6 +124,12 @@ int analysis(const std::string & file, int events = 1000)
 //         std::cout << event->getSimulatedEvent()->getPrimary()->Get_stop_in_detector() << "\n";
 //         event->getSimulatedEvent()->getPrimary()->print();
 
+        B1Particle * prim = event->getSimulatedEvent()->getPrimary();
+        if (prim->getInAcceptance())
+            h_acc->Fill(0);
+        if (prim->getStopInDetector())
+            h_acc->Fill(1);
+
         int sec_num = event->getSimulatedEvent()->getSecondaries().size();
 
         int pim_mult = 0;
@@ -133,7 +141,7 @@ int analysis(const std::string & file, int events = 1000)
         int piz_mult_1stgen = 0;
         int pic_mult_1stgen = 0;
 
-        if (sec_num)
+        if (prim->getStopInDetector())
         {
 //             std::cout << "Number of secs: "<< event->getSimulatedEvent()->getSecondaries().size() << "\n\n";
             secs += event->getSimulatedEvent()->getSecondaries().size();
@@ -172,13 +180,15 @@ int analysis(const std::string & file, int events = 1000)
                 }
             }
 
-            h_pi_mult->Fill(pim_mult + pim_mult + piz_mult);
+            Int_t pi_all = pim_mult + pim_mult + piz_mult;
+            h_pi_mult->Fill(pi_all);
             h_pim_mult->Fill(pim_mult);
             h_pip_mult->Fill(pip_mult);
             h_piz_mult->Fill(piz_mult);
             h_pic_mult->Fill(pic_mult);
 
-            h_pi_mult_1stgen->Fill(pim_mult_1stgen + pim_mult_1stgen + piz_mult_1stgen);
+            Int_t pi_all_1stgen = pim_mult_1stgen + pim_mult_1stgen + piz_mult_1stgen;
+            h_pi_mult_1stgen->Fill(pi_all_1stgen);
             h_pim_mult_1stgen->Fill(pim_mult_1stgen);
             h_pip_mult_1stgen->Fill(pip_mult_1stgen);
             h_piz_mult_1stgen->Fill(piz_mult_1stgen);
@@ -204,6 +214,8 @@ int analysis(const std::string & file, int events = 1000)
     h_pip_mult_1stgen->Write();
     h_piz_mult_1stgen->Write();
     h_pic_mult_1stgen->Write();
+
+    h_acc->Write();
 
     dataManager.save();
 

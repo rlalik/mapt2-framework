@@ -76,6 +76,16 @@ public:
     Bool_t isP() const { return g4Number == 2212; }
     Bool_t isaP() const { return g4Number == -2212; }
 
+    Bool_t getInAcceptance() const { return inAcceptance; }
+    void setInAcceptance(Bool_t b) { inAcceptance = b; }
+
+    enum Process { COMPTON, INELASTIC, ATREST };
+    void setProcess(Process p) { proc_arr[p] = kTRUE; }
+    Bool_t testProcess(Process p) const { return proc_arr[p]; }
+    Bool_t isProcessCompton() const { return proc_arr[COMPTON]; }
+    Bool_t isProcessInelastic() const { return proc_arr[INELASTIC]; }
+    Bool_t isProcessAtRest() const { return proc_arr[ATREST]; }
+
     // Needed for creation of shared library
     ClassDef(B1Particle, 1);
 
@@ -94,6 +104,9 @@ private:
     string generationProcess;
     Double_t startEnergy;
     Double_t endEnergy;
+    Bool_t inAcceptance;
+
+    Bool_t proc_arr[ATREST+1];
 
     TRandom2 randGen;
 };
