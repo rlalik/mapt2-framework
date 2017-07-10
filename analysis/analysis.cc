@@ -108,6 +108,9 @@ int analysis(const std::string & file, int events = 1000)
 
     TH1I * h_acc = new TH1I("h_acc", "h_acc", 5, 0, 5);
 
+    TH1I * h_range = new TH1I("h_range", "h_range", 220, 0, 110);
+    TH1I * h_distance = new TH1I("h_distance", "h_distance", 200, 0, 100);
+
     int ev_limit = events < dataManager.getEntriesFast() ? events : dataManager.getEntriesFast();
     std::cout << dataManager.getEntriesFast() << " events, analyze " << ev_limit << std::endl;
 
@@ -124,11 +127,17 @@ int analysis(const std::string & file, int events = 1000)
 //         std::cout << event->getSimulatedEvent()->getPrimary()->Get_stop_in_detector() << "\n";
 //         event->getSimulatedEvent()->getPrimary()->print();
 
+        h_acc->Fill(0);
+
         B1Particle * prim = event->getSimulatedEvent()->getPrimary();
         if (prim->getInAcceptance())
-            h_acc->Fill(0);
-        if (prim->getStopInDetector())
             h_acc->Fill(1);
+        if (prim->getStopInDetector())
+        {
+            h_acc->Fill(2);
+            h_range->Fill(prim->getRange());
+            h_distance->Fill(prim->getDistance());
+        }
 
         int sec_num = event->getSimulatedEvent()->getSecondaries().size();
 
@@ -217,6 +226,9 @@ int analysis(const std::string & file, int events = 1000)
 
     h_acc->Write();
 
+    h_range->Write();
+    h_distance->Write();
+
     dataManager.save();
 
     return 0;
@@ -263,6 +275,7 @@ int main(int argc,char** argv)
     for (int i = 0; i < ana_status.size(); ++i)
     {
         std::cout << "Analysis for " << ana_status[i].first << " with status " << ana_status[i].second << std::endl;
+//         std::cout << "Output file is " << oname.Data() << std::endl;
     }
 
     return 0;
