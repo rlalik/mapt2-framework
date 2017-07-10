@@ -35,7 +35,7 @@ public:
     void setEndPosition(const TVector3 & p) { endPosition = p; }
 
     Double_t getDistance() const;
-    Double_t getDepth() const;
+    Double_t getRange() const;
 
     TVector3 getStartDirection() const { return startDirection; }
     void setStartDirection(const TVector3 & p) { startDirection = p; }

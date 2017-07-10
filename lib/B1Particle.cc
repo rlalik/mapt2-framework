@@ -77,12 +77,10 @@ Double_t B1Particle::getDistance() const
     return end_.Mag();
 }
 
-Double_t B1Particle::getDepth() const
+Double_t B1Particle::getRange() const
 {
     if (!stopInDetector)
         return -100.;
-
-    Double_t d = 0.0;
 
     TVector3 sta = startPosition - TVector3(0, 36, 0);
     TVector3 end = endPosition - TVector3(0, 36, 0);
