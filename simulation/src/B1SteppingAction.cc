@@ -128,7 +128,10 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
         
         if (detector_response->getEnergy(x_fiber, y_fiber) == 0 && energy_step > 0)
         {
-            detector_response->addFiberHit();
+            if (y_fiber % 2 == 0)
+                detector_response->addFiberHitX();
+            else
+                detector_response->addFiberHitZ();
         }
         
         detector_response->setEnergy(x_fiber,y_fiber, energy_step);

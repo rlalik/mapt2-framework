@@ -17,6 +17,8 @@ void B1DetectorResponse::clear()
     
     totalEnergy = 0;
     fiberHits = 0;
+    fiberHits_x = 0;
+    fiberHits_z = 0;
 }
 
 

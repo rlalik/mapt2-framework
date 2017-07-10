@@ -19,14 +19,19 @@ public:
     void setEnergyQuenching(Int_t x, Int_t y, Double_t energy);
     void setPhotons(Int_t x, Int_t y, Int_t photon);
     void setTotalEnergy(Double_t e);
-    void addFiberHit();
-    Int_t getFiberHits();
 
+    Int_t getFiberHits() const { return fiberHits; }
+    void addFiberHitX() { ++fiberHits_x; ++fiberHits; }
+    Int_t getFiberHitsX() const { return fiberHits_z; }
+    void addFiberHitZ() { ++fiberHits_z; ++fiberHits; }
+    Int_t getFiberHitsZ() const { return fiberHits_z; }
     Double_t energyDeposition[30][30];
     Double_t energyDepositionQuenching[30][30];
     Double_t totalEnergy;
     Int_t  opticalPhotonCount[30][30];
     Int_t fiberHits;
+    Int_t fiberHits_x;
+    Int_t fiberHits_z;
 
     // Needed for creation of shared library
     ClassDef(B1DetectorResponse, 1);
