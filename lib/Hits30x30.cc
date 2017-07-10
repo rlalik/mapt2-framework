@@ -27,7 +27,7 @@ Hits30x30::Hits30x30(const Hits30x30 & hits_)
     }
 }
 
-Hits30x30::Hits30x30(double hitMatrix[30][30])
+Hits30x30::Hits30x30(const double hitMatrix[30][30])
 {
     // fill matrix from hitMatrix
     for (int y = 0; y < 30; ++y)
@@ -127,7 +127,7 @@ void Hits30x30::set(const Hits30x30 & hits_)
     }
 }
 
-void Hits30x30::set(double hitMatrix[30][30])
+void Hits30x30::set(const double hitMatrix[30][30])
 {
     // fill matrix from hitMatrix
     for (int y = 0; y < 30; ++y)

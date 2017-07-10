@@ -14,17 +14,25 @@ public:
     virtual ~B1DetectorResponse() {}
     void clear();
     void random();
-    void setEnergy(Int_t x, Int_t y, Double_t energy);
-    Double_t getEnergy(Int_t x, Int_t y);
-    void setEnergyQuenching(Int_t x, Int_t y, Double_t energy);
-    void setPhotons(Int_t x, Int_t y, Int_t photon);
-    void setTotalEnergy(Double_t e);
+
+    typedef const Double_t (*Arr30x30)[30];
+
+    void setEnergy(Int_t x, Int_t y, Double_t energy) { energyDeposition[x][y] += energy; }
+    Double_t getEnergy(Int_t x, Int_t y) const { return energyDeposition[x][y]; }
+    Arr30x30 getEnergyArray() const { return energyDeposition; }
+
+    void setEnergyQuenching(Int_t x, Int_t y, Double_t energy) { energyDepositionQuenching[x][y] += energy; }
+
+    void setPhotons(Int_t x, Int_t y, Int_t photon) { opticalPhotonCount[x][y] += photon; }
+    void setTotalEnergy(Double_t e) { totalEnergy += e; }
 
     Int_t getFiberHits() const { return fiberHits; }
     void addFiberHitX() { ++fiberHits_x; ++fiberHits; }
     Int_t getFiberHitsX() const { return fiberHits_z; }
     void addFiberHitZ() { ++fiberHits_z; ++fiberHits; }
     Int_t getFiberHitsZ() const { return fiberHits_z; }
+
+private:
     Double_t energyDeposition[30][30];
     Double_t energyDepositionQuenching[30][30];
     Double_t totalEnergy;

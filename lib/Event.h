@@ -26,7 +26,7 @@ public:
     AnalysisData*           getFitData()            { return fitData; }
 
     void setHits(const Hits30x30 & h);
-    void setHits(double hitMatrix[30][30]);
+    void setHits(const double hitMatrix[30][30]);
 
     bool getIsHits()        { return isHits; }
     bool getIsSim()         { return isSim; }

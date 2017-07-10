@@ -37,7 +37,7 @@ void Event::setHits(const Hits30x30 & h)
     hits->set(h);
 }
 
-void Event::setHits(double hitMatrix[30][30])
+void Event::setHits(const double hitMatrix[30][30])
 {
     hits->set(hitMatrix);
 }

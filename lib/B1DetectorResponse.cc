@@ -36,39 +36,3 @@ void B1DetectorResponse::random()
     
     totalEnergy = 0;
 }
-
-
-void B1DetectorResponse::setEnergy(Int_t x, Int_t y, Double_t energy)
-{
-    energyDeposition[x][y] += energy;
-}
-
-void B1DetectorResponse::setEnergyQuenching(Int_t x, Int_t y, Double_t energy)
-{
-    energyDepositionQuenching[x][y] += energy;
-}
-
-void B1DetectorResponse::setPhotons(Int_t x, Int_t y, Int_t photon)
-{
-    opticalPhotonCount[x][y] += photon;
-}
-
-void B1DetectorResponse::setTotalEnergy(Double_t e)
-{
-    totalEnergy += e;
-}
-
-void B1DetectorResponse::addFiberHit()
-{
-    ++fiberHits;
-}
-
-Int_t B1DetectorResponse::getFiberHits()
-{
-    return fiberHits;
-}
-
-Double_t B1DetectorResponse::getEnergy(Int_t x, Int_t y)
-{
-    return energyDeposition[x][y];
-}

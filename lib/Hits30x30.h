@@ -18,7 +18,7 @@ public:
     Hits30x30();
 
     //! \brief Constructor. Initializes the array[30][30] with the provided array.
-    Hits30x30(double hitMatrix[30][30]);
+    Hits30x30(const double hitMatrix[30][30]);
 
     //! \brief Constructor. Initializes the array[30][30] with the provided Hits30x30 object.
     Hits30x30(const Hits30x30 & hits_);
@@ -45,7 +45,7 @@ public:
     void set(const Hits30x30 & hits_);
 
     //! \brief Initializes the array[30][30] with the provided array.
-    void set(double hitMatrix[30][30]);
+    void set(const double hitMatrix[30][30]);
 
     double getXYValue(int x, int y) const;
     double getZYValue(int z, int y) const;

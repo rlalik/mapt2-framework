@@ -59,7 +59,7 @@ void B1EventAction::EndOfEventAction(const G4Event*)
   // fill tree with data acquired from current event
   Event* event = data_manager->getEvent();
   event->setIsSim(true);
-  event->setHits(event->getSimulatedEvent()->getDetectorResponse()->energyDeposition);
+  event->setHits(event->getSimulatedEvent()->getDetectorResponse()->getEnergyArray());
   event->setIsHits(true);
   data_manager->fill();
 }
