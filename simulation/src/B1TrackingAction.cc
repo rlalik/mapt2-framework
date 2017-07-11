@@ -69,7 +69,7 @@ void B1TrackingAction::PreUserTrackingAction(const G4Track* track)
         CADFiber* fiber;
         if (fiber = dynamic_cast<CADFiber*> (part))
         {
-            detector_response = current_event->getDetectorResponse();
+            B1DetectorResponse* detector_response = current_event->getDetectorResponse();
             int x_fiber = fiber->getFiberX();
             int y_fiber = fiber->getFiberY();
             detector_response->setPhotons(x_fiber,y_fiber,1);

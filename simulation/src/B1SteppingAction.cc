@@ -119,7 +119,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
     CADFiber* fiber;
     if (fiber = dynamic_cast<CADFiber*> (part))
     {
-        detector_response = current_event->getDetectorResponse();
+        B1DetectorResponse* detector_response = current_event->getDetectorResponse();
         int x_fiber = fiber->getFiberX();
         int y_fiber = fiber->getFiberY();
         G4double energy_step = step->GetTotalEnergyDeposit() - step->GetNonIonizingEnergyDeposit (); //take here only ionization energy loss

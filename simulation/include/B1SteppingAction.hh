@@ -39,7 +39,6 @@
 #include "B1DetectorConstruction.hh"
 
 // shared libraries Event.so
-class B1DetectorResponse;
 class B1Particle;
 class DataManager;
 class EventSim;
@@ -71,7 +70,6 @@ class B1SteppingAction : public G4UserSteppingAction
     EventSim* current_event;
     B1Particle* current_particle;
     B1DetectorConstruction* detector_construction;
-    B1DetectorResponse* detector_response;
 
     double kB;
 };

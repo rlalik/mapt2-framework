@@ -47,7 +47,7 @@ private:
     //! \brief Representing the 900 fiber measurements.
     Hits30x30* hits;
 
-    //! \brief Data from simulation, MC truth  (secondaries cannot be read from simulated data trees).
+    //! \brief Data from simulation, MC truth (secondaries cannot be read from simulated data trees).
     EventSim* simData;
 
     //! \brief Data from analysis.

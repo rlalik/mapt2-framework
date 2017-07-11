@@ -15,7 +15,6 @@
 #include <TMath.h>
 
 // shared libraries Event.so
-class B1DetectorResponse;
 class B1Particle;
 class DataManager;
 class EventSim;
@@ -45,7 +44,6 @@ private:
     EventSim* current_event;
     B1Particle* current_particle;
     B1DetectorConstruction* detector_construction;
-    B1DetectorResponse* detector_response;
 };
 
 #endif
