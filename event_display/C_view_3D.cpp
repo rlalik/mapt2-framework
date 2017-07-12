@@ -6,8 +6,7 @@
 #include "DataManager.hh"
 #include "B1Particle.hh"
 #include "Hits30x30.h"
-#include "Event.h"
-#include "EventSim.h"
+#include "GeantSim.h"
 
 //
 // Konstruktor
@@ -305,37 +304,19 @@ void C_view_3D::update3D()
     end_point.clear();
     end_point_color.clear();
 
-    event = dataManager->getEvent();
-    if (!event)
-        return;
-
-    EventSim* simEv = event->getSimulatedEvent();
+    GeantSim* simEv = (GeantSim*) dataManager->getCategory(DataManager::CatGeantSim);
     if (!simEv)
     {
-
+        return;
     }
-    else {
-        // Tracks einzeichnen und Endpunkte zeichnen
-        for (int i = 0; i< 1; i++)					// Alle Tracks im Event durchgehen
-        {
-            QVector3D startPos (simEv->getPrimary()->getStartPosition().X(),simEv->getPrimary()->getStartPosition().Y(),simEv->getPrimary()->getStartPosition().Z());
-            QVector3D endPos (simEv->getPrimary()->getEndPosition().X(),simEv->getPrimary()->getEndPosition().Y(),simEv->getPrimary()->getEndPosition().Z());
-
-            line << startPos << endPos;		// in line alle Start- und Endpositionen speichern
-
-            end_point << endPos;						// Endpositionen in end_points speichern
-
-
-            colors << QVector3D(1,1,1) << QVector3D(1,1,1);
-            end_point_color << QVector3D(1,1,1) ;
-        }
-
-        vector<B1Particle*> secs = simEv->getSecondaries();
-        size_t secs_num = secs.size();
+    else
+    {
+        size_t secs_num = simEv->getTracksMult();
 
         for (uint i = 0; i < secs_num; ++i)
         {
-            B1Particle * p = secs[i];
+            B1Particle* p = simEv->getTrack(i);
+
             QVector3D sta(p->getStartPosition().X(), p->getStartPosition().Y(), p->getStartPosition().Z());
             QVector3D sto(p->getEndPosition().X(), p->getEndPosition().Y(), p->getEndPosition().Z());
 
@@ -343,21 +324,29 @@ void C_view_3D::update3D()
             end_point << sto;
 
             QVector3D col;
-            int geant_id = p->getG4Number();
-            switch (geant_id)
+
+            if (p->getTrackID() == 1)
             {
-                case 211:
-                    col = QVector3D(1,0,0);
-                    break;
-                case -211:
-                    col = QVector3D(0,1,0);
-                    break;
-                case 111:
-                    col = QVector3D(0,0,1);
-                    break;
-                default:
-                    col = QVector3D(0,0,0);
-                    break;
+                col = QVector3D(1,1,1);
+            }
+            else
+            {
+                int geant_id = p->getG4Number();
+                switch (geant_id)
+                {
+                    case 211:
+                        col = QVector3D(1,0,0);
+                        break;
+                    case -211:
+                        col = QVector3D(0,1,0);
+                        break;
+                    case 111:
+                        col = QVector3D(0,0,1);
+                        break;
+                    default:
+                        col = QVector3D(0,0,0);
+                        break;
+                }
             }
 
             colors << col << col;
@@ -366,12 +355,13 @@ void C_view_3D::update3D()
 
         // Fiber einzeichnen
 
-        for (int y = 0; y<30; y++) {
-            for (int x=0; x <30;x++) {
-
+        for (int y = 0; y < 30; ++y)
+        {
+            for (int x = 0; x < 30; ++x)
+            {
                 // set color
                 float color;
-                color = event->getHits()->getValue(x,y)/20;
+                color = simEv->getHits().getValue(x,y)/20;
                 if (color >1)
                     color = 1;
 

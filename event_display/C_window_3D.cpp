@@ -1,5 +1,7 @@
 #include "C_window_3D.h"
 
+#include "DataManager.hh"
+#include "GeantSim.h"
 
 //
 // Konstruktor
@@ -14,7 +16,6 @@ C_window_3D::C_window_3D(QWidget *parent, DataManager* da) :
     setWindowTitle("3D representation");
 
     dataManager = da;
-    event = dataManager->getEvent();
 
     m_view3D = new C_view_3D(0, dataManager);
 
@@ -39,7 +40,6 @@ C_window_3D::C_window_3D(QWidget *parent, DataManager* da) :
     m_layout->addWidget(m_view3D);
     m_layout->setStretchFactor(m_view3D,21);
 
-
     window->setLayout(m_layout);
     setCentralWidget(window);
 }
@@ -53,15 +53,17 @@ C_window_3D::C_window_3D(QWidget *parent, DataManager* da) :
 //
 void C_window_3D::update()
 {
-    // Daten aus Datenklasse holen und in String schreiben. String dann im Label anzeigen lassen
-    QString s1 = "Active fibers: " + QString::number(dataManager->getEvent()->getHits()->getNumberOfHits());
-    m_l1->setText(s1);
-    //
-    // QString s2 = "Tracks: " + QString::number(m_data->getTrackSize());
-    // m_l2->setText(s2);
-    //
-    QString s3 = "Maximum value: " + QString::number(dataManager->getEvent()->getHits()->getMaxValue());
-    m_l3->setText(s3);
+    GeantSim * evt = (GeantSim*) dataManager->getCategory(DataManager::CatGeantSim);
+    if (evt)
+    {
+        Hits30x30<Double_t> h = evt->getHits();
+        // Daten aus Datenklasse holen und in String schreiben. String dann im Label anzeigen lassen
+        QString s1 = "Active fibers: " + QString::number(evt->getHits().getNumberOfHits());
+        m_l1->setText(s1);
+
+        QString s3 = "Maximum value: " + QString::number(evt->getHits().getMaxValue());
+        m_l3->setText(s3);
+    }
 
     // 3D-Fenster updaten
     m_view3D->updateGL();
@@ -76,7 +78,6 @@ void C_window_3D::update()
 //
 C_window_3D::~C_window_3D()
 {
-    delete event;
     delete m_view3D;
     delete m_layout;
 }

@@ -10,7 +10,6 @@ using namespace std;
 #include <fstream>
 #include "TROOT.h"
 #include "TObject.h"
-#include "B1DetectorResponse.hh"
 #include <sstream>
 #include "globals.hh"
 

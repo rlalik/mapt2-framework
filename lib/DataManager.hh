@@ -10,7 +10,8 @@ using namespace std;
 #include "TFile.h"
 #include "TTree.h"
 
-class Event;
+class Category;
+class GeantSim;
 
 //! \brief Access point to load, read and write data.
 /*!
@@ -45,8 +46,11 @@ public:
     //! \brief Returns number of entries in the current tree.
     int getEntriesFast();
 
-    //! \brief Returns the currently loaded event instance.
-    Event* getEvent();
+    enum Cat { CatGeantSim, CatData, CatFilter };
+    bool buildCategory(Cat cat);
+    Category * getCategory(Cat cat);
+
+    bool openCategory(Cat cat);
 
     void setSaveFileName(string s) { saveFileName = s; }
     void setSaveTreeName(string s) { saveTreeName = s; }
@@ -86,7 +90,8 @@ private:
         information from the opening tree entry. Calling DataManager::fill writes
         this instance to the save tree.
     */
-    Event* event;
+
+    GeantSim * geant_sim;
 };
 
 #endif /* DATAMANAGER_H */

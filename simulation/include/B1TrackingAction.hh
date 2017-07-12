@@ -17,7 +17,7 @@
 // shared libraries Event.so
 class B1Particle;
 class DataManager;
-class EventSim;
+class GeantSim;
 
 // geometry shared library
 #include <Material.h>
@@ -41,7 +41,7 @@ public:
     
 private:
     DataManager* data_manager;
-    EventSim* current_event;
+    GeantSim* current_event;
     B1Particle* current_particle;
     B1DetectorConstruction* detector_construction;
 };

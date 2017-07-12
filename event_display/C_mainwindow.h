@@ -11,8 +11,8 @@
 #include "C_window_2D.h"
 
 // MAPT Framework
-#include "DataManager.hh"
-#include "Event.h"
+class DataManager;
+class GeantSim;
 
 
 class QPushButton;
@@ -23,16 +23,17 @@ class QIcon;
 class C_MainWindow : public QMainWindow
 {
     Q_OBJECT
-
 public:
     C_MainWindow(QWidget *parent = 0);
     ~C_MainWindow();
     void update();
     C_dat* getdaten();
 
+    void openFile(const QString & fn);
+
 private:
     DataManager* dataManager;
-    Event* event;
+    GeantSim* event;
 
     QPushButton* m_next;
     QPushButton* m_last;

@@ -7,7 +7,6 @@
 
 // MAPT Framework
 #include "DataManager.hh"
-#include "Event.h"
 
 class C_view_2D : public QWidget
 {

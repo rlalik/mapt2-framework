@@ -3,6 +3,8 @@
 
 #include "TObject.h"
 
+#include "Hits30x30.h"
+
 //! \brief Data structure representing the detector response in a simulated event.
 /*!
 
@@ -10,18 +12,18 @@
 class B1DetectorResponse : public TObject
 {
 public:
-    B1DetectorResponse() {}
+    B1DetectorResponse();
     virtual ~B1DetectorResponse() {}
     void clear();
     void random();
 
     typedef const Double_t (*Arr30x30)[30];
 
-    void setEnergy(Int_t x, Int_t y, Double_t energy) { energyDeposition[x][y] += energy; }
-    Double_t getEnergy(Int_t x, Int_t y) const { return energyDeposition[x][y]; }
-    Arr30x30 getEnergyArray() const { return energyDeposition; }
+    void setEnergy(Int_t x, Int_t y, Double_t energy) { energyDeposition.addValue(x, y, energy); }
+    Double_t getEnergy(Int_t x, Int_t y) const { return energyDeposition.getValue(x, y); }
+    Hits30x30<Double_t> getEnergyArray() const { return energyDeposition; }
 
-    void setEnergyQuenching(Int_t x, Int_t y, Double_t energy) { energyDepositionQuenching[x][y] += energy; }
+    void setEnergyQuenching(Int_t x, Int_t y, Double_t energy) { energyDepositionQuenching.addValue(x, y, energy); }
 
     void setPhotons(Int_t x, Int_t y, Int_t photon) { opticalPhotonCount[x][y] += photon; }
     void setTotalEnergy(Double_t e) { totalEnergy += e; }
@@ -33,8 +35,8 @@ public:
     Int_t getFiberHitsZ() const { return fiberHits_z; }
 
 private:
-    Double_t energyDeposition[30][30];
-    Double_t energyDepositionQuenching[30][30];
+    Hits30x30<Double_t> energyDeposition;
+    Hits30x30<Double_t> energyDepositionQuenching;
     Double_t totalEnergy;
     Int_t  opticalPhotonCount[30][30];
     Int_t fiberHits;

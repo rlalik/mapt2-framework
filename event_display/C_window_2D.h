@@ -8,7 +8,6 @@
 
 // MAPT Framework
 #include "DataManager.hh"
-#include "Event.h"
 
 class QPushButton;
 class QMenuBar;

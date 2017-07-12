@@ -41,7 +41,7 @@
 // shared libraries Event.so
 class B1Particle;
 class DataManager;
-class EventSim;
+class GeantSim;
 
 // geometry shared library geometry.so
 #include <AbsPart.h>
@@ -67,7 +67,7 @@ class B1SteppingAction : public G4UserSteppingAction
   private:
     B1EventAction*  fEventAction;
     DataManager* data_manager;
-    EventSim* current_event;
+    GeantSim* current_event;
     B1Particle* current_particle;
     B1DetectorConstruction* detector_construction;
 

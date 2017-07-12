@@ -1,6 +1,7 @@
 #include "C_view_2D.h"
 #include <QtGui>
 
+#include "GeantSim.h"
 #include "Hits30x30.h"
 
 C_view_2D::C_view_2D(PLANE plane, QWidget *parent, DataManager *d) :
@@ -44,7 +45,8 @@ C_view_2D::C_view_2D(PLANE plane, QWidget *parent, DataManager *d) :
 
 void C_view_2D::paintEvent(QPaintEvent *)
 {
-    if (!dataManager->getEvent())
+    GeantSim * simEvt = (GeantSim*) dataManager->getCategory(DataManager::CatGeantSim);
+    if (!simEvt)
         return;
 
     // Painter anlegen
@@ -97,7 +99,7 @@ void C_view_2D::paintEvent(QPaintEvent *)
     if ((fiber_x != -1) && (fiber_y != -1))     // Mouse ueber einem Kaestchen -> Position und Wert in s
     {
         s = u_lab + "position: " + QString::number(fiber_x) +"\n" + v_lab + " position: " + QString::number(fiber_y)
-           +"\nvalue: "  + QString::number(dataManager->getEvent()->getHits()->getValue(fiber_x,fiber_y));
+           +"\nvalue: "  + QString::number(simEvt->getHits().getValue(fiber_x,fiber_y));
     }
 
     else                                        // Mouse nicht ueber einem Kaestchen
@@ -121,10 +123,10 @@ void C_view_2D::paintEvent(QPaintEvent *)
             switch (pl)
             {
                 case XZ:
-                    color = dataManager->getEvent()->getHits()->getXYValue(x,y)/normfactor;
+                    color = simEvt->getHits().getXYValue(x,y)/normfactor;
                     break;
                 case YZ:
-                    color = dataManager->getEvent()->getHits()->getZYValue(x,y)/normfactor;
+                    color = simEvt->getHits().getZYValue(x,y)/normfactor;
                     break;
                 default:
                     break;

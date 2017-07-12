@@ -3,14 +3,20 @@
 // Needed for Creation of shared libs
 ClassImp(B1DetectorResponse);
 
+B1DetectorResponse::B1DetectorResponse()
+{
+    clear();
+}
+
 void B1DetectorResponse::clear()
 {
+    energyDeposition.clear();
+    energyDepositionQuenching.clear();
+
     for (int i = 0; i < 30; ++i)
     {
         for (int j = 0; j < 30; ++j)
         {
-            energyDeposition[i][j] = 0;
-            energyDepositionQuenching[i][j] = 0;
             opticalPhotonCount[i][j] = 0;
         }
     }
@@ -28,8 +34,8 @@ void B1DetectorResponse::random()
     {
         for (int j = 0; j < 30; ++j)
         {
-            energyDeposition[i][j]= j*j;
-            energyDepositionQuenching[i][j]= i*i;
+//             energyDeposition[i][j]= j*j;
+//             energyDepositionQuenching[i][j]= i*i;
             opticalPhotonCount[i][j] = j*i;
         }
     }

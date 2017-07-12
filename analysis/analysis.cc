@@ -18,8 +18,7 @@
 
 // MAPT-Analysis framework includes
 #include "Hits30x30.h"
-#include "Event.h"
-#include "EventSim.h"
+#include "GeantSim.h"
 #include "AnalysisData.h"
 #include "B1Particle.hh"
 #include "B1DetectorResponse.hh"
@@ -39,6 +38,7 @@ int analysis(const std::string & file, int events = 1000)
     DataManager dataManager;
     dataManager.setOpenTreeName("TreeName");
     dataManager.open(file);
+    dataManager.openCategory(DataManager::CatGeantSim);
     dataManager.book(oname.Data());
 
     // // load data from root
@@ -118,7 +118,7 @@ int analysis(const std::string & file, int events = 1000)
     for (int i=0 ; i < ev_limit; ++i)
     {
         dataManager.getEntry(i);
-        Event* event = dataManager.getEvent();
+        GeantSim * event = (GeantSim*) dataManager.getCategory(DataManager::CatGeantSim);
         if (!event)
         {
             std::cerr << "event NULL" << "\n";
@@ -126,10 +126,12 @@ int analysis(const std::string & file, int events = 1000)
         }
 //         std::cout << event->getSimulatedEvent()->getPrimary()->Get_stop_in_detector() << "\n";
 //         event->getSimulatedEvent()->getPrimary()->print();
+        if (event->getTracksMult() == 0)
+            continue;
 
         h_acc->Fill(0);
 
-        B1Particle * prim = event->getSimulatedEvent()->getPrimary();
+        B1Particle * prim = event->getTrack(1);
         if (prim->getInAcceptance())
             h_acc->Fill(1);
         if (prim->getStopInDetector())
@@ -139,7 +141,7 @@ int analysis(const std::string & file, int events = 1000)
             h_distance->Fill(prim->getDistance());
         }
 
-        int sec_num = event->getSimulatedEvent()->getSecondaries().size();
+        int sec_num = event->getTracksMult() - 1;
 
         int pim_mult = 0;
         int pip_mult = 0;
@@ -153,11 +155,11 @@ int analysis(const std::string & file, int events = 1000)
         if (prim->getStopInDetector())
         {
 //             std::cout << "Number of secs: "<< event->getSimulatedEvent()->getSecondaries().size() << "\n\n";
-            secs += event->getSimulatedEvent()->getSecondaries().size();
+            secs += sec_num;
 
             for (int i = 0; i < sec_num; ++i)
             {
-                B1Particle * s = event->getSimulatedEvent()->getSecondaries()[i];
+                B1Particle * s = event->getTrack(1+i);
 
                 if (s->isPim())
                 {
@@ -204,7 +206,7 @@ int analysis(const std::string & file, int events = 1000)
             h_pic_mult_1stgen->Fill(pic_mult_1stgen);
         }
 
-        if (event->getSimulatedEvent()->getPrimary()->getStopInDetector())
+        if (prim->getStopInDetector())
             dataManager.fill();
     }
 

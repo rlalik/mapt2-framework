@@ -6,10 +6,10 @@
 #include "C_view_3D.h"
 
 // MAPT-framework
-#include "DataManager.hh"
-#include "Event.h"
 #include "Hits30x30.h"
 
+class DataManager;
+class GeantSim;
 
 class C_window_3D : public QMainWindow
 {
@@ -32,7 +32,6 @@ private:
 
     C_view_3D* m_view3D;
 
-    Event* event;
     DataManager* dataManager;
 
 protected:

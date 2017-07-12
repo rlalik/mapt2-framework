@@ -5,8 +5,7 @@
 #include "B1TrackingAction.hh"
 
 #include <DataManager.hh>
-#include <Event.h>
-#include <EventSim.h>
+#include <GeantSim.h>
 #include <B1Particle.hh>
 
 B1TrackingAction::B1TrackingAction(DataManager* root, B1DetectorConstruction* det)
@@ -18,36 +17,30 @@ B1TrackingAction::B1TrackingAction(DataManager* root, B1DetectorConstruction* de
 void B1TrackingAction::PreUserTrackingAction(const G4Track* track)
 {
     // Get pointer to current event
-    current_event = data_manager->getEvent()->getSimulatedEvent();
+    current_event = (GeantSim*) data_manager->getCategory(DataManager::CatGeantSim);
     
     // Get ID of current track
     int track_ID = track->GetTrackID();
 
-    // Decide if this is a primary or a secondary
+    current_particle = new B1Particle;
+    current_particle->setTrackID(track_ID);
+
     if( track_ID  == 1)  // primary
     {
-        // current particle is the primary
-        current_particle = current_event->getPrimary();
-        
-        // set current particles ID
-        current_particle->setTrackID(track_ID);
-        
         // set particle creation process
         current_particle->setGenerationProcess("ParticleGun");
     }
-    else //secondary
+    else
     {
-        current_particle = new B1Particle;
-        current_particle->setTrackID(track_ID);
-        current_particle->setParentID(track->GetParentID());
-
         // set particle creation process
         const G4String creator_process_name = track->GetCreatorProcess()->GetProcessName();
         current_particle->setGenerationProcess(creator_process_name);
-
-        // current particle is secondary. Add a secondary to event
-        current_event->addSecondary(current_particle);
     }
+
+    current_particle->setParentID(track->GetParentID());
+
+    // current particle is secondary. Add a secondary to event
+    current_event->addTrack(current_particle);
     
     // Optical Photons
     // decide if particle is an optic photon
@@ -69,10 +62,10 @@ void B1TrackingAction::PreUserTrackingAction(const G4Track* track)
         CADFiber* fiber;
         if (fiber = dynamic_cast<CADFiber*> (part))
         {
-            B1DetectorResponse* detector_response = current_event->getDetectorResponse();
+            B1DetectorResponse & detector_response = current_particle->getDetectorResponse();
             int x_fiber = fiber->getFiberX();
             int y_fiber = fiber->getFiberY();
-            detector_response->setPhotons(x_fiber,y_fiber,1);
+            detector_response.setPhotons(x_fiber,y_fiber,1);
         }
         
         ((G4Track*)track)->SetTrackStatus(fStopAndKill);

@@ -68,6 +68,7 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
 
   // root_manager creates file and tree for run
   data_manager->book();
+  data_manager->buildCategory(DataManager::CatGeantSim);
 
   printf("\nBegin of Run Action\n");
 }

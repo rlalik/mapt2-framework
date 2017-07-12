@@ -40,8 +40,7 @@
 
 #include "DataManager.hh"
 #include "B1Particle.hh"
-#include "Event.h"
-#include "EventSim.h"
+#include "GeantSim.h"
 #include "B1DetectorResponse.hh"
 
 B1SteppingAction::B1SteppingAction(B1EventAction* eventAction, DataManager* root, B1DetectorConstruction* det, double kB_)
@@ -69,9 +68,9 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
     // Is there a detector part?
     if (part == NULL)
         return;
-    
+
     // get the current_particle and the current event
-    current_event = data_manager->getEvent()->getSimulatedEvent();
+    current_event = (GeantSim*) data_manager->getCategory(DataManager::CatGeantSim);
     int track_ID = step->GetTrack()->GetTrackID();
     current_particle = current_event->getParticle(track_ID);
 
@@ -119,27 +118,26 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
     CADFiber* fiber;
     if (fiber = dynamic_cast<CADFiber*> (part))
     {
-        B1DetectorResponse* detector_response = current_event->getDetectorResponse();
+        B1DetectorResponse & detector_response = current_particle->getDetectorResponse();
         int x_fiber = fiber->getFiberX();
         int y_fiber = fiber->getFiberY();
         G4double energy_step = step->GetTotalEnergyDeposit() - step->GetNonIonizingEnergyDeposit (); //take here only ionization energy loss
         // formular for  quenching
         double energy_step_quenching =  calculate_quenched_energy(step, kB, energy_step);
         
-        if (detector_response->getEnergy(x_fiber, y_fiber) == 0 && energy_step > 0)
+        if (detector_response.getEnergy(x_fiber, y_fiber) == 0 && energy_step > 0)
         {
             if (y_fiber % 2 == 0)
-                detector_response->addFiberHitX();
+                detector_response.addFiberHitX();
             else
-                detector_response->addFiberHitZ();
+                detector_response.addFiberHitZ();
         }
         
-        detector_response->setEnergy(x_fiber,y_fiber, energy_step);
-        detector_response->setEnergyQuenching(x_fiber,y_fiber, energy_step_quenching);
-        detector_response->setTotalEnergy(energy_step);
+        detector_response.setEnergy(x_fiber,y_fiber, energy_step);
+        detector_response.setEnergyQuenching(x_fiber,y_fiber, energy_step_quenching);
+        detector_response.setTotalEnergy(energy_step);
     }
 }
-
 
 G4double calculate_quenched_energy(const G4Step* step, G4double kB, G4double E_dep){
     G4double E_quenched = 0;

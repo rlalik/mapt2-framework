@@ -1,4 +1,8 @@
 #include "C_mainwindow.h"
+
+#include "DataManager.hh"
+#include "GeantSim.h"
+
 #include <QtGui>
 
 //
@@ -120,29 +124,25 @@ C_MainWindow::C_MainWindow(QWidget *parent)
 // Konstruktor ENDE
 
 
-//
-// Open
-// ----------------------------------------------------------------------------------------------------------------------------------
-//
-void C_MainWindow::Open()
+void C_MainWindow::openFile(const QString & fn)
 {
-
-    QString fileName = QFileDialog::getOpenFileName(this,
-    tr("Load Root Tree"), "/nfs/hicran/project/e18sat/analysis/MAPT-framework/milde_development/MAPT-Framework/Simulation/build", tr("root files (*.root)"));
-
-    std::cout << fileName.toStdString() << "\n";
     dataManager->setOpenTreeName("TreeName");
-    if (dataManager->open(fileName.toStdString())) {
+    if (dataManager->open(fn.toStdString()))
+    {
+        dataManager->openCategory(DataManager::CatGeantSim);
         dataManager->getEntry(0);
-        event = dataManager->getEvent();
+        event = (GeantSim*) dataManager->getCategory(DataManager::CatGeantSim);
         // update
         update();
     }
-    else {
+    else
+    {
         dataManager->setOpenTreeName("saveTreeName");
-        if (dataManager->open(fileName.toStdString())) {
+        if (dataManager->open(fn.toStdString()))
+        {
+            dataManager->openCategory(DataManager::CatGeantSim);
             dataManager->getEntry(0);
-            event = dataManager->getEvent();
+            event = (GeantSim*) dataManager->getCategory(DataManager::CatGeantSim);
             // update
             update();
         }
@@ -152,6 +152,19 @@ void C_MainWindow::Open()
             msgBox.exec();
         }
     }
+}
+
+//
+// Open
+// ----------------------------------------------------------------------------------------------------------------------------------
+//
+void C_MainWindow::Open()
+{
+    QString fileName = QFileDialog::getOpenFileName(this,
+    tr("Load Root Tree"), "", tr("root files (*.root)"));
+
+    std::cout << fileName.toStdString() << "\n";
+    openFile(fileName);
 }
 // ----------------------------------------------------------------------------------------------------------------------------------
 // Open ENDE
@@ -203,7 +216,7 @@ void C_MainWindow::next()
     int n = dataManager->getCurrentEntryNumber();
     if (n+1<= dataManager->getNumberOfEntries()) {
         dataManager->getEntry(n+1);
-        event = dataManager->getEvent();
+        event = (GeantSim*) dataManager->getCategory(DataManager::CatGeantSim);
     }
 
     update();
@@ -222,7 +235,7 @@ void C_MainWindow::last()
     int n = dataManager->getCurrentEntryNumber();
     if (n-1 >= 0) {
         dataManager->getEntry(n-1);
-        event = dataManager->getEvent();
+        event = (GeantSim*) dataManager->getCategory(DataManager::CatGeantSim);
     }
 
     update();

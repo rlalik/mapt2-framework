@@ -35,31 +35,24 @@
 #include "G4RunManager.hh"
 
 #include "DataManager.hh"
-#include "Event.h"
-#include "EventSim.h"
+#include "GeantSim.h"
 
 B1EventAction::B1EventAction(DataManager* root)
 : G4UserEventAction()
 {
-  data_manager = root;
+    data_manager = root;
 }
-
-B1EventAction::~B1EventAction()
-{}
 
 void B1EventAction::BeginOfEventAction(const G4Event* evt)
 {
-  // Get Event ID
-  G4int evtNb = evt->GetEventID();
-
+    // Get Event ID
+    G4int evtNb = evt->GetEventID();
 }
 
 void B1EventAction::EndOfEventAction(const G4Event*)
 {
-  // fill tree with data acquired from current event
-  Event* event = data_manager->getEvent();
-  event->setIsSim(true);
-  event->setHits(event->getSimulatedEvent()->getDetectorResponse()->getEnergyArray());
-  event->setIsHits(true);
-  data_manager->fill();
+    // fill tree with data acquired from current event
+    GeantSim* event = (GeantSim*) data_manager->getCategory(DataManager::CatGeantSim);
+    event->calcHits();
+    data_manager->fill();
 }

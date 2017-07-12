@@ -10,6 +10,8 @@ using namespace std;
 #include "TRandom2.h"
 #include "TVector3.h"
 
+#include "B1DetectorResponse.hh"
+
 class TObject;
 
 //! \brief Data structure representing a charged particle.
@@ -27,6 +29,8 @@ public:
     Double_t getRandomNumber();                          // returns a random number between 0 and 1 (without 0 and 1)
     void addProcess(string name);
     void addDaughterID(Int_t ID);
+
+    B1DetectorResponse & getDetectorResponse() { return response; }
 
     TVector3 getStartPosition() const { return startPosition; }
     void setStartPosition(const TVector3 & p) { startPosition = p; }
@@ -86,6 +90,10 @@ public:
     Bool_t isProcessInelastic() const { return proc_arr[INELASTIC]; }
     Bool_t isProcessAtRest() const { return proc_arr[ATREST]; }
 
+//     Hits30x30*              getHits()               { return hits; }
+//     void setHits(const Hits30x30 & h); 
+//     void setHits(const double hitMatrix[30][30]); 
+
     // Needed for creation of shared library
     ClassDef(B1Particle, 1);
 
@@ -107,6 +115,8 @@ private:
     Bool_t inAcceptance;
 
     Bool_t proc_arr[ATREST+1];
+
+    B1DetectorResponse response;
 
     TRandom2 randGen;
 };
