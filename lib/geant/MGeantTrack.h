@@ -1,5 +1,5 @@
-#ifndef B1PARTICLE_H
-#define B1PARTICLE_H
+#ifndef MGEANTTRACK_H
+#define MGEANTTRACK_H
 
 using namespace std;
 
@@ -10,19 +10,17 @@ using namespace std;
 #include "TRandom2.h"
 #include "TVector3.h"
 
-#include "B1DetectorResponse.hh"
-
 class TObject;
 
 //! \brief Data structure representing a charged particle.
 /*!
 Represents a charged particle in the Geant4 simulation. Needed to save the MC truth.
 */
-class B1Particle : public TObject
+class MGeantTrack : public TObject
 {
 public:
-    B1Particle();
-    virtual ~B1Particle() {}
+    MGeantTrack();
+    virtual ~MGeantTrack() {}
 
     void clear();
     void random();                                      // creates a particle with random values for testing
@@ -30,7 +28,7 @@ public:
     void addProcess(string name);
     void addDaughterID(Int_t ID);
 
-    B1DetectorResponse & getDetectorResponse() { return response; }
+//     B1DetectorResponse & getDetectorResponse() { return response; }
 
     TVector3 getStartPosition() const { return startPosition; }
     void setStartPosition(const TVector3 & p) { startPosition = p; }
@@ -95,7 +93,7 @@ public:
 //     void setHits(const double hitMatrix[30][30]); 
 
     // Needed for creation of shared library
-    ClassDef(B1Particle, 1);
+    ClassDef(MGeantTrack, 1);
 
 private:
     TVector3 startPosition;
@@ -116,9 +114,9 @@ private:
 
     Bool_t proc_arr[ATREST+1];
 
-    B1DetectorResponse response;
+//     B1DetectorResponse response;
 
     TRandom2 randGen;
 };
 
-#endif /* B1PARTICLE_H */
+#endif /* MGEANTTRACK_H */

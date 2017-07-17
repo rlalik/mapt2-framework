@@ -5,9 +5,9 @@
 #include "B1SteppingAction.hh"
 #include "B1TrackingAction.hh"
 
-#include "DataManager.hh"
+#include "MDataManager.h"
 
-B1ActionInitialization::B1ActionInitialization(DataManager* root, B1Config* conf, B1DetectorConstruction* det)
+B1ActionInitialization::B1ActionInitialization(MDataManager* root, B1Config* conf, B1DetectorConstruction* det)
 : G4VUserActionInitialization()
 {
     data_manager = root;
@@ -31,6 +31,6 @@ void B1ActionInitialization::Build() const
     B1EventAction* eventAction = new B1EventAction(data_manager);
     SetUserAction(eventAction);
     
-    SetUserAction(new B1SteppingAction(eventAction,data_manager,detector_construction,config->Get_kB()));
-    SetUserAction(new B1TrackingAction(data_manager,detector_construction));
+    SetUserAction(new B1SteppingAction(eventAction, data_manager, detector_construction, config->Get_kB()));
+    SetUserAction(new B1TrackingAction(eventAction, data_manager, detector_construction));
 }

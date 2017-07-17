@@ -26,9 +26,15 @@ find_package(ROOT QUIET REQUIRED COMPONENTS Core Cint)
 include(RootNewMacros)
 include_directories(${ROOT_INCLUDE_DIR})
 
+# set(CMAKE_INSTALL_INCLUDEDIR ${CMAKE_INSTALL_PREFIX}/include)
+# set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib)
+# set(CMAKE_INSTALL_LIBDIR ${CMAKE_INSTALL_PREFIX}/lib)
+
 if (DEFINED ROOT_USE_FILE)
 include(${ROOT_USE_FILE})
 endif()
+
+add_custom_target(rlibmap)
 
 #----------------------------------------------------------------------------
 # Setup include directory for this project

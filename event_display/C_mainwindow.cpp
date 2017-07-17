@@ -1,14 +1,11 @@
 #include "C_mainwindow.h"
 
-#include "DataManager.hh"
-#include "GeantSim.h"
+#include "MDataManager.h"
+#include "MGeantTrack.h"
+#include "MGeantFibersRaw.h"
 
 #include <QtGui>
 
-//
-// Konstruktor
-// ----------------------------------------------------------------------------------------------------------------------------------
-//
 C_MainWindow::C_MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -18,20 +15,8 @@ C_MainWindow::C_MainWindow(QWidget *parent)
     setWindowTitle("Live Event Display");
 
     // load data
-    dataManager = new DataManager();
-    // dataManager->setOpenTreeName ("saveTreeName");
-    // dataManager->open("stoppInDetector.root");
-    //
-    // if (dataManager->getEntriesFast()>=0) {
-    //     dataManager->getEntry(0);
-    // }
-    // event = dataManager->getEvent();
-    // if (!event)
-    //     std::cerr << "NULL" << "\n";
-    //
-    // event->setHits(event->getSimulatedEvent()->getDetectorResponse()->energy_deposition);
-    // event->getHits()->print();
-
+    dataManager = MDataManager::instance();
+    dataManager->setSimulation(true);
 
     m_winXZ = new C_window_2D(C_view_2D::XZ, 0, dataManager);
     m_winXZ->move(this->pos()+QPoint(0,140));
@@ -86,10 +71,8 @@ C_MainWindow::C_MainWindow(QWidget *parent)
 
     widget->setLayout(whole_layout);
 
-
     // Menu einrichten
     fileMenu2 = menuBar()->addMenu(tr("&File"));
-
     fileMenu = menuBar()->addMenu(tr("&Windows"));
 
     open = new QAction(tr("&Open"),this);
@@ -107,7 +90,6 @@ C_MainWindow::C_MainWindow(QWidget *parent)
     xzView = new QAction(tr("&x y View"),this);
     fileMenu->addAction(xzView);
 
-
     // Slots einrichten
     connect(xzView, SIGNAL(triggered()), SLOT(OpenXZ()));
     connect(yzView, SIGNAL(triggered()), SLOT(OpenYZ()));
@@ -118,46 +100,30 @@ C_MainWindow::C_MainWindow(QWidget *parent)
 
     connect(m_next, SIGNAL(clicked()), SLOT(next()));
     connect(m_last, SIGNAL(clicked()), SLOT(last()));
-
 }
-// ----------------------------------------------------------------------------------------------------------------------------------
-// Konstruktor ENDE
-
 
 void C_MainWindow::openFile(const QString & fn)
 {
-    dataManager->setOpenTreeName("TreeName");
-    if (dataManager->open(fn.toStdString()))
+    dataManager->setInputFileName(fn.toStdString());
+    if (dataManager->open())
     {
-        dataManager->openCategory(DataManager::CatGeantSim);
+        dataManager->openCategory(MCategory::CatGeantTrack);
+        dataManager->openCategory(MCategory::CatGeantFibersRaw);
         dataManager->getEntry(0);
-        event = (GeantSim*) dataManager->getCategory(DataManager::CatGeantSim);
-        // update
+
+//         catGeantTrack = dataManager->getCategory(MCategory::CatGeantTrack);
+//         catGeantFibersRaw = dataManager->getCategory(MCategory::CatGeantFibersRaw);
+
         update();
     }
     else
     {
-        dataManager->setOpenTreeName("saveTreeName");
-        if (dataManager->open(fn.toStdString()))
-        {
-            dataManager->openCategory(DataManager::CatGeantSim);
-            dataManager->getEntry(0);
-            event = (GeantSim*) dataManager->getCategory(DataManager::CatGeantSim);
-            // update
-            update();
-        }
-        else {
-            QMessageBox msgBox;
-            msgBox.setText("The file cannot be opened. May this file contains a unknown data format.");
-            msgBox.exec();
-        }
+        QMessageBox msgBox;
+        msgBox.setText("The file cannot be opened. May this file contains a unknown data format.");
+        msgBox.exec();
     }
 }
 
-//
-// Open
-// ----------------------------------------------------------------------------------------------------------------------------------
-//
 void C_MainWindow::Open()
 {
     QString fileName = QFileDialog::getOpenFileName(this,
@@ -166,10 +132,6 @@ void C_MainWindow::Open()
     std::cout << fileName.toStdString() << "\n";
     openFile(fileName);
 }
-// ----------------------------------------------------------------------------------------------------------------------------------
-// Open ENDE
-
-
 
 void C_MainWindow::OpenEvent()
 {
@@ -182,11 +144,9 @@ void C_MainWindow::OpenEvent()
 
     dataManager->getEntry(numb);
 
-
     delete input;
 
     update();
-
 }
 
 void C_MainWindow::OpenXZ()
@@ -206,48 +166,28 @@ void C_MainWindow::Open3D()
     m_win3D->show();
 }
 
-//
-// next
-// ----------------------------------------------------------------------------------------------------------------------------------
-//
 void C_MainWindow::next()
 {
     // next in event in tree
     int n = dataManager->getCurrentEntryNumber();
     if (n+1<= dataManager->getNumberOfEntries()) {
         dataManager->getEntry(n+1);
-        event = (GeantSim*) dataManager->getCategory(DataManager::CatGeantSim);
     }
 
     update();
 }
-// ----------------------------------------------------------------------------------------------------------------------------------
-// next ENDE
 
-
-//
-// last
-// ----------------------------------------------------------------------------------------------------------------------------------
-//
 void C_MainWindow::last()
 {
     // next in event in tree
     int n = dataManager->getCurrentEntryNumber();
     if (n-1 >= 0) {
         dataManager->getEntry(n-1);
-        event = (GeantSim*) dataManager->getCategory(DataManager::CatGeantSim);
     }
 
     update();
 }
-// ----------------------------------------------------------------------------------------------------------------------------------
-// last ENDE
 
-
-//
-// update
-// ----------------------------------------------------------------------------------------------------------------------------------
-//
 void C_MainWindow::update()
 {
     // update an window-Klassen weitergeben
@@ -261,7 +201,6 @@ void C_MainWindow::update()
     QString s = "eventnumber ";
     s = s + QString::number(dataManager->getCurrentEntryNumber());
     m_Label2->setText(s);
-
 
     int n = dataManager->getCurrentEntryNumber();
 
@@ -278,16 +217,8 @@ void C_MainWindow::update()
     else {
         m_last->setEnabled(false);
     }
-
 }
-// ----------------------------------------------------------------------------------------------------------------------------------
-// update ENDE
 
-
-//
-// Destruktor
-// ----------------------------------------------------------------------------------------------------------------------------------
-//
 C_MainWindow::~C_MainWindow()
 {
     delete m_next;
@@ -304,5 +235,3 @@ C_MainWindow::~C_MainWindow()
     delete open;
 
 }
-// ----------------------------------------------------------------------------------------------------------------------------------
-// Destruktor ENDE

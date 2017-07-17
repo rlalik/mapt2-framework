@@ -18,7 +18,6 @@
 
 // simulation
 #include "B1DetectorConstruction.hh"
-#include "B1DetectorResponse.hh"
 #include "B1Config.hh"
 
 

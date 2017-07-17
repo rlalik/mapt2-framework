@@ -53,6 +53,10 @@ include(${QT_USE_FILE})
 add_definitions(${QT_DEFINITIONS})
 include_directories(${CMAKE_BINARY_DIR})
 
+link_directories(${PROJECT_SOURCE_DIR}/../lib)
+include_directories(${PROJECT_SOURCE_DIR}/../lib/base)
+include_directories(${PROJECT_SOURCE_DIR}/../lib/geant)
+
 # Next, using precompiler, compiler and linker
 
 # using Qt meta-system (precompiler)
@@ -66,6 +70,6 @@ add_executable(EventDisplay ${SOURCES} ${MOC_SRCS} ${RES_SOURCES} ${UI_HEADERS})
 #add_executable( PROJECT_NAME WIN32 ${SOURCES} ${MOC_SRCS} ${RES_SOURCES} ${UI_HEADERS} )
 
 # build it (link libraries)
-target_link_libraries(EventDisplay ${QT_LIBRARIES} Event Geometry)
+target_link_libraries(EventDisplay ${QT_LIBRARIES} Event MAPT GeantSim Geometry)
 
 install(TARGETS EventDisplay DESTINATION bin)

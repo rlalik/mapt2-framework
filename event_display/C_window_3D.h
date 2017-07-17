@@ -8,7 +8,7 @@
 // MAPT-framework
 #include "Hits30x30.h"
 
-class DataManager;
+class MDataManager;
 class GeantSim;
 
 class C_window_3D : public QMainWindow
@@ -16,7 +16,7 @@ class C_window_3D : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit C_window_3D(QWidget *parent = 0,DataManager * da=0);
+    explicit C_window_3D(QWidget *parent = 0,MDataManager * da=0);
     ~C_window_3D();
     void update();
 
@@ -32,7 +32,7 @@ private:
 
     C_view_3D* m_view3D;
 
-    DataManager* dataManager;
+    MDataManager* dataManager;
 
 protected:
 

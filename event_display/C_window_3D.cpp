@@ -1,13 +1,13 @@
 #include "C_window_3D.h"
 
-#include "DataManager.hh"
-#include "GeantSim.h"
+#include "MDataManager.h"
+#include "MGeantSim.h"
 
 //
 // Konstruktor
 // ----------------------------------------------------------------------------------------------------------------------------------
 //
-C_window_3D::C_window_3D(QWidget *parent, DataManager* da) :
+C_window_3D::C_window_3D(QWidget *parent, MDataManager* da) :
     QMainWindow(parent)
 
 {
@@ -53,15 +53,15 @@ C_window_3D::C_window_3D(QWidget *parent, DataManager* da) :
 //
 void C_window_3D::update()
 {
-    GeantSim * evt = (GeantSim*) dataManager->getCategory(DataManager::CatGeantSim);
-    if (evt)
+    MCategory * catGeantFibersRaw = dataManager->getCategory(MCategory::CatGeantFibersRaw);
+    if (catGeantFibersRaw)
     {
-        Hits30x30<Double_t> h = evt->getHits();
+        
         // Daten aus Datenklasse holen und in String schreiben. String dann im Label anzeigen lassen
-        QString s1 = "Active fibers: " + QString::number(evt->getHits().getNumberOfHits());
+        QString s1 = "Active fibers: " + QString::number(catGeantFibersRaw->getEntries());
         m_l1->setText(s1);
 
-        QString s3 = "Maximum value: " + QString::number(evt->getHits().getMaxValue());
+        QString s3 = "Maximum value: " + QString::number(catGeantFibersRaw->getEntries());    // FIXME
         m_l3->setText(s3);
     }
 

@@ -39,27 +39,19 @@
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-B1RunAction::B1RunAction(DataManager* root)
+B1RunAction::B1RunAction(MDataManager* root)
 : G4UserRunAction()
 {
   data_manager = root;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 B1RunAction::~B1RunAction()
 {}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 G4Run* B1RunAction::GenerateRun()
 {
   return new B1Run;
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void B1RunAction::BeginOfRunAction(const G4Run*)
 {
@@ -68,12 +60,10 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
 
   // root_manager creates file and tree for run
   data_manager->book();
-  data_manager->buildCategory(DataManager::CatGeantSim);
+  data_manager->buildCategory(MCategory::CatGeantTrack);
 
   printf("\nBegin of Run Action\n");
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void B1RunAction::EndOfRunAction(const G4Run* run)
 {
@@ -83,5 +73,3 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
   printf("\nEnd of Run Action\n");
 
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

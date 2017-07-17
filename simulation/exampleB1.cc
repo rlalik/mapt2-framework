@@ -30,7 +30,7 @@
 
 #include "B1DetectorConstruction.hh"
 #include "B1ActionInitialization.hh"
-#include "DataManager.hh"
+#include "MDataManager.h"
 #include "B1Config.hh"
 #include "B1PhysicsList.hh"
 
@@ -163,10 +163,12 @@ int main(int argc, char** argv)
   runManager->SetUserInitialization(detector_construction);
 
   // DataManager
-  DataManager* data_manager = new DataManager();
-  data_manager->setSaveFileName (config->Get_filename() );
-  data_manager->setSaveTreeName (config->Get_treename() );
-  data_manager->setSaveTreeTitle (config->Get_tree_title() );
+  MDataManager* data_manager = MDataManager::instance();
+  data_manager->setSimulation(true);
+
+  data_manager->setOutputFileName (config->Get_filename() );
+//   data_manager->setOutputTreeName ("M");
+//   data_manager->setOutputTreeTitle (config->Get_tree_title() );
 
   // Physics list
 

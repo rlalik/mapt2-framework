@@ -3,16 +3,12 @@
 #include <QDebug>
 
 // MAPT-framework
-#include "DataManager.hh"
-#include "B1Particle.hh"
+#include "MDataManager.h"
 #include "Hits30x30.h"
-#include "GeantSim.h"
+#include "MGeantFibersRaw.h"
+#include "MGeantSim.h"
 
-//
-// Konstruktor
-// ----------------------------------------------------------------------------------------------------------------------------------
-//
-C_view_3D::C_view_3D(QWidget *parent, DataManager* da) :
+C_view_3D::C_view_3D(QWidget *parent, MDataManager* da) :
     QGLWidget(parent)
 {
     geometry = new UserGeant4Geometry("geometry.txt",true);
@@ -62,11 +58,6 @@ C_view_3D::C_view_3D(QWidget *parent, DataManager* da) :
 
 }
 
-
-//
-// Konstruktor
-// ----------------------------------------------------------------------------------------------------------------------------------
-//
 void C_view_3D::initializeGL()
 {
     // Initialisierung der 3D Umgebung
@@ -79,14 +70,7 @@ void C_view_3D::initializeGL()
     shaderProgram.link();
 
 }
-// ----------------------------------------------------------------------------------------------------------------------------------
-// Konstruktor ENDE
 
-
-//
-// paintGL
-// ----------------------------------------------------------------------------------------------------------------------------------
-//
 void C_view_3D::paintGL()
 {
     // Vor dem Zeichnen alle Daten aktuallisieren
@@ -174,14 +158,7 @@ void C_view_3D::paintGL()
     shaderProgram.disableAttributeArray("color");
     shaderProgram.release();
 }
-// ----------------------------------------------------------------------------------------------------------------------------------
-// paintGL ENDE
 
-
-//
-// resizeGL
-// ----------------------------------------------------------------------------------------------------------------------------------
-//
 void C_view_3D::resizeGL(int w, int h)
 {
     // Perspektive bei Groessenaenderung des Fensters beibehalten
@@ -194,30 +171,16 @@ void C_view_3D::resizeGL(int w, int h)
     coordinates->move(0,height()-coordinates->height());
 
 }
-// ----------------------------------------------------------------------------------------------------------------------------------
-// resizeGL ENDE
 
+void C_view_3D::mousePressEvent(QMouseEvent *event_)
+{
+    // Position eintragen, an der Mouse gedrueckt wird.
+    lastPos = event_->pos();
+    event_->accept();
+}
 
-//
-// mousePressEvent
-// ----------------------------------------------------------------------------------------------------------------------------------
-//
- void C_view_3D::mousePressEvent(QMouseEvent *event_)
-  {
-     // Position eintragen, an der Mouse gedrueckt wird.
-     lastPos = event_->pos();
-     event_->accept();
-  }
-  // ----------------------------------------------------------------------------------------------------------------------------------
-  // mousePressEvent ENDE
-
-
-//
-// mouseMoveEvent
-// ----------------------------------------------------------------------------------------------------------------------------------
-//
- void C_view_3D::mouseMoveEvent(QMouseEvent *event_)
- {
+void C_view_3D::mouseMoveEvent(QMouseEvent *event_)
+{
      // Differenz zwischen Position an der Mouse gedrueckt wurde und aktueller Position
      int deltaX = event_->x() - lastPos.x();
      int deltaY = event_->y() - lastPos.y();
@@ -254,16 +217,9 @@ void C_view_3D::resizeGL(int w, int h)
 
      event_->accept();
  }
- // ----------------------------------------------------------------------------------------------------------------------------------
- // mouseMoveEvent ENDE
 
-
-//
-// wheelEvent
-// ----------------------------------------------------------------------------------------------------------------------------------
-//
- void C_view_3D::wheelEvent(QWheelEvent *event_)
- {
+void C_view_3D::wheelEvent(QWheelEvent *event_)
+{
     // Zoomen mit Mouserad
     int delta = event_->delta();
 
@@ -284,16 +240,8 @@ void C_view_3D::resizeGL(int w, int h)
          updateGL();
      }
      event_->accept();
- }
- // ----------------------------------------------------------------------------------------------------------------------------------
- // wheelEvent ENDE
+}
 
-
-
-//
-// update3D
-// ----------------------------------------------------------------------------------------------------------------------------------
-//
 void C_view_3D::update3D()
 {
     // Alle Listen leeren
@@ -304,18 +252,22 @@ void C_view_3D::update3D()
     end_point.clear();
     end_point_color.clear();
 
-    GeantSim* simEv = (GeantSim*) dataManager->getCategory(DataManager::CatGeantSim);
-    if (!simEv)
+    MCategory * catGeantTrack = dataManager->getCategory(MCategory::CatGeantTrack);
+    MCategory * catGeantFibersRaw = dataManager->getCategory(MCategory::CatGeantFibersRaw);
+
+    if (!catGeantTrack)
     {
         return;
     }
     else
     {
-        size_t secs_num = simEv->getTracksMult();
+        size_t secs_num = catGeantTrack->getEntries();
+        MLocator loc1(1);
 
         for (uint i = 0; i < secs_num; ++i)
         {
-            B1Particle* p = simEv->getTrack(i);
+            loc1[0] = i;
+            MGeantTrack * p = (MGeantTrack *)catGeantTrack->getObject(loc1);
 
             QVector3D sta(p->getStartPosition().X(), p->getStartPosition().Y(), p->getStartPosition().Z());
             QVector3D sto(p->getEndPosition().X(), p->getEndPosition().Y(), p->getEndPosition().Z());
@@ -354,39 +306,41 @@ void C_view_3D::update3D()
         }
 
         // Fiber einzeichnen
+        size_t fibers_num = catGeantFibersRaw->getEntries();
 
-        for (int y = 0; y < 30; ++y)
+        for (uint i = 0; i < secs_num; ++i)
         {
-            for (int x = 0; x < 30; ++x)
-            {
-                // set color
-                float color;
-                color = simEv->getHits().getValue(x,y)/20;
-                if (color >1)
-                    color = 1;
+            MGeantFibersRaw * p = (MGeantFibersRaw *)catGeantTrack->getObject(i);
 
-                // paint only hits
-                if (color != 0) {
-                    AbsPart* part = dynamic_cast<AbsPart*> (geometry->getFiber(x,y));
-                    std::vector<TVector3> verticesPart = part->getVertices();
-                    std::vector<std::vector<int> > trianglesPart =part->getTriangles();
+            int y = p->getY();
+            int x = p->getX();
 
-                    // for each triangle
-                    // for(int tri=0;tri<part->getNumberTriangle();tri++)
-                    for(int tri=0;tri<trianglesPart.size();tri++) {
-                        // for each vertex
-                        for (int i=0;i<trianglesPart[tri].size();i++) {
-                            int num = trianglesPart[tri].at(i);
-                            TVector3 vec = verticesPart[num];
-                            fibers << QVector3D(vec.X(),vec.Y(),vec.Z());
-                            if (color != 0)
-                                color_fibers << QVector4D(color,1-color,0,0.9);
-                            else
-                                color_fibers << QVector4D(1,1,1,0.01);
-                        }
+            // set color
+            float color;
+            color = p->getEnergy()/20.0;
+            if (color >1)
+                color = 1;
+
+            // paint only hits
+            if (color != 0) {
+                AbsPart* part = dynamic_cast<AbsPart*> (geometry->getFiber(x,y));
+                std::vector<TVector3> verticesPart = part->getVertices();
+                std::vector<std::vector<int> > trianglesPart =part->getTriangles();
+
+                // for each triangle
+                // for(int tri=0;tri<part->getNumberTriangle();tri++)
+                for(int tri=0;tri<trianglesPart.size();tri++) {
+                    // for each vertex
+                    for (int i=0;i<trianglesPart[tri].size();i++) {
+                        int num = trianglesPart[tri].at(i);
+                        TVector3 vec = verticesPart[num];
+                        fibers << QVector3D(vec.X(),vec.Y(),vec.Z());
+                        if (color != 0)
+                            color_fibers << QVector4D(color,1-color,0,0.9);
+                        else
+                            color_fibers << QVector4D(1,1,1,0.01);
                     }
                 }
-
             }
         }
     }

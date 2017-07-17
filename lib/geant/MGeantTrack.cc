@@ -1,14 +1,14 @@
-#include "B1Particle.hh"
+#include "MGeantTrack.h"
 
 // Needed for Creation of shared libs
-ClassImp(B1Particle);
+ClassImp(MGeantTrack);
 
-B1Particle::B1Particle()
+MGeantTrack::MGeantTrack()
 {
     clear();
 }
 
-void B1Particle::clear()
+void MGeantTrack::clear()
 {
     TVector3 p(0,0,0);
     
@@ -30,7 +30,7 @@ void B1Particle::clear()
     proc_arr[ATREST]                    = kFALSE;
 }
 
-void B1Particle::random()
+void MGeantTrack::random()
 {
     
     Double_t x = getRandomNumber()*10;
@@ -55,29 +55,29 @@ void B1Particle::random()
     proc_arr[ATREST]                    = kFALSE;
 }
 
-Double_t B1Particle::getRandomNumber()
+Double_t MGeantTrack::getRandomNumber()
 {
     return randGen.Rndm();
 }
 
-void B1Particle::addProcess(string name)
+void MGeantTrack::addProcess(string name)
 {
     processes.push_back(name);
 }
 
 
-void B1Particle::addDaughterID(Int_t ID)
+void MGeantTrack::addDaughterID(Int_t ID)
 {
     secondariesID.push_back(ID);
 }
 
-Double_t B1Particle::getDistance() const
+Double_t MGeantTrack::getDistance() const
 {
     TVector3 end_ = endPosition - TVector3(0, 36, 0);
     return end_.Mag();
 }
 
-Double_t B1Particle::getRange() const
+Double_t MGeantTrack::getRange() const
 {
     if (!stopInDetector)
         return -100.;
@@ -109,7 +109,7 @@ Double_t B1Particle::getRange() const
     return (intsec - end).Mag();
 }
 
-void B1Particle::print() const
+void MGeantTrack::print() const
 {
     printf("##### particle #####\n");
     printf("  pos sta=(%f,%f,%f)  sto=(%f,%f,%f)\n", startPosition.X(), startPosition.Y(), startPosition.Z(),

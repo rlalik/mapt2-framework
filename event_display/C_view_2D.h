@@ -6,7 +6,7 @@
 #include <QWidget>
 
 // MAPT Framework
-#include "DataManager.hh"
+#include "MDataManager.h"
 
 class C_view_2D : public QWidget
 {
@@ -14,7 +14,7 @@ class C_view_2D : public QWidget
 public:
     enum PLANE { XZ, YZ };
 
-    explicit C_view_2D(PLANE plane, QWidget *parent = 0, DataManager* d = 0);
+    explicit C_view_2D(PLANE plane, QWidget *parent = 0, MDataManager* d = 0);
     ~C_view_2D();
 
 private:
@@ -22,7 +22,7 @@ private:
     int m_mouse_x;
     int m_mouse_y;
 
-    DataManager* dataManager;
+    MDataManager* dataManager;
 
     float m_breite;             // Breite eines Kaestchens. Festgelegt durch Fenstergroesse, Abstand zum Fensterrand.
     float m_hoehe;              // Hoehe eines Kaestchens. Festgelegt durch Fenstergroesse, Abstand zum Fensterrand.

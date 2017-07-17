@@ -3,12 +3,14 @@
 #include "G4OpticalPhoton.hh"
 
 #include "B1TrackingAction.hh"
+#include "B1EventAction.hh"
 
-#include <DataManager.hh>
-#include <GeantSim.h>
-#include <B1Particle.hh>
+#include <MDataManager.h>
+#include <MGeantTrack.h>
+#include <MGeantFibersRaw.h>
 
-B1TrackingAction::B1TrackingAction(DataManager* root, B1DetectorConstruction* det)
+B1TrackingAction::B1TrackingAction(B1EventAction* eventAction, MDataManager* root, B1DetectorConstruction* det) :
+    G4UserTrackingAction(), fEventAction(eventAction)
 {
     data_manager = root;
     detector_construction  = det;
@@ -16,13 +18,10 @@ B1TrackingAction::B1TrackingAction(DataManager* root, B1DetectorConstruction* de
 
 void B1TrackingAction::PreUserTrackingAction(const G4Track* track)
 {
-    // Get pointer to current event
-    current_event = (GeantSim*) data_manager->getCategory(DataManager::CatGeantSim);
-    
     // Get ID of current track
     int track_ID = track->GetTrackID();
 
-    current_particle = new B1Particle;
+    current_particle = new MGeantTrack;
     current_particle->setTrackID(track_ID);
 
     if( track_ID  == 1)  // primary
@@ -40,7 +39,7 @@ void B1TrackingAction::PreUserTrackingAction(const G4Track* track)
     current_particle->setParentID(track->GetParentID());
 
     // current particle is secondary. Add a secondary to event
-    current_event->addTrack(current_particle);
+    fEventAction->addTrack(current_particle);
     
     // Optical Photons
     // decide if particle is an optic photon
@@ -62,15 +61,29 @@ void B1TrackingAction::PreUserTrackingAction(const G4Track* track)
         CADFiber* fiber;
         if (fiber = dynamic_cast<CADFiber*> (part))
         {
-            B1DetectorResponse & detector_response = current_particle->getDetectorResponse();
+            MCategory * catGeantFibersRaw = data_manager->getCategory(MCategory::CatGeantFibersRaw);
             int x_fiber = fiber->getFiberX();
             int y_fiber = fiber->getFiberY();
-            detector_response.setPhotons(x_fiber,y_fiber,1);
+            MLocator loc(3);
+            loc[0] = 0;
+            loc[1] = y_fiber;
+            loc[2] = x_fiber;
+
+            MGeantFibersRaw * detector_response = (MGeantFibersRaw *) catGeantFibersRaw->getObject(loc);
+            if (!detector_response)
+            {
+                detector_response = (MGeantFibersRaw *) catGeantFibersRaw->getSlot(loc);
+                detector_response = new (detector_response) MGeantFibersRaw;
+                detector_response->setX(x_fiber);
+                detector_response->setY(y_fiber);
+            }
+
+            detector_response->setPhotons(1);
         }
         
         ((G4Track*)track)->SetTrackStatus(fStopAndKill);
     }
-    
+
     // Fill the current particle with information
     // start position
     G4ThreeVector start_position = track->GetPosition();

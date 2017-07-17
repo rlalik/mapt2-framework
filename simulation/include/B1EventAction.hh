@@ -29,29 +29,34 @@
 /// \brief Definition of the B1EventAction class
 
 #ifndef B1EventAction_h
-#define B1EventAction_h 1
+#define B1EventAction_h
 
 #include "G4UserEventAction.hh"
 #include "globals.hh"
-#include "B1DetectorResponse.hh"
 
-class DataManager;
+#include "MGeantTrack.h"
+
+class MDataManager;
 
 /// Event action class
 ///
-
 class B1EventAction : public G4UserEventAction
 {
-  public:
-    B1EventAction(DataManager* root);
-    virtual ~B1EventAction() {}
+public:
+    B1EventAction(MDataManager* root);
+    virtual ~B1EventAction();
 
     virtual void BeginOfEventAction(const G4Event* event);
     virtual void EndOfEventAction(const G4Event* event);
 
+    void addTrack(MGeantTrack* p) { tracks.push_back(p); }
+    MGeantTrack* getTrack(Int_t track_num) const;
+    int getTracksMult() const { return tracks.size(); }
+    MGeantTrack * getParticle(int trackID) const;
 
-  private:
-    DataManager* data_manager;
+private:
+    MDataManager* data_manager;
+    std::vector<MGeantTrack*> tracks;    //  not working to read from tree of simulated data
 };
 
 #endif

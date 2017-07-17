@@ -1,10 +1,10 @@
 #include "C_view_2D.h"
 #include <QtGui>
 
-#include "GeantSim.h"
-#include "Hits30x30.h"
+#include "MGeantTrack.h"
+#include "MGeantFibersRaw.h"
 
-C_view_2D::C_view_2D(PLANE plane, QWidget *parent, DataManager *d) :
+C_view_2D::C_view_2D(PLANE plane, QWidget *parent, MDataManager *d) :
     QWidget(parent), pl(plane)
 {
     dataManager = d;
@@ -45,8 +45,9 @@ C_view_2D::C_view_2D(PLANE plane, QWidget *parent, DataManager *d) :
 
 void C_view_2D::paintEvent(QPaintEvent *)
 {
-    GeantSim * simEvt = (GeantSim*) dataManager->getCategory(DataManager::CatGeantSim);
-    if (!simEvt)
+    MCategory * catGeantTrack = dataManager->getCategory(MCategory::CatGeantTrack);
+    MCategory * catGeantFibersRaw = dataManager->getCategory(MCategory::CatGeantFibersRaw);
+    if (!catGeantTrack)
         return;
 
     // Painter anlegen
@@ -98,8 +99,8 @@ void C_view_2D::paintEvent(QPaintEvent *)
 
     if ((fiber_x != -1) && (fiber_y != -1))     // Mouse ueber einem Kaestchen -> Position und Wert in s
     {
-        s = u_lab + "position: " + QString::number(fiber_x) +"\n" + v_lab + " position: " + QString::number(fiber_y)
-           +"\nvalue: "  + QString::number(simEvt->getHits().getValue(fiber_x,fiber_y));
+//         s = u_lab + "position: " + QString::number(fiber_x) +"\n" + v_lab + " position: " + QString::number(fiber_y) FIXME
+//            +"\nvalue: "  + QString::number(simEvt->getHits().getValue(fiber_x,fiber_y));
     }
 
     else                                        // Mouse nicht ueber einem Kaestchen
@@ -123,10 +124,10 @@ void C_view_2D::paintEvent(QPaintEvent *)
             switch (pl)
             {
                 case XZ:
-                    color = simEvt->getHits().getXYValue(x,y)/normfactor;
+//                     color = simEvt->getHits().getXYValue(x,y)/normfactor;    FIXME
                     break;
                 case YZ:
-                    color = simEvt->getHits().getZYValue(x,y)/normfactor;
+//                     color = simEvt->getHits().getZYValue(x,y)/normfactor;    FIXME
                     break;
                 default:
                     break;

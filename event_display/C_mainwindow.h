@@ -1,9 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-
-
-
 #include <QMainWindow>
 #include <QtGui>
 #include <QMessageBox>
@@ -11,8 +8,8 @@
 #include "C_window_2D.h"
 
 // MAPT Framework
-class DataManager;
-class GeantSim;
+class MDataManager;
+class MGeantSim;
 
 
 class QPushButton;
@@ -32,8 +29,9 @@ public:
     void openFile(const QString & fn);
 
 private:
-    DataManager* dataManager;
-    GeantSim* event;
+    MDataManager* dataManager;
+//     MCategory * catGeantTrack;
+//     MCategory * catGeantFibersRaw;
 
     QPushButton* m_next;
     QPushButton* m_last;

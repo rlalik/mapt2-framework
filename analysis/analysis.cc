@@ -18,11 +18,13 @@
 
 // MAPT-Analysis framework includes
 #include "Hits30x30.h"
-#include "GeantSim.h"
+#include "MGeantSim.h"
 #include "AnalysisData.h"
-#include "B1Particle.hh"
-#include "B1DetectorResponse.hh"
-#include "DataManager.hh"
+
+#include "MGeantFibersRaw.h"
+#include "MGeantTrack.h"
+
+#include "MDataManager.h"
 
 using namespace std;
 
@@ -35,64 +37,14 @@ int analysis(const std::string & file, int events = 1000)
     else
         oname.Append("_ana.root");
 
-    DataManager dataManager;
-    dataManager.setOpenTreeName("TreeName");
-    dataManager.open(file);
-    dataManager.openCategory(DataManager::CatGeantSim);
-    dataManager.book(oname.Data());
-
-    // // load data from root
-    // // create string with file path
-	// string path = "/nfs/hicran/project/e18sat/analysis/newGeometry/PENGeometry/analysis/preselectedDataSets/selectedIsoEvents50MeV.root";
-	// // load root event files
-	// TFile *f = TFile::Open(path.c_str());
-	// if (f == 0){
-	// 	printf("Error: cannot open ROOT file");
-	// 	return -1;
-	// }
-	// TTree *tree = (TTree*) f->Get("TreeName");
-	// B1DetectorResponse *response = new B1DetectorResponse();
-	// B1Particle* incoming = 0;
-	// tree->GetBranch("DetectorResponse")->SetAddress(&response);
-	// tree->GetBranch("Incoming_Particle")->SetAddress(&incoming);
-
-
-    // DataManager dataManager;
-
-    // WRITE EVENTS
-
-    // dataManager.book("testing.root");
-    //
-    // for (int i=0;i<400;i++)
-    // {
-    //     // get tree data
-    //     tree->GetEntry(i);
-    //
-    //     Event* event = dataManager.getEvent();
-    //
-    //     event->setHits(response->energy_deposition);
-    //     event->getSimulatedEvent()->setPrimary(incoming);
-    //     event->getSimulatedEvent()->setDetectorResponse(response);
-    //
-    //     for (int i=0; i<1000;i++){
-    //         event->getFitData()->fill(i,i,i,i,i,i,i);
-    //     }
-    //
-    //     dataManager.fill();
-    // }
-    //
-    // dataManager.save();
-
-
-    // OPEN EVENTS
-
-    // dataManager.open("testing.root");
-    // int entries = dataManager.getEntriesFast();
-    // dataManager.getEntry(302);
-    // std::cout << entries << "\n";
-    //
-    // dataManager.getEvent()->getHits()->print();
-    // dataManager.getEvent()->getSimulatedEvent()->getPrimary()->Get_start_direction().Print();
+    MDataManager * dataManager = MDataManager::instance();
+    dataManager->setSimulation(true);
+    dataManager->setInputFileName(file);
+    dataManager->open();
+    dataManager->openCategory(MCategory::CatGeantTrack);
+    dataManager->openCategory(MCategory::CatGeantFibersRaw);
+    dataManager->setOutputFileName(oname.Data());
+    dataManager->book();
 
     TH1I * h_pi_mult = new TH1I("h_pi_mult", "h_pi_mult", 20, 0, 20);
     TH1I * h_pim_mult = new TH1I("h_pim_mult", "h_pim_mult", 10, 0, 10);
@@ -111,103 +63,124 @@ int analysis(const std::string & file, int events = 1000)
     TH1I * h_range = new TH1I("h_range", "h_range", 220, 0, 110);
     TH1I * h_distance = new TH1I("h_distance", "h_distance", 200, 0, 100);
 
-    int ev_limit = events < dataManager.getEntriesFast() ? events : dataManager.getEntriesFast();
-    std::cout << dataManager.getEntriesFast() << " events, analyze " << ev_limit << std::endl;
+    int ev_limit = events < dataManager->getEntriesFast() ? events : dataManager->getEntriesFast();
+    std::cout << dataManager->getEntriesFast() << " events, analyze " << ev_limit << std::endl;
 
     int secs = 0;
     for (int i=0 ; i < ev_limit; ++i)
     {
-        dataManager.getEntry(i);
-        GeantSim * event = (GeantSim*) dataManager.getCategory(DataManager::CatGeantSim);
-        if (!event)
+        dataManager->getEntry(i);
+        MCategory * catGeantTrack = dataManager->getCategory(MCategory::CatGeantTrack);
+        if (!catGeantTrack)
         {
             std::cerr << "event NULL" << "\n";
             return -1;
         }
 //         std::cout << event->getSimulatedEvent()->getPrimary()->Get_stop_in_detector() << "\n";
 //         event->getSimulatedEvent()->getPrimary()->print();
-        if (event->getTracksMult() == 0)
+
+        size_t tracks_num = catGeantTrack->getEntries();
+        if (tracks_num == 0)
             continue;
+
+        MCategory * catGeantFibersRaw = dataManager->getCategory(MCategory::CatGeantFibersRaw);
+        if (!catGeantFibersRaw)
+        {
+            std::cerr << "event NULL" << "\n";
+            return -1;
+        }
 
         h_acc->Fill(0);
 
-        B1Particle * prim = event->getTrack(1);
-        if (prim->getInAcceptance())
-            h_acc->Fill(1);
-        if (prim->getStopInDetector())
+        MLocator loc_track(1);
+        int sec_num = tracks_num - 1;
+        bool prim_stop_in_det = false;
+
+        for (int t = 0; t < tracks_num; ++t)
         {
-            h_acc->Fill(2);
-            h_range->Fill(prim->getRange());
-            h_distance->Fill(prim->getDistance());
-        }
+            loc_track[0] = t;
+            MGeantTrack * track = (MGeantTrack*) catGeantTrack->getObject(loc_track);
 
-        int sec_num = event->getTracksMult() - 1;
-
-        int pim_mult = 0;
-        int pip_mult = 0;
-        int piz_mult = 0;
-        int pic_mult = 0;
-        int pim_mult_1stgen = 0;
-        int pip_mult_1stgen = 0;
-        int piz_mult_1stgen = 0;
-        int pic_mult_1stgen = 0;
-
-        if (prim->getStopInDetector())
-        {
-//             std::cout << "Number of secs: "<< event->getSimulatedEvent()->getSecondaries().size() << "\n\n";
-            secs += sec_num;
-
-            for (int i = 0; i < sec_num; ++i)
+            if (track->getTrackID() == 1)
             {
-                B1Particle * s = event->getTrack(1+i);
+                if (track->getInAcceptance())
+                    h_acc->Fill(1);
+                if (track->getStopInDetector())
+                {
+                    h_acc->Fill(2);
+                    h_range->Fill(track->getRange());
+                    h_distance->Fill(track->getDistance());
+                }
 
-                if (s->isPim())
-                {
-                    ++pim_mult;
-                    ++pic_mult;
-                }
-                else if (s->isPip())
-                {
-                    ++pip_mult;
-                    ++pic_mult;
-                }
-                else if (s->isPiz())
-                    ++piz_mult;
-
-                if (s->getParentID() == 1)
-                {
-                    if (s->isPim())
-                    {
-                        ++pim_mult_1stgen;
-                        ++pic_mult_1stgen;
-                    }
-                    else if (s->isPip())
-                    {
-                        ++pip_mult_1stgen;
-                        ++pic_mult_1stgen;
-                    }
-                    else if (s->isPiz())
-                        ++piz_mult_1stgen;
-                }
+                prim_stop_in_det = track->getStopInDetector();
+                // nothing more to do for primary track
+                continue;
             }
 
-            Int_t pi_all = pim_mult + pim_mult + piz_mult;
-            h_pi_mult->Fill(pi_all);
-            h_pim_mult->Fill(pim_mult);
-            h_pip_mult->Fill(pip_mult);
-            h_piz_mult->Fill(piz_mult);
-            h_pic_mult->Fill(pic_mult);
+            int pim_mult = 0;
+            int pip_mult = 0;
+            int piz_mult = 0;
+            int pic_mult = 0;
+            int pim_mult_1stgen = 0;
+            int pip_mult_1stgen = 0;
+            int piz_mult_1stgen = 0;
+            int pic_mult_1stgen = 0;
 
-            Int_t pi_all_1stgen = pim_mult_1stgen + pim_mult_1stgen + piz_mult_1stgen;
-            h_pi_mult_1stgen->Fill(pi_all_1stgen);
-            h_pim_mult_1stgen->Fill(pim_mult_1stgen);
-            h_pip_mult_1stgen->Fill(pip_mult_1stgen);
-            h_piz_mult_1stgen->Fill(piz_mult_1stgen);
-            h_pic_mult_1stgen->Fill(pic_mult_1stgen);
+            if (prim_stop_in_det)
+            {
+//                 std::cout << "Number of secs: "<< event->getSimulatedEvent()->getSecondaries().size() << "\n\n";
+                secs += sec_num;
+
+                for (int i = 0; i < sec_num; ++i)
+                {
+                    if (track->isPim())
+                    {
+                        ++pim_mult;
+                        ++pic_mult;
+                    }
+                    else if (track->isPip())
+                    {
+                        ++pip_mult;
+                        ++pic_mult;
+                    }
+                    else if (track->isPiz())
+                        ++piz_mult;
+
+                    if (track->getParentID() == 1)
+                    {
+                        if (track->isPim())
+                        {
+                            ++pim_mult_1stgen;
+                            ++pic_mult_1stgen;
+                        }
+                        else if (track->isPip())
+                        {
+                            ++pip_mult_1stgen;
+                            ++pic_mult_1stgen;
+                        }
+                        else if (track->isPiz())
+                            ++piz_mult_1stgen;
+                    }
+                }
+
+                Int_t pi_all = pim_mult + pim_mult + piz_mult;
+                h_pi_mult->Fill(pi_all);
+                h_pim_mult->Fill(pim_mult);
+                h_pip_mult->Fill(pip_mult);
+                h_piz_mult->Fill(piz_mult);
+                h_pic_mult->Fill(pic_mult);
+
+                Int_t pi_all_1stgen = pim_mult_1stgen + pim_mult_1stgen + piz_mult_1stgen;
+                h_pi_mult_1stgen->Fill(pi_all_1stgen);
+                h_pim_mult_1stgen->Fill(pim_mult_1stgen);
+                h_pip_mult_1stgen->Fill(pip_mult_1stgen);
+                h_piz_mult_1stgen->Fill(piz_mult_1stgen);
+                h_pic_mult_1stgen->Fill(pic_mult_1stgen);
+            }
         }
 
-        if (prim->getStopInDetector())
-            dataManager.fill();
+        if (prim_stop_in_det)
+            dataManager->fill();
     }
 
 //     dataManager.save();
@@ -231,7 +204,7 @@ int analysis(const std::string & file, int events = 1000)
     h_range->Write();
     h_distance->Write();
 
-    dataManager.save();
+    dataManager->save();
 
     return 0;
 }

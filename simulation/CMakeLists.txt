@@ -23,8 +23,9 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 
 
 # Link directories for libEvent.so
-link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../sharedLibraries)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../sharedLibraries)
+link_directories(${PROJECT_SOURCE_DIR}/../lib)
+include_directories(${PROJECT_SOURCE_DIR}/../lib/base)
+include_directories(${PROJECT_SOURCE_DIR}/../lib/geant)
 
 # Link directories for libgeometry.so
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../geometry/build)
@@ -35,7 +36,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../geometry/include)
 # Add the executable, and link it to the libraries
 #
 add_executable(exampleB1 exampleB1.cc ${sources} ${headers})
-target_link_libraries(exampleB1 ${Geant4_LIBRARIES} ${cadmesh_LIBRARIES} ${ROOT_LIBRARIES} Event Geometry)
+target_link_libraries(exampleB1 ${Geant4_LIBRARIES} ${cadmesh_LIBRARIES} ${ROOT_LIBRARIES} MAPT GeantSim Event Geometry)
 
 add_subdirectory(example)
 

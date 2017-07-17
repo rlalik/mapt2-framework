@@ -5,28 +5,31 @@ using namespace std;
 
 #include <string>
 #include <fstream>
+#include <map>
 
 #include "TROOT.h"
 #include "TFile.h"
 #include "TTree.h"
 
-class Category;
-class GeantSim;
+#include "MCategory.h"
 
 //! \brief Access point to load, read and write data.
 /*!
-  The DataManager is responsible to manage all data operations. It loads a root
+  The MDataManager is responsible to manage all data operations. It loads a root
   tree from specified file.
 */
-class DataManager: public TObject
+class MDataManager: public TObject
 {
-public:
+private:
     //! \brief Constructor.
-    DataManager();
-    virtual ~DataManager() {};
+    MDataManager();
+    MDataManager(MDataManager const &) {}
+    MDataManager & operator=(MDataManager const &) {}
 
-    //! \brief Creates a new file at the provided path and creates an empty root tree with Event objects as leafs.
-    bool book(string path);
+public:
+    static MDataManager * instance();
+
+    virtual ~MDataManager() {};
 
     //! \brief Creates a new file and an empty root tree with Event objects as leafs.
     bool book();
@@ -38,7 +41,7 @@ public:
     bool fill();
 
     //! \brief Opens a file and loads the root tree.
-    bool open(string path);
+    bool open();
 
     //! \brief Reads entry i of the current tree. The event attribute is filled with the event information saved in tree entry i.
     void getEntry(int i);
@@ -46,52 +49,55 @@ public:
     //! \brief Returns number of entries in the current tree.
     int getEntriesFast();
 
-    enum Cat { CatGeantSim, CatData, CatFilter };
-    bool buildCategory(Cat cat);
-    Category * getCategory(Cat cat);
+    void setSimulation(bool simulation) { sim = simulation; }
 
-    bool openCategory(Cat cat);
+    bool buildCategory(MCategory::Cat cat);
+    MCategory *& getCategory(MCategory::Cat cat);
+    MCategory *& openCategory(MCategory::Cat cat);
 
-    void setSaveFileName(string s) { saveFileName = s; }
-    void setSaveTreeName(string s) { saveTreeName = s; }
-    void setSaveTreeTitle(string s) { saveTreeTitle = s; }
-    void setOpenFileName(string s) { openFileName = s; }
-    void setOpenTreeName(string s) { openTreeName = s; }
-    void setOpenTreeTitle(string s) { openTreeTitle = s; }
+    void setOutputFileName(string s) { outputFileName = s; }
+    void setOutputTreeName(string s) { outputTreeName = s; }
+    void setOutputTreeTitle(string s) { outputTreeTitle = s; }
+    void setInputFileName(string s) { inputFileName = s; }
+    void setInputTreeName(string s) { inputTreeName = s; }
+    void setInputTreeTitle(string s) { inputTreeTitle = s; }
 
     int getCurrentEntryNumber() { return currentEntry; }
     int getNumberOfEntries() { return numberOfEntries; }
 
     //! \brief Needed for creation of shared library
-    ClassDef(DataManager, 2);
+    ClassDef(MDataManager, 1);
 
 private:
     // file and tree to save the events
-    TFile* saveFile;
+    TFile* outputFile;
     //! \brief The save tree.
-    TTree* saveTree;
-    string saveTreeTitle;
-    string saveTreeName;
-    string saveFileName;
+    TTree* outputTree;
+    string outputTreeTitle;
+    string outputTreeName;
+    string outputFileName;
 
     // for opening a file with an event tree
-    TFile* openFile;
+    TFile* inputFile;
     //! \brief The open tree.
-    TTree* openTree;
-    string openTreeTitle;
-    string openTreeName;
-    string openFileName;
+    TTree* inputTree;
+    string inputTreeTitle;
+    string inputTreeName;
+    string inputFileName;
     int numberOfEntries;
     int currentEntry;
 
     //! \brief The currently loaded event instance.
     /*!
         This variable represents the current event. It is filled with the event
-        information from the opening tree entry. Calling DataManager::fill writes
+        information from the opening tree entry. Calling MDataManager::fill writes
         this instance to the save tree.
     */
 
-    GeantSim * geant_sim;
+    typedef std::map<MCategory::Cat, MCategory *> CatMap;
+    CatMap categories;
+    static MDataManager * dm;
+    bool sim;
 };
 
 #endif /* DATAMANAGER_H */

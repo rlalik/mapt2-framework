@@ -38,18 +38,13 @@
 #include "G4OpticalPhoton.hh"
 #include "G4EmCalculator.hh"
 
-#include "DataManager.hh"
-#include "B1Particle.hh"
-#include "GeantSim.h"
-#include "B1DetectorResponse.hh"
+#include "MDataManager.h"
+#include "MGeantTrack.h"
+#include "MGeantFibersRaw.h"
 
-B1SteppingAction::B1SteppingAction(B1EventAction* eventAction, DataManager* root, B1DetectorConstruction* det, double kB_)
-: G4UserSteppingAction(),
-fEventAction(eventAction)
+B1SteppingAction::B1SteppingAction(B1EventAction* eventAction, MDataManager* root, B1DetectorConstruction* det, double kB_)
+: G4UserSteppingAction(), data_manager(root), detector_construction(det), kB(kB_), fEventAction(eventAction)
 {
-    data_manager = root;
-    detector_construction  = det;
-    kB = kB_;
 }
 
 B1SteppingAction::~B1SteppingAction()
@@ -70,9 +65,8 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
         return;
 
     // get the current_particle and the current event
-    current_event = (GeantSim*) data_manager->getCategory(DataManager::CatGeantSim);
     int track_ID = step->GetTrack()->GetTrackID();
-    current_particle = current_event->getParticle(track_ID);
+    current_particle = fEventAction->getParticle(track_ID);
 
     // particle passed the detector
     current_particle->setInAcceptance(true);
@@ -83,17 +77,17 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
     if (process == "compt")
     {
         current_particle->addProcess(process);
-        current_particle->setProcess(B1Particle::COMPTON);
+        current_particle->setProcess(MGeantTrack::COMPTON);
     }
     else if(process == "anti_protonInelastic") // empty example -> insert another important process name here
     {
         current_particle->addProcess(process);
-        current_particle->setProcess(B1Particle::INELASTIC);
+        current_particle->setProcess(MGeantTrack::INELASTIC);
     }
     else if(process == "hFritiofCaptureAtRest") // empty example -> insert another important process name here
     {
         current_particle->addProcess(process);
-        current_particle->setProcess(B1Particle::ATREST);
+        current_particle->setProcess(MGeantTrack::ATREST);
     }
     else if(process == "StepLimiter")
     {
@@ -118,24 +112,38 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
     CADFiber* fiber;
     if (fiber = dynamic_cast<CADFiber*> (part))
     {
-        B1DetectorResponse & detector_response = current_particle->getDetectorResponse();
+        MCategory * catGeantFibersRaw = data_manager->getCategory(MCategory::CatGeantFibersRaw);
         int x_fiber = fiber->getFiberX();
         int y_fiber = fiber->getFiberY();
+        MLocator loc(3);
+        loc[0] = 0;
+        loc[1] = y_fiber;
+        loc[2] = x_fiber;
+
+        MGeantFibersRaw * detector_response = (MGeantFibersRaw *) catGeantFibersRaw->getObject(loc);
+        if (!detector_response)
+        {
+            detector_response = (MGeantFibersRaw *) catGeantFibersRaw->getSlot(loc);
+            detector_response = new (detector_response) MGeantFibersRaw;
+            detector_response->setX(x_fiber);
+            detector_response->setY(y_fiber);
+        }
+        
         G4double energy_step = step->GetTotalEnergyDeposit() - step->GetNonIonizingEnergyDeposit (); //take here only ionization energy loss
         // formular for  quenching
         double energy_step_quenching =  calculate_quenched_energy(step, kB, energy_step);
         
-        if (detector_response.getEnergy(x_fiber, y_fiber) == 0 && energy_step > 0)
+        if (detector_response->getEnergy() == 0 && energy_step > 0)
         {
-            if (y_fiber % 2 == 0)
-                detector_response.addFiberHitX();
-            else
-                detector_response.addFiberHitZ();
+//             if (y_fiber % 2 == 0)
+//                 detector_response->addFiberHitX();
+//             else
+//                 detector_response->addFiberHitZ();
         }
         
-        detector_response.setEnergy(x_fiber,y_fiber, energy_step);
-        detector_response.setEnergyQuenching(x_fiber,y_fiber, energy_step_quenching);
-        detector_response.setTotalEnergy(energy_step);
+        detector_response->setEnergy(energy_step);
+        detector_response->setEnergyQuenching(energy_step_quenching);
+        detector_response->setTotalEnergy(energy_step);
     }
 }
 

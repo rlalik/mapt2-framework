@@ -39,9 +39,9 @@
 #include "B1DetectorConstruction.hh"
 
 // shared libraries Event.so
-class B1Particle;
-class DataManager;
-class GeantSim;
+class MDataManager;
+class MCategory;
+class MGeantTrack;
 
 // geometry shared library geometry.so
 #include <AbsPart.h>
@@ -58,19 +58,18 @@ class G4LogicalVolume;
 class B1SteppingAction : public G4UserSteppingAction
 {
   public:
-    B1SteppingAction(B1EventAction* eventAction, DataManager* root, B1DetectorConstruction* det,double kB_);
+    B1SteppingAction(B1EventAction* eventAction, MDataManager* root, B1DetectorConstruction* det,double kB_);
     virtual ~B1SteppingAction();
 
     // method from the base class
     virtual void UserSteppingAction(const G4Step*);
 
   private:
-    B1EventAction*  fEventAction;
-    DataManager* data_manager;
-    GeantSim* current_event;
-    B1Particle* current_particle;
-    B1DetectorConstruction* detector_construction;
+    MGeantTrack* current_particle;
 
+    B1EventAction*  fEventAction;
+    MDataManager* data_manager;
+    B1DetectorConstruction* detector_construction;
     double kB;
 };
 

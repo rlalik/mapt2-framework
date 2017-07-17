@@ -18,14 +18,13 @@
 #include <vector>
 #include <TVector3.h>
 
-class DataManager;
-class Event;
+class MDataManager;
 
 class C_view_3D : public QGLWidget
 {
     Q_OBJECT
 public:
-    explicit C_view_3D(QWidget *parent = 0, DataManager* da = 0);
+    explicit C_view_3D(QWidget *parent = 0, MDataManager* da = 0);
     ~C_view_3D();
 
     void initializeGL();
@@ -43,8 +42,7 @@ private:
     int beta;
     double distance;
 
-    DataManager* dataManager;
-    Event* event;
+    MDataManager* dataManager;
 
     C_view_coordinatesystem* coordinates;
 

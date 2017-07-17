@@ -28,19 +28,29 @@
 /// \file B1EventAction.cc
 /// \brief Implementation of the B1EventAction class
 
+#include <iostream>
+
 #include "B1EventAction.hh"
 #include "B1Run.hh"
 
 #include "G4Event.hh"
 #include "G4RunManager.hh"
 
-#include "DataManager.hh"
-#include "GeantSim.h"
+#include "MDataManager.h"
+#include "MGeantTrack.h"
 
-B1EventAction::B1EventAction(DataManager* root)
+B1EventAction::B1EventAction(MDataManager* root)
 : G4UserEventAction()
 {
     data_manager = root;
+}
+
+B1EventAction::~B1EventAction()
+{
+    for (int i = 0; i < tracks.size(); ++i)
+    {
+        delete tracks[i];
+    }
 }
 
 void B1EventAction::BeginOfEventAction(const G4Event* evt)
@@ -52,7 +62,39 @@ void B1EventAction::BeginOfEventAction(const G4Event* evt)
 void B1EventAction::EndOfEventAction(const G4Event*)
 {
     // fill tree with data acquired from current event
-    GeantSim* event = (GeantSim*) data_manager->getCategory(DataManager::CatGeantSim);
-    event->calcHits();
+    MCategory * catGeantTrack = data_manager->getCategory(MCategory::CatGeantTrack);
+    MLocator loc(1);
+
+    for (size_t i = 0; i < tracks.size(); ++i)
+    {
+        loc[0] = i;
+
+        MGeantTrack * track = (MGeantTrack *) catGeantTrack->getSlot(loc);
+        track = new (track) MGeantTrack;
+        
+        *track = *tracks[i];
+    }
+
     data_manager->fill();
+}
+
+MGeantTrack * B1EventAction::getTrack(Int_t track_num) const
+{
+    if (track_num < tracks.size())
+        return tracks[track_num];
+    else
+        return nullptr;
+}
+
+MGeantTrack* B1EventAction::getParticle(int trackID) const
+{
+    for (int i = 0; i < tracks.size(); ++i)
+    {
+        if (tracks[i]->getTrackID() == trackID) {
+            return tracks[i];
+        }
+    }
+
+    std::cerr << "[Error] in MGeantSim getParticle(int trackID): no Particle with given ID found" << std::endl;
+    return nullptr;
 }
