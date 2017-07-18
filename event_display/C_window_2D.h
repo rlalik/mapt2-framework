@@ -20,7 +20,7 @@ class C_window_2D : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit C_window_2D(C_view_2D::PLANE plane, QWidget *parent = 0, MDataManager* d = 0);
+    explicit C_window_2D(C_view_2D::PLANE plane, MDataManager* d, QWidget *parent = 0);
     ~C_window_2D();
 
     bool IsOpen();

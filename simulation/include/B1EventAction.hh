@@ -34,12 +34,12 @@
 #include "G4UserEventAction.hh"
 #include "globals.hh"
 
-#include "MGeantTrack.h"
+#include <map>
 
 class MDataManager;
+class MGeantTrack;
 
 /// Event action class
-///
 class B1EventAction : public G4UserEventAction
 {
 public:
@@ -49,14 +49,13 @@ public:
     virtual void BeginOfEventAction(const G4Event* event);
     virtual void EndOfEventAction(const G4Event* event);
 
-    void addTrack(MGeantTrack* p) { tracks.push_back(p); }
-    MGeantTrack* getTrack(Int_t track_num) const;
-    int getTracksMult() const { return tracks.size(); }
+    MGeantTrack* addTrack(int trackID);
+    int getTracksMult() const;
     MGeantTrack * getParticle(int trackID) const;
 
 private:
     MDataManager* data_manager;
-    std::vector<MGeantTrack*> tracks;    //  not working to read from tree of simulated data
+    std::map<int, MGeantTrack *> track_map;
 };
 
 #endif

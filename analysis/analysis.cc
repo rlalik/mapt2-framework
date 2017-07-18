@@ -17,10 +17,6 @@
 #include <TH1.h>
 
 // MAPT-Analysis framework includes
-#include "Hits30x30.h"
-#include "MGeantSim.h"
-#include "AnalysisData.h"
-
 #include "MGeantFibersRaw.h"
 #include "MGeantTrack.h"
 

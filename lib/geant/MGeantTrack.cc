@@ -1,6 +1,5 @@
 #include "MGeantTrack.h"
 
-// Needed for Creation of shared libs
 ClassImp(MGeantTrack);
 
 MGeantTrack::MGeantTrack()
@@ -116,7 +115,7 @@ void MGeantTrack::print() const
            endPosition.X(), endPosition.Y(), endPosition.Z());
     printf("  dir sta=(%f,%f,%f)  sto=(%f,%f,%f)\n", startDirection.X(), startDirection.Y(), startDirection.Z(),
            endDirection.X(), endDirection.Y(), endDirection.Z());
-    
+    printf("  start energy = %f,  stop energy = %f\n", startEnergy, endEnergy);
     printf("  scat=%d  process=", scattering);
     for (Int_t i = 0; i < processes.size(); ++i)
         printf("%s,", processes[i].c_str());
@@ -128,4 +127,9 @@ void MGeantTrack::print() const
     //   string generationProcess;
     //   Double_t startEnergy;
     //   Double_t endEnergy;
+}
+
+void MGeantTrack::Clear(Option_t* options)
+{
+    clear();
 }

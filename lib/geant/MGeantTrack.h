@@ -6,11 +6,9 @@ using namespace std;
 //#include "globals.h"
 #include <string>
 #include <fstream>
-#include "TROOT.h"
+#include "TObject.h"
 #include "TRandom2.h"
 #include "TVector3.h"
-
-class TObject;
 
 //! \brief Data structure representing a charged particle.
 /*!
@@ -88,6 +86,7 @@ public:
     Bool_t isProcessInelastic() const { return proc_arr[INELASTIC]; }
     Bool_t isProcessAtRest() const { return proc_arr[ATREST]; }
 
+    void Clear(Option_t * options = "");
 //     Hits30x30*              getHits()               { return hits; }
 //     void setHits(const Hits30x30 & h); 
 //     void setHits(const double hitMatrix[30][30]); 

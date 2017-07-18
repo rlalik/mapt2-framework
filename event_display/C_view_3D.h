@@ -24,7 +24,7 @@ class C_view_3D : public QGLWidget
 {
     Q_OBJECT
 public:
-    explicit C_view_3D(QWidget *parent = 0, MDataManager* da = 0);
+    explicit C_view_3D(MDataManager* da, QWidget *parent = 0);
     ~C_view_3D();
 
     void initializeGL();
@@ -43,7 +43,6 @@ private:
     double distance;
 
     MDataManager* dataManager;
-
     C_view_coordinatesystem* coordinates;
 
     QMatrix4x4 pMatrix;

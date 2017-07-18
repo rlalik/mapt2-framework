@@ -18,17 +18,17 @@ C_MainWindow::C_MainWindow(QWidget *parent)
     dataManager = MDataManager::instance();
     dataManager->setSimulation(true);
 
-    m_winXZ = new C_window_2D(C_view_2D::XZ, 0, dataManager);
+    m_winXZ = new C_window_2D(C_view_2D::XZ, dataManager);
     m_winXZ->move(this->pos()+QPoint(0,140));
     m_winXZ->setWindowTitle("X-Z plane");
     m_winXZ->show();
 
-    m_winYZ = new C_window_2D(C_view_2D::YZ, 0, dataManager);
+    m_winYZ = new C_window_2D(C_view_2D::YZ, dataManager);
     m_winYZ->move(this->pos()+QPoint(450,140));
     m_winXZ->setWindowTitle("Y-Z plane");
     m_winYZ->show();
 
-    m_win3D = new C_window_3D(0,dataManager);
+    m_win3D = new C_window_3D(dataManager);
     m_win3D->move(this->pos()+QPoint(900,140));
     m_win3D->show();
 

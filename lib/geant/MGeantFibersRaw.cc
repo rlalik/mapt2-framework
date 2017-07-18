@@ -33,3 +33,8 @@ void MGeantFibersRaw::random()
 //     
     totalEnergy = 0;
 }
+
+void MGeantFibersRaw::Clear(Option_t* options)
+{
+    clear();
+}

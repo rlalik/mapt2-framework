@@ -31,6 +31,9 @@ public:
 
     virtual ~MDataManager() {};
 
+    void print() const;
+    void clear();
+
     //! \brief Creates a new file and an empty root tree with Event objects as leafs.
     bool book();
 
@@ -38,7 +41,7 @@ public:
     bool save();
 
     //! \brief Fills the current event attribute into the tree.
-    bool fill();
+    Int_t fill();
 
     //! \brief Opens a file and loads the root tree.
     bool open();
@@ -52,8 +55,8 @@ public:
     void setSimulation(bool simulation) { sim = simulation; }
 
     bool buildCategory(MCategory::Cat cat);
-    MCategory *& getCategory(MCategory::Cat cat);
-    MCategory *& openCategory(MCategory::Cat cat);
+    MCategory * getCategory(MCategory::Cat cat);
+    MCategory * openCategory(MCategory::Cat cat);
 
     void setOutputFileName(string s) { outputFileName = s; }
     void setOutputTreeName(string s) { outputTreeName = s; }

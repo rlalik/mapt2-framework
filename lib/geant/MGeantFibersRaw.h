@@ -3,8 +3,6 @@
 
 #include "TObject.h"
 
-#include "Hits30x30.h"
-
 //! \brief Data structure representing the detector response in a simulated event.
 /*!
 
@@ -17,11 +15,10 @@ public:
     void clear();
     void random();
 
-//     typedef const Double_t (*Arr30x30)[30];
+    void Clear(Option_t* options = "");
 
     void setEnergy(Double_t energy) { energyDeposition = energy; }
     Double_t getEnergy() const { return energyDeposition; }
-//     Hits30x30<Double_t> getEnergyArray() const { return energyDeposition; }
 
     void setEnergyQuenching(Double_t energy) { energyDepositionQuenching = energy; }
 

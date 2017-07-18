@@ -4,8 +4,8 @@
 // Konstruktor
 // ----------------------------------------------------------------------------------------------------------------------------------
 //
-C_window_2D::C_window_2D(C_view_2D::PLANE plane, QWidget *parent, MDataManager* d) :
-    QMainWindow(parent)
+C_window_2D::C_window_2D(C_view_2D::PLANE plane, MDataManager* d, QWidget *parent) :
+    dataManager(d), QMainWindow(parent)
 {
     // Fenster einrichten
     resize(450,450);
@@ -18,10 +18,7 @@ C_window_2D::C_window_2D(C_view_2D::PLANE plane, QWidget *parent, MDataManager* 
     m_action->setIconVisibleInMenu(true);
     m_fileMenu->addAction(m_action);
 
-
-    dataManager = d;
-
-    m_center = new C_view_2D(plane, 0, dataManager);
+    m_center = new C_view_2D(plane, dataManager);
     setCentralWidget(m_center);
 
     // Close Slot einrichten

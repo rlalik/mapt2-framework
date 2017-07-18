@@ -1,23 +1,21 @@
 #include "C_window_3D.h"
 
 #include "MDataManager.h"
-#include "MGeantSim.h"
+#include "MGeantFibersRaw.h"
+#include "MGeantTrack.h"
 
 //
 // Konstruktor
 // ----------------------------------------------------------------------------------------------------------------------------------
 //
-C_window_3D::C_window_3D(QWidget *parent, MDataManager* da) :
-    QMainWindow(parent)
-
+C_window_3D::C_window_3D(MDataManager* da, QWidget *parent) :
+    dataManager(da), QMainWindow(parent)
 {
     // Fenster einrichten
     resize(800,650);
     setWindowTitle("3D representation");
 
-    dataManager = da;
-
-    m_view3D = new C_view_3D(0, dataManager);
+    m_view3D = new C_view_3D(dataManager);
 
     QWidget* window = new QWidget();
 

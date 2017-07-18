@@ -42,7 +42,7 @@
 B1RunAction::B1RunAction(MDataManager* root)
 : G4UserRunAction()
 {
-  data_manager = root;
+    data_manager = root;
 }
 
 B1RunAction::~B1RunAction()
@@ -50,26 +50,18 @@ B1RunAction::~B1RunAction()
 
 G4Run* B1RunAction::GenerateRun()
 {
-  return new B1Run;
+    return new B1Run;
 }
 
 void B1RunAction::BeginOfRunAction(const G4Run*)
 {
-  //inform the runManager to save random number seed
-  G4RunManager::GetRunManager()->SetRandomNumberStore(false);
-
-  // root_manager creates file and tree for run
-  data_manager->book();
-  data_manager->buildCategory(MCategory::CatGeantTrack);
-
-  printf("\nBegin of Run Action\n");
+    //inform the runManager to save random number seed
+    G4RunManager::GetRunManager()->SetRandomNumberStore(false);
+    
+    printf("\nBegin of Run Action\n");
 }
 
 void B1RunAction::EndOfRunAction(const G4Run* run)
 {
-
-  // root_manager saves tree in file and closes file
-  data_manager->save();
-  printf("\nEnd of Run Action\n");
-
+    printf("\nEnd of Run Action\n");
 }

@@ -4,8 +4,8 @@
 #include "MGeantTrack.h"
 #include "MGeantFibersRaw.h"
 
-C_view_2D::C_view_2D(PLANE plane, QWidget *parent, MDataManager *d) :
-    QWidget(parent), pl(plane)
+C_view_2D::C_view_2D(PLANE plane, MDataManager* d, QWidget *parent) :
+    pl(plane), QWidget(parent)
 {
     dataManager = d;
     normfactor = 20;

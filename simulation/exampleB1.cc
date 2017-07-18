@@ -58,21 +58,21 @@
 
 struct sim_config {
     enum SimModel { NOMODEL = 0, QGSP, FTFP, EM }
-        sim_model = NOMODEL;
+    sim_model = NOMODEL;
 };
 
 int main(int argc, char** argv)
 {
     B1Config* config = new B1Config ();
     sim_config cfg;
-
+    
     G4UIExecutive* ui = 0;          // UI
     string config_file = "";        // Config file name
-
+    
     int modus = 0;      // no arguments: modus = 0                  ------>  default
-                        // one argument, config mode = 1: modus = 1
-                        // one argument, config mode = 2: modus = 2
-
+    // one argument, config mode = 1: modus = 1
+    // one argument, config mode = 2: modus = 2
+    
     int c;
     while(1)
     {
@@ -80,54 +80,54 @@ int main(int argc, char** argv)
             { "model", required_argument, 0, 'm' },
             { 0, 0, 0, 0 }
         };
-
+        
         int option_index = 0;
-
+        
         c = getopt_long(argc, argv, "m:", long_options, &option_index);
-
+        
         if (c == -1)
             break;
-
+        
         switch (c)
         {
             case 'm':
+            {
+                std::string model = optarg;
+                if (model == "qgsp")
+                    cfg.sim_model = sim_config::SimModel::QGSP;
+                else if (model == "ftfp")
+                    cfg.sim_model = sim_config::SimModel::FTFP;
+                else
                 {
-                    std::string model = optarg;
-                    if (model == "qgsp")
-                        cfg.sim_model = sim_config::SimModel::QGSP;
-                    else if (model == "ftfp")
-                        cfg.sim_model = sim_config::SimModel::FTFP;
-                    else
-                    {
-                        std::cerr << "Unknown model " << model << std::endl;
-                        cfg.sim_model = sim_config::SimModel::NOMODEL;
-                    }
+                    std::cerr << "Unknown model " << model << std::endl;
+                    cfg.sim_model = sim_config::SimModel::NOMODEL;
                 }
-                break;
+            }
+            break;
             default:
                 break;
         }
     }
-
+    
     if (cfg.sim_model == sim_config::SimModel::NOMODEL)
         cfg.sim_model = sim_config::SimModel::QGSP;
-
+    
     if (optind < argc)
     {
         while (optind < argc)
         {
             config_file  = argv[optind];
-
+            
             // set the file name of the config name
             config->SetConfigFileName (config_file);
-
+            
             // load the config file and read it. Return if there is an error
             if (!config->ReadConfigFile())
             {
                 printf("Problems reading Config file\n");
                 return -1;
             }
-
+            
             // check for mode defined in config file: 1 = batch mode ; 2 = interactive mode
             if (config->Get_mode() ==  1)
                 modus = 1;
@@ -138,42 +138,52 @@ int main(int argc, char** argv)
             }
             else if (config->Get_mode() == 3)
                 modus = 3;
-
+            
             ++optind;
             break;
         }
     }
+    
+    // Choose the Random engine
+    G4Random::setTheEngine(new CLHEP::RanecuEngine);
+    
+    // Construct the default run manager
+    //
+    #ifdef G4MULTITHREADED
+    G4MTRunManager* runManager = new G4MTRunManager;
+    #else
+    G4RunManager* runManager = new G4RunManager;
+    #endif
+    
+    
+    // Set mandatory initialization classes
+    //
+    // Detector construction
+    B1DetectorConstruction* detector_construction = new B1DetectorConstruction(config);
+    runManager->SetUserInitialization(detector_construction);
+    
+    // DataManager
+    MDataManager* data_manager = MDataManager::instance();
+    data_manager->setSimulation(true);
+    
+    data_manager->setOutputFileName (config->Get_filename() );
+    bool res = data_manager->book();
+    if (!res)
+    {
+        std::cerr << "Output file cannot be created" << std::endl;
+        exit(1);
+    }
 
-  // Choose the Random engine
-  G4Random::setTheEngine(new CLHEP::RanecuEngine);
+    data_manager->buildCategory(MCategory::CatGeantTrack);
+    data_manager->buildCategory(MCategory::CatGeantFibersRaw);
 
-  // Construct the default run manager
-  //
-#ifdef G4MULTITHREADED
-  G4MTRunManager* runManager = new G4MTRunManager;
-#else
-  G4RunManager* runManager = new G4RunManager;
-#endif
-
-
-  // Set mandatory initialization classes
-  //
-  // Detector construction
-  B1DetectorConstruction* detector_construction = new B1DetectorConstruction(config);
-  runManager->SetUserInitialization(detector_construction);
-
-  // DataManager
-  MDataManager* data_manager = MDataManager::instance();
-  data_manager->setSimulation(true);
-
-  data_manager->setOutputFileName (config->Get_filename() );
-//   data_manager->setOutputTreeName ("M");
-//   data_manager->setOutputTreeTitle (config->Get_tree_title() );
-
-  // Physics list
-
+    //   data_manager->setOutputTreeName ("M");
+    //   data_manager->setOutputTreeTitle (config->Get_tree_title() );
+    
+    // Physics list
+    
     G4VModularPhysicsList* physicsList = nullptr;
-
+    
     if (cfg.sim_model == sim_config::SimModel::FTFP)
     {
         std::cout << "Using FTFP model" << std::endl;
@@ -188,149 +198,145 @@ int main(int argc, char** argv)
     {
         physicsList = new B1PhysicsList(config);
     }
+    
+    //   B1PhysicsList* physicsList = new B1PhysicsList(config);
+    //   G4VModularPhysicsList* physicsList = new  QGSP_BERT;
+    //   G4VModularPhysicsList* physicsList = new  FTFP_BERT;
+    physicsList->SetVerboseLevel(0);
+    physicsList->RegisterPhysics(new G4StepLimiterPhysics());
+    runManager->SetUserInitialization(physicsList);
+    
+    //   B1PhysicsList* physicsList = new B1PhysicsList(config);
+    // //   G4VModularPhysicsList* physicsList = new  QGSP_BERT;
+    // //   G4VModularPhysicsList* physicsList = new  FTFP_BERT;
+    //   physicsList->SetVerboseLevel(0);
+    //   physicsList->RegisterPhysics(new G4StepLimiterPhysics());
+    //   runManager->SetUserInitialization(physicsList);
+    
+    // User action initialization
+    runManager->SetUserInitialization(new B1ActionInitialization(data_manager,config,detector_construction));
+    
+    // Initialize visualization
+    //
+    G4VisManager* visManager = new G4VisExecutive;
+    visManager->Initialize();
+    
+    // Get the pointer to the User Interface manager
+    G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
-//   B1PhysicsList* physicsList = new B1PhysicsList(config);
-//   G4VModularPhysicsList* physicsList = new  QGSP_BERT;
-//   G4VModularPhysicsList* physicsList = new  FTFP_BERT;
-  physicsList->SetVerboseLevel(0);
-  physicsList->RegisterPhysics(new G4StepLimiterPhysics());
-  runManager->SetUserInitialization(physicsList);
-
-//   B1PhysicsList* physicsList = new B1PhysicsList(config);
-// //   G4VModularPhysicsList* physicsList = new  QGSP_BERT;
-// //   G4VModularPhysicsList* physicsList = new  FTFP_BERT;
-//   physicsList->SetVerboseLevel(0);
-//   physicsList->RegisterPhysics(new G4StepLimiterPhysics());
-//   runManager->SetUserInitialization(physicsList);
-
-  // User action initialization
-  runManager->SetUserInitialization(new B1ActionInitialization(data_manager,config,detector_construction));
-
-  // Initialize visualization
-  //
-  G4VisManager* visManager = new G4VisExecutive;
-  visManager->Initialize();
-
-  // Get the pointer to the User Interface manager
-  G4UImanager* UImanager = G4UImanager::GetUIpointer();
-
-
-
-
-  // Process macro or start UI session
-  //
-  if (modus == 0)                                  // default interactive mode
-  {
-    // init vis
-    string command_init_vis = "/control/execute init_vis.mac";
-    UImanager->ApplyCommand(command_init_vis);
-
-    // vis mac
-    string command_vis = "/control/execute vis.mac" ;
-    UImanager->ApplyCommand(command_vis);
-
-    if (!config->Get_useRootHistoForGun ())
+    // Process macro or start UI session
+    //
+    if (modus == 0)                                  // default interactive mode
     {
-        // Load default GPS mac
-        G4String command = "/control/execute run_gps.mac";
-        UImanager->ApplyCommand(command);
+        // init vis
+        string command_init_vis = "/control/execute init_vis.mac";
+        UImanager->ApplyCommand(command_init_vis);
+        
+        // vis mac
+        string command_vis = "/control/execute vis.mac" ;
+        UImanager->ApplyCommand(command_vis);
+        
+        if (!config->Get_useRootHistoForGun ())
+        {
+            // Load default GPS mac
+            G4String command = "/control/execute run_gps.mac";
+            UImanager->ApplyCommand(command);
+        }
+        
+        ui->SessionStart();
+        delete ui;
     }
-
-    ui->SessionStart();
-    delete ui;
-  }
-
-  else if ((modus == 1) || (modus == 3))                       // batch mode
+    
+    else if ((modus == 1) || (modus == 3))                       // batch mode
     {
-      printf("\nBatch mode: %d\n", modus);
-
-    // inititalize
-    string command_init_vis = "/control/execute " + config->Get_init_vis_file();
-    UImanager->ApplyCommand(command_init_vis);
-
-    // If this simulation is executed on the cluster, set the random seeds to job_number, job_number
-    if(config->Get_cluster_job())
-      {
-	// int to string
-	int job_number = config->Get_job_number();
-	stringstream ss;
-	ss << job_number;
-	string str = ss.str();
-	// create command
-	string command_random = "/random/setSeeds " + str  + " " + str ;
-	UImanager->ApplyCommand(command_random);
-      }
-
-     if (!config->Get_useRootHistoForGun ())
-     {
-        // load gun mac
-        string command_gun_mac = "/control/execute " + config->Get_gun_mac_file();
-        UImanager->ApplyCommand(command_gun_mac);
+        printf("\nBatch mode: %d\n", modus);
+        
+        // inititalize
+        string command_init_vis = "/control/execute " + config->Get_init_vis_file();
+        UImanager->ApplyCommand(command_init_vis);
+        
+        // If this simulation is executed on the cluster, set the random seeds to job_number, job_number
+        if(config->Get_cluster_job())
+        {
+            // int to string
+            int job_number = config->Get_job_number();
+            stringstream ss;
+            ss << job_number;
+            string str = ss.str();
+            // create command
+            string command_random = "/random/setSeeds " + str  + " " + str ;
+            UImanager->ApplyCommand(command_random);
+        }
+        
+        if (!config->Get_useRootHistoForGun ())
+        {
+            // load gun mac
+            string command_gun_mac = "/control/execute " + config->Get_gun_mac_file();
+            UImanager->ApplyCommand(command_gun_mac);
+        }
+        
+        // start run (only in mode = 1)
+        // int to string
+        if(modus == 1)
+        {
+            int number = config->Get_number_of_events();
+            stringstream ss;
+            ss << number;
+            string str = ss.str();
+            string command_run_beamOn = "/run/beamOn " + str;
+            printf("\nBeamOn command: %s\n", command_run_beamOn.c_str());
+            UImanager->ApplyCommand(command_run_beamOn);
+        }
+        else if (modus == 3)
+        {
+        }
     }
-
-    // start run (only in mode = 1)
-    // int to string
-    if(modus == 1)
+    
+    else if (modus == 2)                             // interactive mode
     {
-    	int number = config->Get_number_of_events();
-    	stringstream ss;
-    	ss << number;
-    	string str = ss.str();
-    	string command_run_beamOn = "/run/beamOn " + str;
-    	printf("\nBeamOn command: %s\n", command_run_beamOn.c_str());
-    	UImanager->ApplyCommand(command_run_beamOn);
-    }
-    else if (modus == 3)
-    {
-
-    }
-
-    }
-
-  else if (modus == 2)                             // interactive mode
-  {
-    // init mac
-    string command_init_vis = "/control/execute " + config->Get_init_vis_file();
-    UImanager->ApplyCommand(command_init_vis);
-
-
-    // If this simulation is executed on the cluster, set the random seeds to job_number, job_number
-    if(config->Get_cluster_job())
-      {
-	// int to string
-	int job_number = config->Get_job_number();
-	stringstream ss;
-	ss << job_number;
-	string str = ss.str();
-	// create command
-	string command_random = "/random/setSeeds " + str  + " " + str ;
-	UImanager->ApplyCommand(command_random);
-      }
-
-    // vis mac
-    string command_vis = "/control/execute " + config->Get_vis_file();
-    UImanager->ApplyCommand(command_vis);
-
-    if (!config->Get_useRootHistoForGun ())
-    {
-        // load gun mac
-        string command_gun_mac = "/control/execute " + config->Get_gun_mac_file();
-        UImanager->ApplyCommand(command_gun_mac);
+        // init mac
+        string command_init_vis = "/control/execute " + config->Get_init_vis_file();
+        UImanager->ApplyCommand(command_init_vis);
+        
+        
+        // If this simulation is executed on the cluster, set the random seeds to job_number, job_number
+        if(config->Get_cluster_job())
+        {
+            // int to string
+            int job_number = config->Get_job_number();
+            stringstream ss;
+            ss << job_number;
+            string str = ss.str();
+            // create command
+            string command_random = "/random/setSeeds " + str  + " " + str ;
+            UImanager->ApplyCommand(command_random);
+        }
+        
+        // vis mac
+        string command_vis = "/control/execute " + config->Get_vis_file();
+        UImanager->ApplyCommand(command_vis);
+        
+        if (!config->Get_useRootHistoForGun ())
+        {
+            // load gun mac
+            string command_gun_mac = "/control/execute " + config->Get_gun_mac_file();
+            UImanager->ApplyCommand(command_gun_mac);
+        }
+        
+        // start ui session
+        ui->SessionStart();
+        delete ui;
     }
 
-    // start ui session
-    ui->SessionStart();
-    delete ui;
-  }
+    bool status = data_manager->save();
+    printf("\nTree saved with status=%d\n", status);
 
-
-
-  // Job termination
-  // Free the store: user actions, physics_list and detector_description are
-  // owned and deleted by the run manager, so they should not be deleted
-  // in the main() program !
-
-  delete visManager;
-  delete runManager;
-  delete config;
+    // Job termination
+    // Free the store: user actions, physics_list and detector_description are
+    // owned and deleted by the run manager, so they should not be deleted
+    // in the main() program !
+    
+    delete visManager;
+    delete runManager;
+    delete config;
 }

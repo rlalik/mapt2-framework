@@ -4,19 +4,15 @@
 
 // MAPT-framework
 #include "MDataManager.h"
-#include "Hits30x30.h"
 #include "MGeantFibersRaw.h"
-#include "MGeantSim.h"
+#include "MGeantTrack.h"
 
-C_view_3D::C_view_3D(QWidget *parent, MDataManager* da) :
-    QGLWidget(parent)
+C_view_3D::C_view_3D(MDataManager* da, QWidget *parent) :
+    dataManager(da), QGLWidget(parent)
 {
     geometry = new UserGeant4Geometry("geometry.txt",true);
 
     geometry->construct();
-
-    // Anfangswerte belegen
-    dataManager = da;
 
     if (da == NULL)
     {

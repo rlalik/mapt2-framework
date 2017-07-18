@@ -47,10 +47,6 @@ B1EventAction::B1EventAction(MDataManager* root)
 
 B1EventAction::~B1EventAction()
 {
-    for (int i = 0; i < tracks.size(); ++i)
-    {
-        delete tracks[i];
-    }
 }
 
 void B1EventAction::BeginOfEventAction(const G4Event* evt)
@@ -61,39 +57,43 @@ void B1EventAction::BeginOfEventAction(const G4Event* evt)
 
 void B1EventAction::EndOfEventAction(const G4Event*)
 {
-    // fill tree with data acquired from current event
-    MCategory * catGeantTrack = data_manager->getCategory(MCategory::CatGeantTrack);
-    MLocator loc(1);
-
-    for (size_t i = 0; i < tracks.size(); ++i)
-    {
-        loc[0] = i;
-
-        MGeantTrack * track = (MGeantTrack *) catGeantTrack->getSlot(loc);
-        track = new (track) MGeantTrack;
-        
-        *track = *tracks[i];
-    }
-
     data_manager->fill();
+    data_manager->clear();
+    track_map.clear();
 }
 
-MGeantTrack * B1EventAction::getTrack(Int_t track_num) const
+MGeantTrack* B1EventAction::addTrack(Int_t trackID)
 {
-    if (track_num < tracks.size())
-        return tracks[track_num];
-    else
-        return nullptr;
+    MCategory * catGeantTrack = data_manager->getCategory(MCategory::CatGeantTrack);
+    if (catGeantTrack)
+    {
+        MGeantTrack* tr = (MGeantTrack*) catGeantTrack->getNewSlot();
+        tr = new (tr) MGeantTrack;
+
+        track_map[trackID] = tr;
+        return tr;
+    }
+
+    return nullptr;
+}
+
+
+int B1EventAction::getTracksMult() const
+{
+    MCategory * catGeantTrack = data_manager->getCategory(MCategory::CatGeantTrack);
+    if (catGeantTrack)
+    {
+        return catGeantTrack->getEntries();
+    }
+
+    return 0;
 }
 
 MGeantTrack* B1EventAction::getParticle(int trackID) const
 {
-    for (int i = 0; i < tracks.size(); ++i)
-    {
-        if (tracks[i]->getTrackID() == trackID) {
-            return tracks[i];
-        }
-    }
+    std::map<int, MGeantTrack *>::const_iterator it = track_map.find(trackID);
+    if (it != track_map.end())
+        return it->second;
 
     std::cerr << "[Error] in MGeantSim getParticle(int trackID): no Particle with given ID found" << std::endl;
     return nullptr;

@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "TClass.h"
 #include "TClonesArray.h"
 
 #include "MCategory.h"
@@ -81,6 +82,20 @@ TObject *& MCategory::getSlot(const MLocator & n)
     return data->operator[](pos);
 }
 
+TObject *& MCategory::getNewSlot()
+{
+    if (dim != 1)
+    {
+        std::cerr << "getNewSlot allowed only for linear categories." << std::endl;
+        return pNullMCategoryPtr;
+    }
+
+    MLocator loc(1);
+    loc[0] = data->GetEntries();
+
+    return getSlot(loc);
+}
+
 TObject * MCategory::getObject(const MLocator & n)
 {
     if (n.getDim() != dim)
@@ -103,16 +118,12 @@ TObject * MCategory::getObject(Int_t i)
     return data->At(i);
 }
 
-// void Category::clear()
-// {
-// }
-
 void MCategory::print() const
 {
-    printf("Objects in the category:\n");
+    printf("%d objects in the category:\n", data->GetEntries());
     for (size_t i = 0; i < data_size; ++i)
     {
-        printf("[%3d] at 0x%x\n", i, data->At(i));
+//         printf("[%3d] at 0x%x\n", i, data->At(i));
     }
 }
 
@@ -127,3 +138,33 @@ void MCategory::Compress()
     }
     data->Compress();
 }
+
+void MCategory::clear()
+{
+    data->Clear("C");
+}
+
+// void MCategory::Streamer(TBuffer& R__b)
+// {
+//     Char_t clase[200];
+//     if (R__b.IsReading())
+//     {
+//         Version_t R__v = R__b.ReadVersion();
+//         R__b.ReadString(clase,200);
+//         if (data && strcmp(clase, data->GetClass()->GetName()) == 0)
+//             data->Clear();
+//         else
+//         {
+//             delete data;
+//             data = new TClonesArray(clase);
+//         }
+//         data->Streamer(R__b);
+//     }
+//     else
+//     {
+//         R__b.WriteVersion(MCategory::IsA());
+//         strcpy(clase, data->GetClass()->GetName());
+//         R__b.WriteString(clase);
+//         data->Streamer(R__b);
+//     }
+// }

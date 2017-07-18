@@ -64,15 +64,16 @@ public:
 
     TObject * operator[](const MLocator & n);
     TObject *& getSlot(const MLocator & n);
+    TObject *& getNewSlot();
     TObject * getObject(const MLocator & n);
     TObject * getObject(Int_t i);
     std::string getName() const { return name; }
 
-    
     Int_t getEntries() const { return data->GetEntries(); }
 
     void Compress();
 
+    void clear();
     void print() const;
 
 private:

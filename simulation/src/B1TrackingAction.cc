@@ -21,7 +21,8 @@ void B1TrackingAction::PreUserTrackingAction(const G4Track* track)
     // Get ID of current track
     int track_ID = track->GetTrackID();
 
-    current_particle = new MGeantTrack;
+    current_particle = fEventAction->addTrack(track_ID);
+
     current_particle->setTrackID(track_ID);
 
     if( track_ID  == 1)  // primary
@@ -38,9 +39,6 @@ void B1TrackingAction::PreUserTrackingAction(const G4Track* track)
 
     current_particle->setParentID(track->GetParentID());
 
-    // current particle is secondary. Add a secondary to event
-    fEventAction->addTrack(current_particle);
-    
     // Optical Photons
     // decide if particle is an optic photon
     // if yes, then find the logical volume, count the photon in detector_response and kill this photon track

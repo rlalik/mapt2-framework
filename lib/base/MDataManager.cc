@@ -30,7 +30,7 @@ bool MDataManager::book()
 {
     // Create file and open it
     outputFile = new TFile(outputFileName.c_str(), "RECREATE");
-    if(!outputFile)
+    if (!outputFile->IsOpen())
     {
         std::cerr  << "[Error] in MDataManager: could not create saveFile" << std::endl;
         return false;
@@ -44,17 +44,19 @@ bool MDataManager::book()
 
 bool MDataManager::save()
 {
-    if (outputFile) {
+    if (outputFile)
+    {
         outputFile->cd();
         outputTree->Write();        // Writing the tree to the file
         outputFile->Close();        // and closing the tree (and the file)
         return true;
     }
+
     return false;
 }
 
 
-bool MDataManager::fill()
+Int_t MDataManager::fill()
 {
     // clear the current event data
     for (CatMap::iterator it = categories.begin(); it != categories.end(); ++it)
@@ -63,15 +65,17 @@ bool MDataManager::fill()
     }
 
     // fill tree
-    outputTree->Fill();
+    Int_t status = outputTree->Fill();
+//     printf("Fill status = %d\n", status);
 
-    return true;
+    return status;
 }
 
 bool MDataManager::open()
 {
     inputFile = TFile::Open(inputFileName.c_str());
-	if (inputFile == 0) {
+	if (inputFile == 0)
+    {
 		std::cerr << "[Error] in MDataManager: cannot open ROOT file" << "\n";
 		return false;
 	}
@@ -82,6 +86,7 @@ bool MDataManager::open()
     }
 
     numberOfEntries = inputTree->GetEntriesFast();
+
     return true;
 }
 
@@ -97,6 +102,8 @@ bool MDataManager::buildCategory(MCategory::Cat cat)
     MCategory * cat_ptr = nullptr;
     size_t sizes[10];
 
+    outputFile->cd();
+    outputFile->ls();
     switch (cat)
     {
         case MCategory::CatGeantTrack:
@@ -129,18 +136,18 @@ bool MDataManager::buildCategory(MCategory::Cat cat)
             break;
     }
 
-    printf("My name is %s\n", cat_ptr->GetName());
-
     if (cat_ptr)
     {
         categories[cat] = cat_ptr;
-        return outputTree->Branch(cat_ptr->getName().c_str(), cat_ptr, 16000, 0);
+        TBranch * b = outputTree->Branch(cat_ptr->getName().c_str(), cat_ptr, 16000, 0);
+
+        return true;
     }
 
     return false;
 }
 
-MCategory *& MDataManager::getCategory(MCategory::Cat cat)
+MCategory * MDataManager::getCategory(MCategory::Cat cat)
 {
     CatMap::iterator it = categories.find(cat);
     if (it != categories.end())
@@ -149,26 +156,36 @@ MCategory *& MDataManager::getCategory(MCategory::Cat cat)
     return gNullMCategoryPtr;
 }
 
-MCategory *& MDataManager::openCategory(MCategory::Cat cat)
+MCategory * MDataManager::openCategory(MCategory::Cat cat)
 {
     if (!inputTree)
         return gNullMCategoryPtr;
 
-    MCategory * cat_ptr = 0;
+    MCategory ** cat_ptr = new MCategory*;
 
     switch (cat)
     {
         case MCategory::CatGeantTrack:
-            cat_ptr = new MCategory;
+            *cat_ptr = new MCategory;
             inputTree->GetBranch("MGeantTrack")->SetAddress(&*cat_ptr);
             break;
         case MCategory::CatGeantFibersRaw:
-            cat_ptr = new MCategory;
+            *cat_ptr = new MCategory;
             inputTree->GetBranch("MGeantFibersRaw")->SetAddress(&*cat_ptr);
             break;
         default:
+            delete cat_ptr;
+            cat_ptr = nullptr;
             break;
     }
+
+    if (cat_ptr)
+    {
+        categories[cat] = *cat_ptr;
+        return *cat_ptr;
+    }
+    else
+        return gNullMCategoryPtr;
 }
 
 void MDataManager::getEntry (int i)
@@ -182,19 +199,35 @@ void MDataManager::getEntry (int i)
     if (i < numberOfEntries)
     {
         currentEntry = i;
-
-//         for (CatMap::iterator it = categories.begin(); it != categories.end(); ++it)
-//             it->second->clear();
-
         inputTree->GetEntry(i);
     }
 }
 
-int MDataManager::getEntriesFast () {
-    if (!inputTree) {
+int MDataManager::getEntriesFast ()
+{
+    if (!inputTree)
+    {
         std::cerr << "[Warning] in MDataManager: no input tree is opened. cannot get any entry." << "\n";
         return -1;
     }
     numberOfEntries = inputTree->GetEntriesFast();
     return numberOfEntries;
+}
+
+void MDataManager::print() const
+{
+    outputFile->cd();
+    printf("There are %d categories in the output tree\n", categories.size());
+    for (CatMap::const_iterator it = categories.begin(); it != categories.end(); ++it)
+    {
+        it->second->print();
+    }
+}
+
+void MDataManager::clear()
+{
+    for (CatMap::const_iterator it = categories.begin(); it != categories.end(); ++it)
+    {
+        it->second->clear();
+    }
 }
