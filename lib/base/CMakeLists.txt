@@ -7,12 +7,20 @@ SET (LIBRARY_NAME MAPT)
 
 SET (LIBRARY_HDRS
     MCategory.h
-    MDataManager.cc
+    MDataManager.h
+    MTaskManager.h
+    MTask.h
+    MDetectorManager.h
+    MDetector.h
 )
 
 SET(LIBRARY_SRCS
     MCategory.cc
-    MDataManager.h
+    MDataManager.cc
+    MTaskManager.cc
+    MTask.cc
+    MDetectorManager.cc
+    MDetector.cc
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
