@@ -153,6 +153,10 @@ MCategory * MDataManager::getCategory(MCategory::Cat cat)
     if (it != categories.end())
         return it->second;
 
+    MCategory * c = openCategory(cat);
+    if (c)
+        return c;
+
     return gNullMCategoryPtr;
 }
 

@@ -50,6 +50,7 @@ add_subdirectory(geometry)
 add_subdirectory(simulation)
 add_subdirectory(event_display)
 add_subdirectory(analysis)
+add_subdirectory(dst)
 
 message("")
 message("Add to your profile")
