@@ -15,7 +15,7 @@ SET(LIBRARY_SRCS
     Track.cc
 )
 
-set(MODULES base geant)
+set(MODULES base geant fibers)
 include_directories(
     ${MODULES}
 )
