@@ -29,6 +29,7 @@ public:
     ~MFibersDetector();
 
     bool initTasks();
+    bool initContainers();
 };
 
 #endif // MFIBERSDETECTOR_H

@@ -17,32 +17,22 @@
  *
  */
 
-#include "MFibersDetector.h"
+#ifndef MFIBERSGEOMPAR_H
+#define MFIBERSGEOMPAR_H
 
-#include "MFibersGeomPar.h"
-#include "MFibersDigitizerPar.h"
+#include "MPar.h"
 
-#include "MFibersDigitizer.h"
-
-MFibersDetector::MFibersDetector(const std::string & name) : MDetector(name)
+class MFibersGeomPar : public MPar
 {
-}
+public:
+    bool getParams(MParContainer * parcont);
+    bool putParams(MParContainer * parcont) const;
 
-MFibersDetector::~MFibersDetector()
-{
-}
+private:
+    Float_t layer_rotation;
+    Int_t fibers;
+    Int_t layers;
+    Int_t modules;
+};
 
-bool MFibersDetector::initTasks()
-{
-    tm()->addTask(new MFibersDigitizer(), 0);
-
-    return true;
-}
-
-bool MFibersDetector::initContainers()
-{
-    pm()->addParameterContainer("MFibersGeomPar",  new MFibersGeomPar());
-    pm()->addParameterContainer("MFibersDigitizerPar",  new MFibersDigitizerPar());
-
-    return true;
-}
+#endif // MFIBERSGEOMPAR_H

@@ -17,32 +17,16 @@
  *
  */
 
-#include "MFibersDetector.h"
+#ifndef MFIBERSDIGITIZERPAR_H
+#define MFIBERSDIGITIZERPAR_H
 
-#include "MFibersGeomPar.h"
-#include "MFibersDigitizerPar.h"
+#include "MPar.h"
 
-#include "MFibersDigitizer.h"
-
-MFibersDetector::MFibersDetector(const std::string & name) : MDetector(name)
+class MFibersDigitizerPar : public MPar
 {
-}
+public:
+    bool getParams(MParContainer * parcont);
+    bool putParams(MParContainer * parcont) const;
+};
 
-MFibersDetector::~MFibersDetector()
-{
-}
-
-bool MFibersDetector::initTasks()
-{
-    tm()->addTask(new MFibersDigitizer(), 0);
-
-    return true;
-}
-
-bool MFibersDetector::initContainers()
-{
-    pm()->addParameterContainer("MFibersGeomPar",  new MFibersGeomPar());
-    pm()->addParameterContainer("MFibersDigitizerPar",  new MFibersDigitizerPar());
-
-    return true;
-}
+#endif // MFIBERSDIGITIZERPAR_H

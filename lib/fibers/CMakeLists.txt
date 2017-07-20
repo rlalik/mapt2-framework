@@ -7,12 +7,16 @@ SET (LIBRARY_NAME Fibers)
 
 SET (LIBRARY_HDRS
     MFibersDetector.h
+    MFibersGeomPar.h
     MFibersDigitizer.h
+    MFibersDigitizerPar.h
 )
 
 SET(LIBRARY_SRCS
     MFibersDetector.cc
+    MFibersGeomPar.cc
     MFibersDigitizer.cc
+    MFibersDigitizerPar.cc
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
