@@ -288,7 +288,16 @@ bool MParManager::addParameterContainer(const std::string& cont_name, MPar* parc
         exit(EXIT_FAILURE);
     }
 
-    parcont->getParams(pc);
+    parcont->clear();
+    bool ret = parcont->getParams(pc);
+    if (!ret)
+    {
+        std::cerr << "Initialization of " << cont_name << " param container failed!" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    parconts.insert(std::pair<std::string, MPar*>(cont_name, parcont));
+    return true;
 }
 
 MPar * MParManager::getParameterContainer(const std::string& cont_name)

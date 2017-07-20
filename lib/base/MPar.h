@@ -33,6 +33,9 @@ public:
     virtual bool getParams(MParContainer * parcont) = 0;
     virtual bool putParams(MParContainer * parcont) const = 0;
 
+    virtual void clear() = 0;
+    virtual void print() const;
+
     MDataManager * dm() { return MDataManager::instance(); }
 
 private:

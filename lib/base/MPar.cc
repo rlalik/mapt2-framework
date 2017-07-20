@@ -18,10 +18,17 @@
  */
 #include "MPar.h"
 
+#include "MParContainer.h"
+
 MPar::MPar()
 {
 }
 
 MPar::~MPar()
 {
+}
+
+void MPar::print() const
+{
+    parcont->print();
 }

@@ -17,6 +17,7 @@
  *
  */
 
+#include <iostream>
 #include <sstream>
 
 #include "MParContainer.h"
@@ -104,8 +105,16 @@ bool MParContainer::fill(const std::string & name, Int_t& val)
 {
     ParMap::const_iterator it = parameters.find(name);
 
-    if (it != parameters.end() or it->second.first != "Int_t")
+    if (it == parameters.end())
+    {
+        std::cerr << "Parameter name " << name << " doesn't exists in the container!" << std::endl;
         return false;
+    }
+    if (it->second.first != "Int_t")
+    {
+        std::cerr << "Incorrect type for parameter name " << name << std::endl;
+        return false;
+    }
 
     std::stringstream buff(it->second.second[0]);
     buff >> val;
@@ -117,8 +126,16 @@ bool MParContainer::fill(const std::string & name, Float_t& val)
 {
     ParMap::const_iterator it = parameters.find(name);
 
-    if (it != parameters.end() or it->second.first != "Float_t")
+    if (it == parameters.end())
+    {
+        std::cerr << "Parameter name " << name << " doesn't exists in the container!" << std::endl;
         return false;
+    }
+    if (it->second.first != "Float_t")
+    {
+        std::cerr << "Incorrect type for parameter name " << name << std::endl;
+        return false;
+    }
 
     std::stringstream buff(it->second.second[0]);
     buff >> val;
@@ -130,8 +147,16 @@ bool MParContainer::fill(const std::string & name, Double_t& val)
 {
     ParMap::const_iterator it = parameters.find(name);
 
-    if (it != parameters.end() or it->second.first != "Double_t")
+    if (it == parameters.end())
+    {
+        std::cerr << "Parameter name " << name << " doesn't exists in the container!" << std::endl;
         return false;
+    }
+    if (it->second.first != "Double_t")
+    {
+        std::cerr << "Incorrect type for parameter name " << name << std::endl;
+        return false;
+    }
 
     std::stringstream buff(it->second.second[0]);
     buff >> val;
@@ -143,11 +168,19 @@ bool MParContainer::fill(const std::string & name, TArrayI& val)
 {
     ParMap::const_iterator it = parameters.find(name);
 
-    if (it != parameters.end() or it->second.first != "Int_t")
+    if (it == parameters.end())
+    {
+        std::cerr << "Parameter name " << name << " doesn't exists in the container!" << std::endl;
         return false;
+    }
+    if (it->second.first != "Int_t")
+    {
+        std::cerr << "Incorrect type for parameter name " << name << std::endl;
+        return false;
+    }
 
     for (int i = 0; i < it->second.second.size(); ++i)
-        val.AddAt(i, stoi(it->second.second[i].c_str()));
+        val[i] = stoi(it->second.second[i].c_str());
 
     return true;
 }
@@ -156,11 +189,19 @@ bool MParContainer::fill(const std::string & name, TArrayF& val)
 {
     ParMap::const_iterator it = parameters.find(name);
 
-    if (it != parameters.end() or it->second.first != "Float_t")
+    if (it == parameters.end())
+    {
+        std::cerr << "Parameter name " << name << " doesn't exists in the container!" << std::endl;
         return false;
+    }
+    if (it->second.first != "Float_t")
+    {
+        std::cerr << "Incorrect type for parameter name " << name << std::endl;
+        return false;
+    }
 
     for (int i = 0; i < it->second.second.size(); ++i)
-        val.AddAt(i, stof(it->second.second[i].c_str()));
+        val[i] = stof(it->second.second[i].c_str());
 
     return true;
 }
@@ -169,11 +210,19 @@ bool MParContainer::fill(const std::string & name, TArrayD& val)
 {
     ParMap::const_iterator it = parameters.find(name);
 
-    if (it != parameters.end() or it->second.first != "Double_t")
+    if (it == parameters.end())
+    {
+        std::cerr << "Parameter name " << name << " doesn't exists in the container!" << std::endl;
         return false;
+    }
+    if (it->second.first != "Double_t")
+    {
+        std::cerr << "Incorrect type for parameter name " << name << std::endl;
+        return false;
+    }
 
     for (int i = 0; i < it->second.second.size(); ++i)
-        val.AddAt(i, stod(it->second.second[i].c_str()));
+        val[i] = stod(it->second.second[i].c_str());
 
     return true;
 }
