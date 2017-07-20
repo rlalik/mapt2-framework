@@ -12,6 +12,9 @@ SET (LIBRARY_HDRS
     MTask.h
     MDetectorManager.h
     MDetector.h
+    MParManager.h
+    MParContainer.h
+    MPar.h
 )
 
 SET(LIBRARY_SRCS
@@ -21,6 +24,9 @@ SET(LIBRARY_SRCS
     MTask.cc
     MDetectorManager.cc
     MDetector.cc
+    MParManager.cc
+    MParContainer.cc
+    MPar.cc
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})

@@ -23,6 +23,7 @@
 #include "MDataManager.h"
 #include "MDetectorManager.h"
 #include "MTaskManager.h"
+#include "MParManager.h"
 
 #include "MFibersDetector.h"
 
@@ -53,12 +54,18 @@ int simdst(const std::string & file, int events = 1000)
     int ev_limit = events < dataManager->getEntriesFast() ? events : dataManager->getEntriesFast();
     std::cout << dataManager->getEntriesFast() << " events, analyze " << ev_limit << std::endl;
 
+    // initialize parameters
+    MParManager * pm = MParManager::instance();
+    pm->setParamSource("params.txt");
+    pm->parseSource();
+
     // initialize detectors
     MDetectorManager * detm = MDetectorManager::instance();
 
     detm->addDetector(new MFibersDetector());
 
     detm->initTasks();
+    detm->initParameterContainers();
 
     // initialize tasks
     MTaskManager * tm = MTaskManager::instance();

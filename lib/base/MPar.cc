@@ -16,40 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+#include "MPar.h"
 
-#ifndef MDETECTORMANAGER_H
-#define MDETECTORMANAGER_H
-
-#include <vector>
-
-#include "MDataManager.h"
-
-class MDetector;
-
-class MDetectorManager
+MPar::MPar()
 {
-private:
-    //! \brief Constructor.
-    MDetectorManager();
-    MDetectorManager(MDetectorManager const &) {}
-    MDetectorManager & operator=(MDetectorManager const &) {}
+}
 
-public:
-    static MDetectorManager * instance();
-    ~MDetectorManager();
-
-    void addDetector(MDetector * detector);
-
-    void initTasks();
-    void initParameterContainers();
-
-    MDataManager * dm() { return MDataManager::instance(); }
-
-private:
-    typedef std::vector<MDetector *> DetectorsVec;
-    DetectorsVec detectors;
-
-    static MDetectorManager * detm;
-};
-
-#endif // MTASKMANAGER_H
+MPar::~MPar()
+{
+}

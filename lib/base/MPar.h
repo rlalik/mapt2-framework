@@ -17,39 +17,26 @@
  *
  */
 
-#ifndef MDETECTORMANAGER_H
-#define MDETECTORMANAGER_H
-
-#include <vector>
+#ifndef MPAR_H
+#define MPAR_H
 
 #include "MDataManager.h"
 
-class MDetector;
+class MParContainer;
 
-class MDetectorManager
+class MPar
 {
-private:
-    //! \brief Constructor.
-    MDetectorManager();
-    MDetectorManager(MDetectorManager const &) {}
-    MDetectorManager & operator=(MDetectorManager const &) {}
-
 public:
-    static MDetectorManager * instance();
-    ~MDetectorManager();
+    MPar();
+    virtual ~MPar();
 
-    void addDetector(MDetector * detector);
-
-    void initTasks();
-    void initParameterContainers();
+    virtual bool getParams(MParContainer * parcont) = 0;
+    virtual bool putParams(MParContainer * parcont) const = 0;
 
     MDataManager * dm() { return MDataManager::instance(); }
 
 private:
-    typedef std::vector<MDetector *> DetectorsVec;
-    DetectorsVec detectors;
-
-    static MDetectorManager * detm;
+    MParContainer * parcont;
 };
 
-#endif // MTASKMANAGER_H
+#endif // MPAR_H

@@ -62,3 +62,17 @@ void MDetectorManager::initTasks()
         }
     }
 }
+
+void MDetectorManager::initParameterContainers()
+{
+    for (DetectorsVec::iterator it = detectors.begin(); it != detectors.end(); ++it)
+    {
+        bool res = (*it)->initContainers();
+
+        if (!res)
+        {
+            std::cerr << "Tasks init failed!" << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+    }
+}
