@@ -38,6 +38,8 @@ public:
 
 private:
     MCategory * catGeantFibersRaw;
+    MCategory * catFibersCalSim;
+
     MFibersDigitizerPar * pDigiPar;
     MFibersGeomPar * pGeomPar;
 };

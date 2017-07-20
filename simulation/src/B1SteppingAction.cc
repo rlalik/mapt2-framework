@@ -105,8 +105,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
         // particle did not stop in detektor
         current_particle->setStopInDetector(false);
     }
-    
-    
+
     // Energy Deposit in fiber
     // is the current volume a fiber?
     CADFiber* fiber;

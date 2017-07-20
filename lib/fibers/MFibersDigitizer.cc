@@ -22,6 +22,8 @@
 #include "MFibersDigitizer.h"
 #include "MFibersDigitizerPar.h"
 #include "MFibersGeomPar.h"
+#include "MGeantFibersRaw.h"
+#include "MFibersCalSim.h"
 
 #include "MParManager.h"
 #include "MCategory.h"
@@ -43,6 +45,13 @@ bool MFibersDigitizer::init()
         return false;
     }
 
+    catFibersCalSim = dm()->buildCategory(MCategory::CatFibersCal);
+    if (!catFibersCalSim)
+    {
+        std::cerr << "No CatFibersCal category" << "\n";
+        return false;
+    }
+
     pGeomPar = (MFibersGeomPar*) MParManager::instance()->getParameterContainer("MFibersGeomPar");
     if (!pGeomPar)
     {
@@ -55,8 +64,41 @@ bool MFibersDigitizer::init()
 
 bool MFibersDigitizer::execute()
 {
-//     catGeantFibersRaw->print();
-//     pGeomPar->print();
+    int size = catGeantFibersRaw->getEntries();
+
+    for (int i = 0; i < size; ++i)
+    {
+        MGeantFibersRaw * pHit = (MGeantFibersRaw *)catGeantFibersRaw->getObject(i);
+        if (!pHit)
+        {
+            printf("Hit doesnt exists!\n");
+            continue;
+        }
+
+        Int_t mod = 0;
+        Int_t lay = pHit->getY();
+        Int_t fib = pHit->getX();
+
+        Float_t u = pGeomPar->getFiberOffsetX(mod, lay) + fib * pGeomPar->getFibersPitch(mod, lay);
+        Float_t y = pGeomPar->getFiberOffsetY(mod, lay);
+
+        MLocator loc(3);
+        loc[0] = mod;
+        loc[1] = lay;
+        loc[2] = fib;
+
+        MFibersCalSim * pCal = (MFibersCalSim *) catFibersCalSim->getObject(loc);
+        if (!pCal)
+        {
+            pCal = (MFibersCalSim *) catFibersCalSim->getSlot(loc);
+            pCal = new (pCal) MFibersCalSim;
+        }
+
+        pCal->setU(u);
+        pCal->setY(y);
+        pCal->setEnergy(pHit->getEnergy());
+    }
+
     return true;
 }
 

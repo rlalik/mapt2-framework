@@ -24,6 +24,7 @@ public:
 
     void setPhotons(Int_t photon) { opticalPhotonCount += photon; }
     void setTotalEnergy(Double_t e) { totalEnergy += e; }
+    Double_t getTotalEnergy() const { return totalEnergy; }
 
 //     Int_t getFiberHits() const { return fiberHits; }
 //     void addFiberHitX() { ++fiberHits_x; ++fiberHits; }

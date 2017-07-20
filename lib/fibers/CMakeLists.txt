@@ -10,6 +10,8 @@ SET (LIBRARY_HDRS
     MFibersGeomPar.h
     MFibersDigitizer.h
     MFibersDigitizerPar.h
+    MFibersCal.h
+    MFibersCalSim.h
 )
 
 SET(LIBRARY_SRCS
@@ -17,6 +19,8 @@ SET(LIBRARY_SRCS
     MFibersGeomPar.cc
     MFibersDigitizer.cc
     MFibersDigitizerPar.cc
+    MFibersCal.cc
+    MFibersCalSim.cc
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
