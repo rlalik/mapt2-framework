@@ -62,7 +62,7 @@ int simdst(const std::string & file, int events = 1000)
     // initialize detectors
     MDetectorManager * detm = MDetectorManager::instance();
 
-    detm->addDetector(new MFibersDetector());
+    detm->addDetector(new MFibersDetector("Fibers"));
 
     detm->initTasks();
     detm->initParameterContainers();

@@ -21,7 +21,7 @@
 
 #include "MFibersDetector.h"
 
-MFibersDetector::MFibersDetector() : MDetector()
+MFibersDetector::MFibersDetector(const std::string & name) : MDetector(name)
 {
 }
 

@@ -19,7 +19,7 @@
 
 #include "MDetector.h"
 
-MDetector::MDetector()
+MDetector::MDetector(const std::string & name) : TNamed(name.c_str(), name.c_str())
 {
 
 }
@@ -28,3 +28,5 @@ MDetector::~MDetector()
 {
 
 }
+
+ClassImp(MDetector);

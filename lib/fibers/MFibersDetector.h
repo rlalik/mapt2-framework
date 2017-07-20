@@ -25,7 +25,7 @@
 class MFibersDetector : public MDetector
 {
 public:
-    MFibersDetector();
+    MFibersDetector(const std::string & name);
     ~MFibersDetector();
 
     bool initTasks();

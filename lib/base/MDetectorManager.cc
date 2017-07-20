@@ -46,7 +46,7 @@ MDetectorManager::~MDetectorManager()
 void MDetectorManager::addDetector(MDetector* detector)
 {
     detectors.push_back(detector);
-    printf("Detector %f add\n", detector->GetName());
+    printf("Detector %s add\n", detector->GetName());
 }
 
 void MDetectorManager::initTasks()

@@ -23,16 +23,25 @@
 #include <TNamed.h>
 
 #include "MTaskManager.h"
+#include "MParManager.h"
 
 class MDetector : public TNamed
 {
-public:
+private:
     MDetector();
+
+public:
+    MDetector(const std::string & name);
     ~MDetector();
 
     virtual bool initTasks() = 0;
+    virtual bool initContainers() = 0;
 
     MTaskManager * tm() { return MTaskManager::instance(); }
+    MParManager * pm() { return MParManager::instance(); }
+
+private:
+    ClassDef(MDetector, 1);
 };
 
 #endif // MDETECTOR_H
