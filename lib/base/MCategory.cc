@@ -42,6 +42,7 @@ void MCategory::setup(const char * name, size_t dim, size_t * sizes, bool simula
 
     data = new TClonesArray(name, data_size);
     dim_used.reserve(data_size);
+    dim_used.clear();
 
     printf("Category %s created with linear size of %ld\n", name, data_size);
 }
@@ -129,13 +130,6 @@ void MCategory::print() const
 
 void MCategory::Compress()
 {
-    for (size_t i = 0; i < data_size; ++i)
-    {
-        if (!dim_used[i])
-        {
-            (*data)[i] = nullptr;
-        }
-    }
     data->Compress();
 }
 

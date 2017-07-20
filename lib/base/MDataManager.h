@@ -56,7 +56,7 @@ public:
 
     bool registerCategory(MCategory::Cat cat, std::string name, size_t dim, size_t * sizes, bool simulation);
 
-    bool buildCategory(MCategory::Cat cat);
+    MCategory * buildCategory(MCategory::Cat cat);
     MCategory * getCategory(MCategory::Cat cat);
     MCategory * openCategory(MCategory::Cat cat);
 

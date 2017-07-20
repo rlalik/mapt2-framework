@@ -116,16 +116,16 @@ bool MDataManager::registerCategory(MCategory::Cat cat, std::string name, size_t
     return true;
 }
 
-bool MDataManager::buildCategory(MCategory::Cat cat)
+MCategory * MDataManager::buildCategory(MCategory::Cat cat)
 {
     if (!outputTree)
-        return false;
+        return gNullMCategoryPtr;
 
     int pos = cat * (1+(int)sim);
 
     CategoryInfo cinfo = cinfovec[pos];
     if (cinfo.registered == false)
-        return false;
+        return gNullMCategoryPtr;
 
     MCategory * cat_ptr = new MCategory(cinfo.name.c_str(), cinfo.dim, cinfo.sizes, cinfo.simulation);
     cinfo.ptr = cat_ptr;
@@ -137,10 +137,10 @@ bool MDataManager::buildCategory(MCategory::Cat cat)
 
         TBranch * b = outputTree->Branch(cat_ptr->getName().c_str(), cat_ptr, 16000, 0);
 
-        return true;
+        return cat_ptr;
     }
 
-    return false;
+    return gNullMCategoryPtr;
 }
 
 MCategory * MDataManager::getCategory(MCategory::Cat cat)

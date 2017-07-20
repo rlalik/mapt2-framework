@@ -79,12 +79,12 @@ int simdst(const std::string & file, int events = 1000)
 
         tm->runTasks();
 
-//         dataManager->fill();
+        dataManager->fill();
     }
 
     tm->finalizeTasks();
 
-//     dataManager->save();
+    dataManager->save();
 
     return 0;
 }
