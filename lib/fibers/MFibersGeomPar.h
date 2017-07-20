@@ -20,19 +20,41 @@
 #ifndef MFIBERSGEOMPAR_H
 #define MFIBERSGEOMPAR_H
 
+#include <TArrayI.h>
+#include <TArrayF.h>
+
 #include "MPar.h"
 
 class MFibersGeomPar : public MPar
 {
 public:
+    MFibersGeomPar();
+    virtual ~MFibersGeomPar();
+
     bool getParams(MParContainer * parcont);
     bool putParams(MParContainer * parcont) const;
+    void clear();
+    void print() const;
+
+    Int_t getModules() const { return modules; }
+    Int_t getLayers(Int_t m) const;
+    Int_t getFibers(Int_t m, Int_t l) const;
+    Float_t getLayerRotation(Int_t m, Int_t l) const;
+    Float_t getFiberOffsetX(Int_t m, Int_t l) const;
+    Float_t getFiberOffsetY(Int_t m, Int_t l) const;
 
 private:
-    Float_t layer_rotation;
-    Int_t fibers;
-    Int_t layers;
     Int_t modules;
+    struct SingleModule
+    {
+        Int_t layers;
+        TArrayI fibers;
+        TArrayF layer_rotation;
+        TArrayF fiber_offset_x;
+        TArrayF fiber_offset_y;
+    };
+
+    SingleModule * mods;
 };
 
 #endif // MFIBERSGEOMPAR_H

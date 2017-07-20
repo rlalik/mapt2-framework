@@ -23,6 +23,8 @@
 #include "MTask.h"
 
 class MCategory;
+class MFibersDigitizerPar;
+class MFibersGeomPar;
 
 class MFibersDigitizer : public MTask
 {
@@ -35,8 +37,9 @@ public:
     bool finalize();
 
 private:
-    
     MCategory * catGeantFibersRaw;
+    MFibersDigitizerPar * pDigiPar;
+    MFibersGeomPar * pGeomPar;
 };
 
 #endif // MFIBERSDIGITIZER_H

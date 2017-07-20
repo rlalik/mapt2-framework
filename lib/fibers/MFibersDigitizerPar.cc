@@ -23,8 +23,14 @@
 
 bool MFibersDigitizerPar::getParams(MParContainer* parcont)
 {
+    return true;
 }
 
 bool MFibersDigitizerPar::putParams(MParContainer* parcont) const
+{
+    return true;
+}
+
+void MFibersDigitizerPar::clear()
 {
 }

@@ -27,6 +27,7 @@ class MFibersDigitizerPar : public MPar
 public:
     bool getParams(MParContainer * parcont);
     bool putParams(MParContainer * parcont) const;
+    void clear();
 };
 
 #endif // MFIBERSDIGITIZERPAR_H

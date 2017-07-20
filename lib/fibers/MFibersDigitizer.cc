@@ -20,17 +20,18 @@
 #include <iostream>
 
 #include "MFibersDigitizer.h"
+#include "MFibersDigitizerPar.h"
+#include "MFibersGeomPar.h"
 
+#include "MParManager.h"
 #include "MCategory.h"
 
-MFibersDigitizer::MFibersDigitizer() : MTask(), catGeantFibersRaw(nullptr)
+MFibersDigitizer::MFibersDigitizer() : MTask(), catGeantFibersRaw(nullptr), pDigiPar(nullptr), pGeomPar(nullptr)
 {
-
 }
 
 MFibersDigitizer::~MFibersDigitizer()
 {
-
 }
 
 bool MFibersDigitizer::init()
@@ -42,13 +43,20 @@ bool MFibersDigitizer::init()
         return false;
     }
 
+    pGeomPar = (MFibersGeomPar*) MParManager::instance()->getParameterContainer("MFibersGeomPar");
+    if (!pGeomPar)
+    {
+        std::cerr << "Parameter container 'MFibersGeomPar' was not obtained!" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
     return true;
 }
 
 bool MFibersDigitizer::execute()
 {
-    catGeantFibersRaw->print();
-
+//     catGeantFibersRaw->print();
+//     pGeomPar->print();
     return true;
 }
 
