@@ -135,7 +135,7 @@ MCategory * MDataManager::buildCategory(MCategory::Cat cat)
         categories[cat] = cat_ptr;
         cinfovec[pos] = cinfo;
 
-        TBranch * b = outputTree->Branch(cat_ptr->getName().c_str(), cat_ptr, 16000, 0);
+        TBranch * b = outputTree->Branch(cat_ptr->getName().c_str(), cat_ptr, 16000, 2);
 
         return cat_ptr;
     }

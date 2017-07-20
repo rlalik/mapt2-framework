@@ -11,7 +11,7 @@ ClassImp(MCategory);
 
 TObject * pNullMCategoryPtr = nullptr;
 
-MCategory::MCategory() : name(""), dim(0), simulation(false), dim_sizes(0), data_size(0), data(nullptr)
+MCategory::MCategory() : name(""), dim(0), simulation(false), data(nullptr), dim_sizes(0), dim_used(0), data_size(0)
 {
 }
 
