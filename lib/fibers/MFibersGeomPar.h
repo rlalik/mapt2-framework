@@ -42,6 +42,7 @@ public:
     Float_t getLayerRotation(Int_t m, Int_t l) const;
     Float_t getFiberOffsetX(Int_t m, Int_t l) const;
     Float_t getFiberOffsetY(Int_t m, Int_t l) const;
+    Float_t getFibersPitch(Int_t m, Int_t l) const;
 
 private:
     Int_t modules;
@@ -52,6 +53,7 @@ private:
         TArrayF layer_rotation;
         TArrayF fiber_offset_x;
         TArrayF fiber_offset_y;
+        TArrayF fibers_pitch;
     };
 
     SingleModule * mods;
