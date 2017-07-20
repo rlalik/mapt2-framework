@@ -30,9 +30,14 @@
 
 #include "B1DetectorConstruction.hh"
 #include "B1ActionInitialization.hh"
-#include "MDataManager.h"
+
 #include "B1Config.hh"
 #include "B1PhysicsList.hh"
+
+#include "MDataManager.h"
+#include "MDetectorManager.h"
+
+#include "MFibersDetector.h"
 
 #include <string>
 
@@ -165,7 +170,15 @@ int main(int argc, char** argv)
     // DataManager
     MDataManager* data_manager = MDataManager::instance();
     data_manager->setSimulation(true);
-    
+
+    // initialize detectors
+    MDetectorManager * detm = MDetectorManager::instance();
+
+    detm->addDetector(new MFibersDetector("Fibers"));
+
+//     detm->initParameterContainers();
+    detm->initCategories();
+
     data_manager->setOutputFileName (config->Get_filename() );
     bool res = data_manager->book();
     if (!res)

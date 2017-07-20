@@ -36,6 +36,7 @@ public:
 
     virtual bool initTasks() = 0;
     virtual bool initContainers() = 0;
+    virtual bool initCategories() = 0;
 
     MTaskManager * tm() { return MTaskManager::instance(); }
     MParManager * pm() { return MParManager::instance(); }

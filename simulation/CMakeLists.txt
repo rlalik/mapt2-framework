@@ -26,6 +26,7 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 link_directories(${PROJECT_SOURCE_DIR}/../lib)
 include_directories(${PROJECT_SOURCE_DIR}/../lib/base)
 include_directories(${PROJECT_SOURCE_DIR}/../lib/geant)
+include_directories(${PROJECT_SOURCE_DIR}/../lib/fibers)
 
 # Link directories for libgeometry.so
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../geometry/build)
@@ -36,7 +37,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../geometry/include)
 # Add the executable, and link it to the libraries
 #
 add_executable(mapt_simulation exampleB1.cc ${sources} ${headers})
-target_link_libraries(mapt_simulation ${Geant4_LIBRARIES} ${cadmesh_LIBRARIES} ${ROOT_LIBRARIES} MAPT GeantSim Event Geometry)
+target_link_libraries(mapt_simulation ${Geant4_LIBRARIES} ${cadmesh_LIBRARIES} ${ROOT_LIBRARIES} MAPT GeantSim Geometry Fibers)
 
 add_subdirectory(example)
 

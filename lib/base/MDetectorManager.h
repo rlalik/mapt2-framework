@@ -39,15 +39,17 @@ public:
     ~MDetectorManager();
 
     void addDetector(MDetector * detector);
+    MDetector * getDetector(const std::string & name);
 
     void initTasks();
     void initParameterContainers();
+    void initCategories();
 
     MDataManager * dm() { return MDataManager::instance(); }
 
 private:
-    typedef std::vector<MDetector *> DetectorsVec;
-    DetectorsVec detectors;
+    typedef std::map<std::string, MDetector *> DetectorsMap;
+    DetectorsMap detectors;
 
     static MDetectorManager * detm;
 };

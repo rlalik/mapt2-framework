@@ -77,7 +77,6 @@ MGeantTrack* B1EventAction::addTrack(Int_t trackID)
     return nullptr;
 }
 
-
 int B1EventAction::getTracksMult() const
 {
     MCategory * catGeantTrack = data_manager->getCategory(MCategory::CatGeantTrack);

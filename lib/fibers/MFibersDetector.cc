@@ -46,3 +46,19 @@ bool MFibersDetector::initContainers()
 
     return true;
 }
+
+bool MFibersDetector::initCategories()
+{
+    size_t sizes[3];
+    MDataManager * dm = MDataManager::instance();
+
+    sizes[0] = 1;
+    sizes[1] = 30;
+    sizes[2] = 30;
+    if (!dm->registerCategory(MCategory::CatGeantFibersRaw, "MGeantFibersRaw", 3, sizes, true)) return false;
+    if (!dm->registerCategory(MCategory::CatFibersRaw, "MFibersRaw", 3, sizes, true)) return false;
+    if (!dm->registerCategory(MCategory::CatFibersCal, "MFibersCal", 3, sizes, false)) return false;
+    if (!dm->registerCategory(MCategory::CatFibersCal, "MFibersCalSim", 3, sizes, true)) return false;
+
+    return true;
+}

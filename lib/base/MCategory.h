@@ -52,8 +52,10 @@ public:
         // fibers
         CatFibersRaw,
         CatFibersCal,
-        CatFiberTrack
+        CatFiberTrack,
         // tracks
+        // Limit 
+        CatLimitDoNotUse
     };
 
     MCategory();

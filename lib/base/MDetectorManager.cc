@@ -45,15 +45,24 @@ MDetectorManager::~MDetectorManager()
 
 void MDetectorManager::addDetector(MDetector* detector)
 {
-    detectors.push_back(detector);
+    detectors.insert(std::pair<std::string, MDetector*>(detector->GetName(), detector));
     printf("Detector %s add\n", detector->GetName());
+}
+
+MDetector * MDetectorManager::getDetector(const std::string& name)
+{
+    DetectorsMap::iterator it = detectors.find(name);
+    if (it != detectors.end())
+        return it->second;
+    else
+        return nullptr;
 }
 
 void MDetectorManager::initTasks()
 {
-    for (DetectorsVec::iterator it = detectors.begin(); it != detectors.end(); ++it)
+    for (DetectorsMap::iterator it = detectors.begin(); it != detectors.end(); ++it)
     {
-        bool res = (*it)->initTasks();
+        bool res = it->second->initTasks();
 
         if (!res)
         {
@@ -65,13 +74,27 @@ void MDetectorManager::initTasks()
 
 void MDetectorManager::initParameterContainers()
 {
-    for (DetectorsVec::iterator it = detectors.begin(); it != detectors.end(); ++it)
+    for (DetectorsMap::iterator it = detectors.begin(); it != detectors.end(); ++it)
     {
-        bool res = (*it)->initContainers();
+        bool res = it->second->initContainers();
 
         if (!res)
         {
             std::cerr << "Tasks init failed!" << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+    }
+}
+
+void MDetectorManager::initCategories()
+{
+    for (DetectorsMap::iterator it = detectors.begin(); it != detectors.end(); ++it)
+    {
+        bool res = it->second->initCategories();
+
+        if (!res)
+        {
+            std::cerr << "Categories init failed!" << std::endl;
             std::exit(EXIT_FAILURE);
         }
     }

@@ -66,6 +66,7 @@ int simdst(const std::string & file, int events = 1000)
 
     detm->initTasks();
     detm->initParameterContainers();
+    detm->initCategories();
 
     // initialize tasks
     MTaskManager * tm = MTaskManager::instance();

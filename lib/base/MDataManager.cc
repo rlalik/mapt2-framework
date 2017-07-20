@@ -24,6 +24,10 @@ MDataManager::MDataManager() :
     inputFile(nullptr), inputTree(nullptr), inputTreeTitle("M"), inputTreeName("M"), inputFileName("input.root"),
     numberOfEntries(-1), currentEntry(-1)
 {
+    // Here register all detector independen categories
+    size_t sizes[1];
+    sizes[0] = 100;
+    registerCategory(MCategory::CatGeantTrack, "MGeantTrack", 1, sizes, true);
 }
 
 bool MDataManager::book()
@@ -90,55 +94,47 @@ bool MDataManager::open()
     return true;
 }
 
+bool MDataManager::registerCategory(MCategory::Cat cat, std::string name, size_t dim, size_t * sizes, bool simulation)
+{
+    int pos = cat * (1+(int)simulation);
+
+    if (cinfovec[pos].registered == true)
+        return false;
+
+    CategoryInfo cinfo;
+    cinfo.registered = true;
+    cinfo.cat = cat;
+    cinfo.name = name;
+    cinfo.simulation = simulation;
+    cinfo.dim = dim;
+    for (int i = 0; i < dim; ++i)
+        cinfo.sizes[i] = sizes[i];
+    cinfo.ptr = nullptr;
+
+    cinfovec[pos] = cinfo;
+
+    return true;
+}
+
 bool MDataManager::buildCategory(MCategory::Cat cat)
 {
     if (!outputTree)
         return false;
 
-    CatMap::iterator it = categories.find(cat);
-    if (it != categories.end())
-        return true;
+    int pos = cat * (1+(int)sim);
 
-    MCategory * cat_ptr = nullptr;
-    size_t sizes[10];
+    CategoryInfo cinfo = cinfovec[pos];
+    if (cinfo.registered == false)
+        return false;
 
-    outputFile->cd();
-    outputFile->ls();
-    switch (cat)
-    {
-        case MCategory::CatGeantTrack:
-            sizes[0] = 100;
-            cat_ptr = new MCategory("MGeantTrack", 1, sizes, true);
-            break;
-        case MCategory::CatGeantFibersRaw:
-            sizes[0] = 1;
-            sizes[1] = 30;
-            sizes[2] = 30;
-            cat_ptr = new MCategory("MGeantFibersRaw", 3, sizes, true);
-            break;
-        case MCategory::CatFibersRaw:
-            sizes[0] = 1;
-            sizes[1] = 30;
-            sizes[2] = 30;
-            if (!sim)
-                cat_ptr = new MCategory("FibersRaw", 3, sizes, false);
-            break;
-        case MCategory::CatFibersCal:
-            sizes[0] = 1;
-            sizes[1] = 30;
-            sizes[2] = 30;
-            if (sim)
-                cat_ptr = new MCategory("FibersCal", 3, sizes, true);
-            else
-                cat_ptr = new MCategory("FibersCalSim", 1, sizes, false);
-            break;
-        default:
-            break;
-    }
+    MCategory * cat_ptr = new MCategory(cinfo.name.c_str(), cinfo.dim, cinfo.sizes, cinfo.simulation);
+    cinfo.ptr = cat_ptr;
 
     if (cat_ptr)
     {
         categories[cat] = cat_ptr;
+        cinfovec[pos] = cinfo;
+
         TBranch * b = outputTree->Branch(cat_ptr->getName().c_str(), cat_ptr, 16000, 0);
 
         return true;
@@ -149,9 +145,14 @@ bool MDataManager::buildCategory(MCategory::Cat cat)
 
 MCategory * MDataManager::getCategory(MCategory::Cat cat)
 {
-    CatMap::iterator it = categories.find(cat);
-    if (it != categories.end())
-        return it->second;
+    int pos = cat * (1+(int)sim);
+
+    CategoryInfo cinfo = cinfovec[pos];
+    if (cinfo.registered == false)
+        return gNullMCategoryPtr;
+
+    if (cinfo.ptr)
+        return cinfo.ptr;
 
     MCategory * c = openCategory(cat);
     if (c)
@@ -165,26 +166,22 @@ MCategory * MDataManager::openCategory(MCategory::Cat cat)
     if (!inputTree)
         return gNullMCategoryPtr;
 
+    int pos = cat * (1+(int)sim);
+
+    CategoryInfo cinfo = cinfovec[pos];
+    if (cinfo.registered == false)
+        return gNullMCategoryPtr;
+
     MCategory ** cat_ptr = new MCategory*;
 
-    switch (cat)
-    {
-        case MCategory::CatGeantTrack:
-            *cat_ptr = new MCategory;
-            inputTree->GetBranch("MGeantTrack")->SetAddress(&*cat_ptr);
-            break;
-        case MCategory::CatGeantFibersRaw:
-            *cat_ptr = new MCategory;
-            inputTree->GetBranch("MGeantFibersRaw")->SetAddress(&*cat_ptr);
-            break;
-        default:
-            delete cat_ptr;
-            cat_ptr = nullptr;
-            break;
-    }
+    *cat_ptr = new MCategory;
+    inputTree->GetBranch(cinfo.name.c_str())->SetAddress(&*cat_ptr);
 
     if (cat_ptr)
     {
+        cinfo.ptr = *cat_ptr;
+        cinfovec[pos] = cinfo;
+
         categories[cat] = *cat_ptr;
         return *cat_ptr;
     }
@@ -192,7 +189,7 @@ MCategory * MDataManager::openCategory(MCategory::Cat cat)
         return gNullMCategoryPtr;
 }
 
-void MDataManager::getEntry (int i)
+void MDataManager::getEntry(int i)
 {
     if (!inputTree)
     {

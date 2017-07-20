@@ -30,6 +30,7 @@ public:
 
     bool initTasks();
     bool initContainers();
+    bool initCategories();
 };
 
 #endif // MFIBERSDETECTOR_H

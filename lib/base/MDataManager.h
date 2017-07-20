@@ -54,16 +54,14 @@ public:
 
     void setSimulation(bool simulation) { sim = simulation; }
 
+    bool registerCategory(MCategory::Cat cat, std::string name, size_t dim, size_t * sizes, bool simulation);
+
     bool buildCategory(MCategory::Cat cat);
     MCategory * getCategory(MCategory::Cat cat);
     MCategory * openCategory(MCategory::Cat cat);
 
     void setOutputFileName(string s) { outputFileName = s; }
-    void setOutputTreeName(string s) { outputTreeName = s; }
-    void setOutputTreeTitle(string s) { outputTreeTitle = s; }
     void setInputFileName(string s) { inputFileName = s; }
-    void setInputTreeName(string s) { inputTreeName = s; }
-    void setInputTreeTitle(string s) { inputTreeTitle = s; }
 
     int getCurrentEntryNumber() { return currentEntry; }
     int getNumberOfEntries() { return numberOfEntries; }
@@ -90,12 +88,18 @@ private:
     int numberOfEntries;
     int currentEntry;
 
-    //! \brief The currently loaded event instance.
-    /*!
-        This variable represents the current event. It is filled with the event
-        information from the opening tree entry. Calling MDataManager::fill writes
-        this instance to the save tree.
-    */
+    struct CategoryInfo
+    {
+        bool registered = false;
+        MCategory::Cat cat;
+        std::string name;
+        bool simulation;
+        size_t dim;
+        size_t sizes[16];
+        MCategory * ptr = nullptr;
+    };
+
+    CategoryInfo cinfovec[MCategory::CatLimitDoNotUse * 2];
 
     typedef std::map<MCategory::Cat, MCategory *> CatMap;
     CatMap categories;
