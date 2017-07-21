@@ -65,7 +65,7 @@ Int_t MDataManager::fill()
     // clear the current event data
     for (CatMap::iterator it = categories.begin(); it != categories.end(); ++it)
     {
-        it->second->Compress();
+        it->second->compress();
     }
 
     // fill tree
@@ -129,13 +129,14 @@ MCategory * MDataManager::buildCategory(MCategory::Cat cat)
 
     MCategory * cat_ptr = new MCategory(cinfo.name.c_str(), cinfo.dim, cinfo.sizes, cinfo.simulation);
     cinfo.ptr = cat_ptr;
+    cat_ptr->print();
 
     if (cat_ptr)
     {
         categories[cat] = cat_ptr;
         cinfovec[pos] = cinfo;
 
-        TBranch * b = outputTree->Branch(cat_ptr->getName().c_str(), cat_ptr, 16000, 2);
+        TBranch * b = outputTree->Branch(cat_ptr->getName(), cat_ptr, 16000, 2);
 
         return cat_ptr;
     }

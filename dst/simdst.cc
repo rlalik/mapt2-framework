@@ -75,6 +75,8 @@ int simdst(const std::string & file, int events = 1000)
     // go over all events
     for (int i=0 ; i < ev_limit; ++i)
     {
+        dataManager->clear();
+
         dataManager->getEntry(i);
 
         tm->runTasks();

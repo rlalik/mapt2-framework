@@ -8,16 +8,72 @@
 // Needed for Creation of shared libs
 ClassImp(MLocator);
 ClassImp(MCategory);
+ClassImp(MCategoryHeader);
+ClassImp(MCategoryIndex);
 
 TObject * pNullMCategoryPtr = nullptr;
 
-MCategory::MCategory() : name(""), dim(0), simulation(false), data(nullptr), dim_sizes(0), dim_used(0), data_size(0)
+
+void MLocator::print() const
 {
+    printf("Locator: n=%d => ", dim);
+    for (int i = 0; i < dim; ++i)
+        printf("  %d", addr[i]);
+    putchar('\n');
 }
 
-MCategory::MCategory(const char * name, size_t dim, size_t * sizes, bool simulation)
+MCategoryIndex::MCategoryIndex() : TObject(), compressed(kFALSE)
 {
+    clear();
+}
+
+Bool_t MCategoryIndex::setMapIndex(Int_t pos, Int_t val)
+{
+    if (compressed)
+        return kFALSE;
+
+    idxmap[pos] = val;
+
+    return kTRUE;
+}
+
+Int_t MCategoryIndex::getMapIndex(Int_t pos)
+{
+    IndexMap::const_iterator it = idxmap.find(pos);
+    if (it == idxmap.end())
+        return -1;
+    return it->second;
+}
+
+void MCategoryIndex::clear()
+{
+    compressed = kFALSE;
+    idxmap.clear();
+}
+
+void MCategoryIndex::compress()
+{
+    Int_t j = 0;
+    IndexMap::iterator it = idxmap.begin();
+    for (; it != idxmap.end(); ++it)
+        it->second = j++;
+
+    compressed = kTRUE;
+}
+
+MCategory::MCategory() : data(nullptr)
+{
+    header.clear();
+    index.clear();
+}
+
+MCategory::MCategory(const char * name, size_t dim, size_t * sizes, bool simulation) : data(nullptr)
+{
+    header.clear();
+    index.clear();
     setup(name, dim, sizes, simulation);
+
+    header.writable = kTRUE;
 }
 
 MCategory::~MCategory()
@@ -27,65 +83,57 @@ MCategory::~MCategory()
 
 void MCategory::setup(const char * name, size_t dim, size_t * sizes, bool simulation)
 {
-    this->name = name;
-    this->dim = dim;
-    this->simulation = simulation;
-    dim_sizes.reserve(dim);
+    header.name = name;
+    header.dim = dim;
+    header.simulation = simulation;
+    header.dim_sizes.Set(dim);
+    header.dim_offsets.Set(dim);
 
-    dim_sizes[0] = 1;
-    data_size = sizes[0];
+    header.dim_offsets[0] = 1;
+    header.dim_sizes[0] = sizes[0];
+
+    header.data_size = sizes[0];
     for (size_t i = 1; i < dim; ++i)
     {
-        dim_sizes[i] = dim_sizes[i-1] * sizes[i-1];
-        data_size *= sizes[i];
+        header.dim_offsets[i] = header.dim_offsets[i-1] * sizes[i-1];
+        header.dim_sizes[i] = sizes[i];
+        header.data_size *= sizes[i];
     }
 
-    data = new TClonesArray(name, data_size);
-    dim_used.reserve(data_size);
-    dim_used.clear();
+    data = new TClonesArray(name, header.data_size);
 
-    printf("Category %s created with linear size of %ld\n", name, data_size);
+    printf("Category %s created with linear size of %d\n", name, header.data_size);
 }
 
 TObject * MCategory::operator[](const MLocator & n)
 {
-    if (n.getDim() != dim)
-    {
-        std::cerr << "Dimension of locator = " << n.getDim() << " does not fit to category of = " << dim << std::endl;
-        return nullptr;
-    }
+    if (!checkDim(header.dim))     return nullptr;
 
-    size_t pos = 0;
-    
-    for (size_t i = 1; i < dim; ++i)
-    {
-        pos += n.at(i) * dim_sizes[i];
-    }
-    return data->ConstructedAt(pos);
+    size_t pos = loc2pos(n);
+    Int_t p = index.getMapIndex(pos);
+    if (p < 0) return nullptr;
+    return data->ConstructedAt(p);
 }
 
 TObject *& MCategory::getSlot(const MLocator & n)
 {
-    if (n.getDim() != dim)
+    if (!checkDim(n))     return pNullMCategoryPtr;
+
+    size_t pos = loc2pos(n);
+    if (!index.setMapIndex(pos, pos))
     {
-        std::cerr << "Dimension of locator = " << n.getDim() << " does not fit to category of = " << dim << std::endl;
+        std::cerr << "Category " << header.name << " was already compressed, can't add new slots." << std::endl;
         return pNullMCategoryPtr;
     }
 
-    size_t pos = 0;
-    
-    for (size_t i = 0; i < dim; ++i)
-    {
-        pos += n.at(i) * dim_sizes[i];
-    }
+    if (!getObject(n))  ++entries;
 
-    dim_used[pos] = true;
     return data->operator[](pos);
 }
 
 TObject *& MCategory::getNewSlot()
 {
-    if (dim != 1)
+    if (header.dim != 1)
     {
         std::cerr << "getNewSlot allowed only for linear categories." << std::endl;
         return pNullMCategoryPtr;
@@ -93,25 +141,17 @@ TObject *& MCategory::getNewSlot()
 
     MLocator loc(1);
     loc[0] = data->GetEntries();
-
     return getSlot(loc);
 }
 
 TObject * MCategory::getObject(const MLocator & n)
 {
-    if (n.getDim() != dim)
-    {
-        std::cerr << "Dimension of locator = " << n.getDim() << " does not fit to category of = " << dim << std::endl;
-        return pNullMCategoryPtr;
-    }
+    if (!checkDim(n))     return pNullMCategoryPtr;
 
-    size_t pos = 0;
-    
-    for (size_t i = 0; i < dim; ++i)
-    {
-        pos += n.at(i) * dim_sizes[i];
-    }
-    return data->At(pos);
+    size_t pos = loc2pos(n);
+    Int_t p = index.getMapIndex(pos);
+    if (p < 0) return nullptr;
+    return data->At(p);
 }
 
 TObject * MCategory::getObject(Int_t i)
@@ -121,21 +161,47 @@ TObject * MCategory::getObject(Int_t i)
 
 void MCategory::print() const
 {
-    printf("%d objects in the category:\n", data->GetEntries());
-    for (size_t i = 0; i < data_size; ++i)
-    {
+    printf("Category: %s  length=%d  sim=%d\n", header.name.Data(), header.data_size, header.simulation);
+    printf("  index: objects=%d  compressed=%d\n", index.size(), index.isCompressed());
+    printf("  %d objects in the category:\n", data->GetEntries());
+//     for (size_t i = 0; i < data_size; ++i)
 //         printf("[%3d] at 0x%x\n", i, data->At(i));
-    }
 }
 
-void MCategory::Compress()
+void MCategory::compress()
 {
+    if (!header.writable)   return;
+
     data->Compress();
+    index.compress();
 }
 
 void MCategory::clear()
 {
     data->Clear("C");
+    index.clear();
+}
+
+bool MCategory::checkDim(const MLocator& loc)
+{
+    if (loc.getDim() != header.dim)
+    {
+        std::cerr << "Dimension of locator = " << loc.getDim() << " does not fit to category of = " << header.dim << std::endl;
+        return false;
+    }
+    return true;
+}
+
+
+int MCategory::loc2pos(const MLocator& loc)
+{
+    size_t pos = 0;
+    
+    for (size_t i = 0; i < header.dim; ++i)
+    {//printf("[%d] loc_at=%d   dim_siz=%d\n", i, loc.at(i), header.dim_sizes[i]);
+        pos += loc.at(i) * header.dim_offsets[i];
+    }//printf("pos=%d\n", pos);
+    return pos;
 }
 
 // void MCategory::Streamer(TBuffer& R__b)
