@@ -1,8 +1,11 @@
 #include "C_mainwindow.h"
 
 #include "MDataManager.h"
+#include "MDetectorManager.h"
 #include "MGeantTrack.h"
 #include "MGeantFibersRaw.h"
+
+#include "MFibersDetector.h"
 
 #include <QtGui>
 
@@ -18,12 +21,17 @@ C_MainWindow::C_MainWindow(QWidget *parent)
     dataManager = MDataManager::instance();
     dataManager->setSimulation(true);
 
-    m_winXZ = new C_window_2D(C_view_2D::XZ, dataManager);
+    // initialize detectors
+    MDetectorManager * detm = MDetectorManager::instance();
+    detm->addDetector(new MFibersDetector("Fibers"));
+    detm->initCategories();
+
+    m_winXZ = new C_window_2D(C_view_2D::XY, dataManager);
     m_winXZ->move(this->pos()+QPoint(0,140));
     m_winXZ->setWindowTitle("X-Z plane");
     m_winXZ->show();
 
-    m_winYZ = new C_window_2D(C_view_2D::YZ, dataManager);
+    m_winYZ = new C_window_2D(C_view_2D::ZY, dataManager);
     m_winYZ->move(this->pos()+QPoint(450,140));
     m_winXZ->setWindowTitle("Y-Z plane");
     m_winYZ->show();

@@ -258,12 +258,10 @@ void C_view_3D::update3D()
     else
     {
         size_t secs_num = catGeantTrack->getEntries();
-        MLocator loc1(1);
 
         for (uint i = 0; i < secs_num; ++i)
         {
-            loc1[0] = i;
-            MGeantTrack * p = (MGeantTrack *)catGeantTrack->getObject(loc1);
+            MGeantTrack * p = (MGeantTrack *)catGeantTrack->getObject(i);
 
             QVector3D sta(p->getStartPosition().X(), p->getStartPosition().Y(), p->getStartPosition().Z());
             QVector3D sto(p->getEndPosition().X(), p->getEndPosition().Y(), p->getEndPosition().Z());
@@ -304,16 +302,16 @@ void C_view_3D::update3D()
         // Fiber einzeichnen
         size_t fibers_num = catGeantFibersRaw->getEntries();
 
-        for (uint i = 0; i < secs_num; ++i)
+        for (uint i = 0; i < fibers_num; ++i)
         {
-            MGeantFibersRaw * p = (MGeantFibersRaw *)catGeantTrack->getObject(i);
+            MGeantFibersRaw * p = (MGeantFibersRaw *)catGeantFibersRaw->getObject(i);
 
             int y = p->getY();
             int x = p->getX();
 
             // set color
             float color;
-            color = p->getEnergy()/20.0;
+            color = p->getTotalEnergy()/20.0;
             if (color >1)
                 color = 1;
 

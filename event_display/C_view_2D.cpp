@@ -28,11 +28,11 @@ C_view_2D::C_view_2D(PLANE plane, MDataManager* d, QWidget *parent) :
 
     switch (pl)
     {
-        case XZ:
+        case XY:
             u_lab = "x";
             v_lab = "z";
             break;
-        case YZ:
+        case ZY:
             u_lab = "y";
             v_lab = "z";
             break;
@@ -45,9 +45,8 @@ C_view_2D::C_view_2D(PLANE plane, MDataManager* d, QWidget *parent) :
 
 void C_view_2D::paintEvent(QPaintEvent *)
 {
-    MCategory * catGeantTrack = dataManager->getCategory(MCategory::CatGeantTrack);
     MCategory * catGeantFibersRaw = dataManager->getCategory(MCategory::CatGeantFibersRaw);
-    if (!catGeantTrack)
+    if (!catGeantFibersRaw)
         return;
 
     // Painter anlegen
@@ -66,10 +65,10 @@ void C_view_2D::paintEvent(QPaintEvent *)
         fiber_x = ((m_mouse_x-(15+m_breite+5))/m_breite);
         switch (pl)
         {
-            case XZ:
+            case XY:
                 fiber_y = (((m_mouse_y-30)/m_hoehe));
                 break;
-            case YZ:
+            case ZY:
                 fiber_y = (((m_mouse_y-30)/m_hoehe)+1);
                 break;
             default:
@@ -79,10 +78,10 @@ void C_view_2D::paintEvent(QPaintEvent *)
         bool res = false;
         switch (pl)
         {
-            case XZ:
+            case XY:
                 res = (fiber_y%2 != 0);
                 break;
-            case YZ:
+            case ZY:
                 res = (fiber_y%2 == 0);
                 break;
             default:
@@ -99,11 +98,18 @@ void C_view_2D::paintEvent(QPaintEvent *)
 
     if ((fiber_x != -1) && (fiber_y != -1))     // Mouse ueber einem Kaestchen -> Position und Wert in s
     {
-//         s = u_lab + "position: " + QString::number(fiber_x) +"\n" + v_lab + " position: " + QString::number(fiber_y) FIXME
-//            +"\nvalue: "  + QString::number(simEvt->getHits().getValue(fiber_x,fiber_y));
+        QString val("0");
+        MLocator loc(3);
+        loc[0] = 0;
+        loc[1] = fiber_y;
+        loc[2] = fiber_x;
+        MGeantFibersRaw * p = (MGeantFibersRaw *)catGeantFibersRaw->getObject(loc);if (p)
+            val = QString::number(p->getTotalEnergy());
+        
+        s = u_lab + "position: " + QString::number(fiber_x) +"\n" + v_lab + " position: " + QString::number(fiber_y)
+            +"\nvalue: " + val;
     }
-
-    else                                        // Mouse nicht ueber einem Kaestchen
+    else    // Mouse nicht ueber einem Kaestchen
     {
         s = u_lab + " position: \n" + v_lab + " position: \nvalue: " ;
     }
@@ -121,16 +127,22 @@ void C_view_2D::paintEvent(QPaintEvent *)
             // Farbe einstellen
             float color = 0;
 
+            MLocator loc(3);
+            loc[0] = 0;
+            loc[2] = x;
             switch (pl)
             {
-                case XZ:
-//                     color = simEvt->getHits().getXYValue(x,y)/normfactor;    FIXME
+                case XY:
+                    loc[1] = y*2;
                     break;
-                case YZ:
-//                     color = simEvt->getHits().getZYValue(x,y)/normfactor;    FIXME
+                case ZY:
+                    loc[1] = y*2+1;
                     break;
-                default:
-                    break;
+            }
+            MGeantFibersRaw * p = (MGeantFibersRaw *)catGeantFibersRaw->getObject(loc);
+            if (p)
+            {
+                color = p->getTotalEnergy()/normfactor;
             }
 
             if (color > 1)
@@ -160,10 +172,10 @@ void C_view_2D::paintEvent(QPaintEvent *)
         QString s;
         switch (pl)
         {
-            case XZ:
+            case XY:
                 s = QString::number((y*2));
                 break;
-            case YZ:
+            case ZY:
                 s = QString::number((y*2+1));
                 break;
             default:
@@ -172,9 +184,7 @@ void C_view_2D::paintEvent(QPaintEvent *)
         QRect r(15,30 + y*2*m_hoehe,m_breite,m_hoehe);
         painter.setFont(QFont("Times", 10, QFont::Normal));
         painter.drawText(r, Qt::AlignCenter | Qt::TextWordWrap, s);
-
     }
-
 
     // Beschriftung x-Achse
     for (int x=0; x <15;x++)

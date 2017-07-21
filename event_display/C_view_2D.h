@@ -12,7 +12,7 @@ class C_view_2D : public QWidget
 {
     Q_OBJECT
 public:
-    enum PLANE { XZ, YZ };
+    enum PLANE { XY, ZY };
 
     explicit C_view_2D(PLANE plane, MDataManager* d, QWidget *parent = 0);
     ~C_view_2D();

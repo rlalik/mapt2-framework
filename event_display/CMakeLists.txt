@@ -56,6 +56,7 @@ include_directories(${CMAKE_BINARY_DIR})
 link_directories(${PROJECT_SOURCE_DIR}/../lib)
 include_directories(${PROJECT_SOURCE_DIR}/../lib/base)
 include_directories(${PROJECT_SOURCE_DIR}/../lib/geant)
+include_directories(${PROJECT_SOURCE_DIR}/../lib/fibers)
 
 # Next, using precompiler, compiler and linker
 
@@ -70,6 +71,6 @@ add_executable(EventDisplay ${SOURCES} ${MOC_SRCS} ${RES_SOURCES} ${UI_HEADERS})
 #add_executable( PROJECT_NAME WIN32 ${SOURCES} ${MOC_SRCS} ${RES_SOURCES} ${UI_HEADERS} )
 
 # build it (link libraries)
-target_link_libraries(EventDisplay ${QT_LIBRARIES} Event MAPT GeantSim Geometry)
+target_link_libraries(EventDisplay ${QT_LIBRARIES} MAPT GeantSim Geometry Fibers)
 
 install(TARGETS EventDisplay DESTINATION bin)
