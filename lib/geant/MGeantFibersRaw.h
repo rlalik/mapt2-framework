@@ -13,7 +13,6 @@ public:
     MGeantFibersRaw();
     virtual ~MGeantFibersRaw() {}
     void clear();
-    void random();
 
     void Clear(Option_t* options = "");
 
@@ -32,11 +31,11 @@ public:
 //     void addFiberHitZ() { ++fiberHits_z; ++fiberHits; }
 //     Int_t getFiberHitsZ() const { return fiberHits_z; }
 
-    void setX(Int_t x) { fX = x; }
-    void setY(Int_t y) { fY = y; }
+    void setX(Int_t _x) { x = _x; }
+    void setY(Int_t _y) { y = _y; }
 
-    Int_t getX() const { return fX; }
-    Int_t getY() const { return fY; }
+    Int_t getX() const { return x; }
+    Int_t getY() const { return y; }
 
 private:
     Double_t energyDeposition;
@@ -44,8 +43,8 @@ private:
     Double_t totalEnergy;
     Int_t opticalPhotonCount;
     Int_t fiberHits;
-    Int_t fX;
-    Int_t fY;
+    Int_t x;
+    Int_t y;
 
     // Needed for creation of shared library
     ClassDef(MGeantFibersRaw, 1);

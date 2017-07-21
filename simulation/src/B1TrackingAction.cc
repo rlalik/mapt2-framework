@@ -56,8 +56,8 @@ void B1TrackingAction::PreUserTrackingAction(const G4Track* track)
         
         // Photon in fiber
         // is the current volume a fiber?
-        CADFiber* fiber;
-        if (fiber = dynamic_cast<CADFiber*> (part))
+        CADFiber* fiber = dynamic_cast<CADFiber*> (part);
+        if (fiber)
         {
             MCategory * catGeantFibersRaw = data_manager->getCategory(MCategory::CatGeantFibersRaw);
             int x_fiber = fiber->getFiberX();

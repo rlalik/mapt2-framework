@@ -108,8 +108,8 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
 
     // Energy Deposit in fiber
     // is the current volume a fiber?
-    CADFiber* fiber;
-    if (fiber = dynamic_cast<CADFiber*> (part))
+    CADFiber* fiber = dynamic_cast<CADFiber*>(part);
+    if (fiber)
     {
         MCategory * catGeantFibersRaw = data_manager->getCategory(MCategory::CatGeantFibersRaw);
         int x_fiber = fiber->getFiberX();
@@ -128,17 +128,9 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
             detector_response->setY(y_fiber);
         }
         
-        G4double energy_step = step->GetTotalEnergyDeposit() - step->GetNonIonizingEnergyDeposit (); //take here only ionization energy loss
+        G4double energy_step = step->GetTotalEnergyDeposit() - step->GetNonIonizingEnergyDeposit(); //take here only ionization energy loss
         // formular for  quenching
         double energy_step_quenching =  calculate_quenched_energy(step, kB, energy_step);
-        
-        if (detector_response->getEnergy() == 0 && energy_step > 0)
-        {
-//             if (y_fiber % 2 == 0)
-//                 detector_response->addFiberHitX();
-//             else
-//                 detector_response->addFiberHitZ();
-        }
         
         detector_response->setEnergy(energy_step);
         detector_response->setEnergyQuenching(energy_step_quenching);
@@ -146,7 +138,8 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
     }
 }
 
-G4double calculate_quenched_energy(const G4Step* step, G4double kB, G4double E_dep){
+G4double calculate_quenched_energy(const G4Step* step, G4double kB, G4double E_dep)
+{
     G4double E_quenched = 0;
     G4double E_before = step->GetPreStepPoint()->GetKineticEnergy();
     G4double E_after = step->GetPostStepPoint()->GetKineticEnergy();
