@@ -7,6 +7,9 @@ SET (LIBRARY_NAME MAPT)
 
 SET (LIBRARY_HDRS
     MCategory.h
+    MCategoryIndex.h
+    MCategoryHeader.h
+    MLocator.h
     MDataManager.h
     MTaskManager.h
     MTask.h
@@ -19,6 +22,9 @@ SET (LIBRARY_HDRS
 
 SET(LIBRARY_SRCS
     MCategory.cc
+    MCategoryIndex.cc
+    MCategoryHeader.cc
+    MLocator.cc
     MDataManager.cc
     MTaskManager.cc
     MTask.cc
