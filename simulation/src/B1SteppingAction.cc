@@ -91,7 +91,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
     }
     else if(process == "StepLimiter")
     {
-        current_particle->setEndEnergy(step->GetTrack()->GetKineticEnergy());
+        current_particle->setStopE(step->GetTrack()->GetKineticEnergy());
     }
 
     // stop in detektor volume

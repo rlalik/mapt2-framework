@@ -21,27 +21,37 @@ public:
     virtual ~MGeantTrack() {}
 
     void clear();
-    void random();                                      // creates a particle with random values for testing
-    Double_t getRandomNumber();                          // returns a random number between 0 and 1 (without 0 and 1)
     void addProcess(string name);
     void addDaughterID(Int_t ID);
 
-//     B1DetectorResponse & getDetectorResponse() { return response; }
+    void setStartXYZ(Float_t x, Float_t y, Float_t z) { start.x = x; start.y = y; start.z = z; }
+    Float_t getStartX() const { return start.x; }
+    Float_t getStartY() const { return start.y; }
+    Float_t getStartZ() const { return start.z; }
 
-    TVector3 getStartPosition() const { return startPosition; }
-    void setStartPosition(const TVector3 & p) { startPosition = p; }
+    void setStartPxPyPz(Float_t px, Float_t py, Float_t pz) { start.px = px; start.py = py; start.pz = pz; }
+    Float_t getStartPx() const { return start.px; }
+    Float_t getStartPy() const { return start.py; }
+    Float_t getStartPz() const { return start.pz; }
 
-    TVector3 getEndPosition() const { return endPosition; }
-    void setEndPosition(const TVector3 & p) { endPosition = p; }
+    void setStartE(Float_t e) { start.E = e; }
+    Float_t getStartE() const { return start.E; }
+
+    void setStopXYZ(Float_t x, Float_t y, Float_t z) { stop.x = x; stop.y = y; stop.z = z; }
+    Float_t getStopX() const { return stop.x; }
+    Float_t getStopY() const { return stop.y; }
+    Float_t getStopZ() const { return stop.z; }
+
+    void setStopPxPyPz(Float_t px, Float_t py, Float_t pz) { stop.px = px; stop.py = py; stop.pz = pz; }
+    Float_t getStopPx() const { return stop.px; }
+    Float_t getStopPy() const { return stop.py; }
+    Float_t getStopPz() const { return stop.pz; }
+
+    void setStopE(Float_t e) { stop.E = e; }
+    Float_t getStopE() const { return stop.E; }
 
     Double_t getDistance() const;
     Double_t getRange() const;
-
-    TVector3 getStartDirection() const { return startDirection; }
-    void setStartDirection(const TVector3 & p) { startDirection = p; }
-
-    TVector3 getEndDirection() const { return endDirection; }
-    void setEndDirection(const TVector3 & p) { endDirection = p; }
 
     Bool_t getScattering() const { return scattering; }
     void setScattering(Bool_t b) { scattering = b; }
@@ -49,8 +59,8 @@ public:
     std::vector<string> getProcesses() const { return processes; }
     void setProcesses(const std::vector<string> & v) { processes = v; }
 
-    Int_t getG4Number() const { return g4Number; }
-    void setG4Number(Int_t i) { g4Number = i; }
+    Int_t getG4Id() const { return g4Id; }
+    void setG4Id(Int_t i) { g4Id = i; }
 
     Bool_t getStopInDetector() const { return stopInDetector; }
     void setStopInDetector(Bool_t b) { stopInDetector = b; }
@@ -63,18 +73,12 @@ public:
     string getGenerationProcess() const { return generationProcess; }
     void setGenerationProcess(string i) { generationProcess = i; }
 
-    Double_t getStartEnergy() const { return startEnergy; }
-    void setStartEnergy(Double_t i) { startEnergy = i; }
-
-    Double_t getEndEnergy() const { return endEnergy; }
-    void setEndEnergy(Double_t i) { endEnergy = i; }
-
     void print() const;
-    Bool_t isPim() const { return g4Number == -211; }
-    Bool_t isPip() const { return g4Number == 211; }
-    Bool_t isPiz() const { return g4Number == 111; }
-    Bool_t isP() const { return g4Number == 2212; }
-    Bool_t isaP() const { return g4Number == -2212; }
+    Bool_t isPim() const { return g4Id == -211; }
+    Bool_t isPip() const { return g4Id == 211; }
+    Bool_t isPiz() const { return g4Id == 111; }
+    Bool_t isP() const { return g4Id == 2212; }
+    Bool_t isaP() const { return g4Id == -2212; }
 
     Bool_t getInAcceptance() const { return inAcceptance; }
     void setInAcceptance(Bool_t b) { inAcceptance = b; }
@@ -95,20 +99,19 @@ public:
     ClassDef(MGeantTrack, 1);
 
 private:
-    TVector3 startPosition;
-    TVector3 endPosition;
-    TVector3 startDirection;
-    TVector3 endDirection;
+    struct Point {
+        Float_t x, y, z;
+        Float_t px, py, pz;
+        Float_t E;
+    } start, stop;
     Bool_t scattering;
     std::vector<string> processes;
-    Int_t g4Number;
+    Int_t g4Id;
     Bool_t stopInDetector;
     std::vector<Int_t> secondariesID;
     Int_t trackID;
     Int_t parentID;
     string generationProcess;
-    Double_t startEnergy;
-    Double_t endEnergy;
     Bool_t inAcceptance;
 
     Bool_t proc_arr[ATREST+1];

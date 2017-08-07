@@ -263,8 +263,8 @@ void C_view_3D::update3D()
         {
             MGeantTrack * p = (MGeantTrack *)catGeantTrack->getObject(i);
 
-            QVector3D sta(p->getStartPosition().X(), p->getStartPosition().Y(), p->getStartPosition().Z());
-            QVector3D sto(p->getEndPosition().X(), p->getEndPosition().Y(), p->getEndPosition().Z());
+            QVector3D sta(p->getStartX(), p->getStartY(), p->getStartZ());
+            QVector3D sto(p->getStopX(), p->getStopY(), p->getStopZ());
 
             line << sta << sto;
             end_point << sto;
@@ -277,7 +277,7 @@ void C_view_3D::update3D()
             }
             else
             {
-                int geant_id = p->getG4Number();
+                int geant_id = p->getG4Id();
                 switch (geant_id)
                 {
                     case 211:

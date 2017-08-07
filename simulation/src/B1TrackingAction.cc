@@ -85,34 +85,30 @@ void B1TrackingAction::PreUserTrackingAction(const G4Track* track)
     // Fill the current particle with information
     // start position
     G4ThreeVector start_position = track->GetPosition();
-    TVector3 pos = TVector3(start_position.x(),start_position.y(),start_position.z());
-    current_particle->setStartPosition(pos);
+    current_particle->setStartXYZ(start_position.x(),start_position.y(),start_position.z());
     
     // start direction
     G4ThreeVector start_direction = track->GetMomentumDirection();
-    TVector3 dir = TVector3(start_direction.x(),start_direction.y(),start_direction.z());
-    current_particle->setStartDirection(dir);
+    current_particle->setStartPxPyPz(start_direction.x(),start_direction.y(),start_direction.z());
     
     // PDG encoding
     int pdg = (int) track->GetDynamicParticle()->GetDefinition()->GetPDGEncoding();
-    current_particle->setG4Number(pdg);
+    current_particle->setG4Id(pdg);
     
     // start energy
     double start_energy = track->GetKineticEnergy();
-    current_particle->setStartEnergy(start_energy);
+    current_particle->setStartE(start_energy);
 }
 
 void B1TrackingAction::PostUserTrackingAction(const G4Track* track)
 {
     // end position
     G4ThreeVector end_position = track->GetPosition();
-    TVector3 pos = TVector3(end_position.x(),end_position.y(),end_position.z());
-    current_particle->setEndPosition(pos);
+    current_particle->setStopXYZ(end_position.x(),end_position.y(),end_position.z());
     
     // end direction
     G4ThreeVector end_direction = track->GetMomentumDirection();
-    TVector3 dir = TVector3(end_direction.x(),end_direction.y(),end_direction.z());
-    current_particle->setEndDirection(dir);
+    current_particle->setStopPxPyPz(end_direction.x(),end_direction.y(),end_direction.z());
     
     // end energy
     if (track->GetKineticEnergy() > 0)
@@ -121,7 +117,9 @@ void B1TrackingAction::PostUserTrackingAction(const G4Track* track)
     }
     
     // scattering
-    Double_t a = dir.Angle(current_particle->getStartDirection());
+    TVector3 sta_dir(current_particle->getStartPx(), current_particle->getStartPy(), current_particle->getStartPz());
+    TVector3 sto_dir(current_particle->getStopPx(), current_particle->getStopPy(), current_particle->getStopPz());
+    Double_t a = sto_dir.Angle(sta_dir);
     a = a *180/TMath::Pi();
     if (a >= 1)
     {
