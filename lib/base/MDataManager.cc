@@ -26,7 +26,7 @@ MDataManager::MDataManager() :
 {
     // Here register all detector independen categories
     size_t sizes[1];
-    sizes[0] = 100;
+    sizes[0] = 200;
     registerCategory(MCategory::CatGeantTrack, "MGeantTrack", 1, sizes, true);
 }
 

@@ -12,12 +12,12 @@ include_directories(${PROJECT_SOURCE_DIR}/../lib/base)
 include_directories(${PROJECT_SOURCE_DIR}/../lib/geant)
 
 
-add_executable(analysis analysis.cc)
-target_link_libraries(analysis ${ROOT_LIBRARIES})
+add_executable(mapt_analysis analysis.cc)
+target_link_libraries(mapt_analysis ${ROOT_LIBRARIES})
 
-target_link_libraries(analysis Event MAPT GeantSim)
+target_link_libraries(mapt_analysis MAPT GeantSim Fibers)
 
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
-install(TARGETS analysis DESTINATION bin)
+install(TARGETS mapt_analysis DESTINATION bin)

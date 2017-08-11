@@ -105,7 +105,7 @@ void B1TrackingAction::PostUserTrackingAction(const G4Track* track)
     // end position
     G4ThreeVector end_position = track->GetPosition();
     current_particle->setStopXYZ(end_position.x(),end_position.y(),end_position.z());
-    
+
     // end direction
     G4ThreeVector end_direction = track->GetMomentumDirection();
     current_particle->setStopPxPyPz(end_direction.x(),end_direction.y(),end_direction.z());

@@ -9,6 +9,8 @@
 #include <getopt.h>
 
 // root includes
+#include <TCanvas.h>
+#include <TLegend.h>
 #include <TDatabasePDG.h>
 #include <TVector3.h>
 #include <TFile.h>
@@ -42,6 +44,9 @@ int analysis(const std::string & file, int events = 1000)
     dataManager->setOutputFileName(oname.Data());
     dataManager->book();
 
+    typedef std::map<long, TH1I *> PidMap;
+    PidMap pid_spectrum;
+
     TH1I * h_pi_mult = new TH1I("h_pi_mult", "h_pi_mult", 20, 0, 20);
     TH1I * h_pim_mult = new TH1I("h_pim_mult", "h_pim_mult", 10, 0, 10);
     TH1I * h_pip_mult = new TH1I("h_pip_mult", "h_pip_mult", 10, 0, 10);
@@ -59,6 +64,17 @@ int analysis(const std::string & file, int events = 1000)
     TH1I * h_range = new TH1I("h_range", "h_range", 220, 0, 110);
     TH1I * h_distance = new TH1I("h_distance", "h_distance", 200, 0, 100);
 
+    Int_t bins = 700;
+    Int_t bin_min = 1;
+    Int_t bin_max = 8;
+    TH1 * h_ene_spectrum = new TH1I("h_ene_spectrum", "h_ene_spectrum;log10(E) / MeV;Counts", bins, bin_min, bin_max);
+
+    char * elements_names[28] = {
+        "H", "He",
+        "Li", "Be", "B", "C", "N", "O", "F", "Ne",
+        "Na", "Mg", "Al", "Si", "P", "S", "Cl", "Ar",
+        "K", "Ca", "Sc", "Ti", "V", "Cr", "Mn", "Fe" };
+
     int ev_limit = events < dataManager->getEntriesFast() ? events : dataManager->getEntriesFast();
     std::cout << dataManager->getEntriesFast() << " events, analyze " << ev_limit << std::endl;
 
@@ -69,8 +85,8 @@ int analysis(const std::string & file, int events = 1000)
         MCategory * catGeantTrack = dataManager->getCategory(MCategory::CatGeantTrack);
         if (!catGeantTrack)
         {
-            std::cerr << "event NULL" << "\n";
-            return -1;
+//             std::cerr << "event NULL" << "\n";
+//             return -1;
         }
 //         std::cout << event->getSimulatedEvent()->getPrimary()->Get_stop_in_detector() << "\n";
 //         event->getSimulatedEvent()->getPrimary()->print();
@@ -82,8 +98,8 @@ int analysis(const std::string & file, int events = 1000)
         MCategory * catGeantFibersRaw = dataManager->getCategory(MCategory::CatGeantFibersRaw);
         if (!catGeantFibersRaw)
         {
-            std::cerr << "event NULL" << "\n";
-            return -1;
+//             std::cerr << "event NULL" << "\n";
+//             return -1;
         }
 
         h_acc->Fill(0);
@@ -99,6 +115,25 @@ int analysis(const std::string & file, int events = 1000)
 
             if (track->getTrackID() == 1)
             {
+
+                TH1I * h = nullptr;
+                long id = track->getG4Id();
+                PidMap::iterator it = pid_spectrum.find(id);
+                if (it == pid_spectrum.end())
+                {
+                    char buff[200];
+                    sprintf(buff, "h_pid_%ld", id);
+                    h = new TH1I(buff, buff, bins, bin_min, bin_max);
+                    pid_spectrum.insert(std::pair<long, TH1I*>(id, h));
+                }
+                else
+                {
+                    h = it->second;
+                }
+
+                h_ene_spectrum->Fill(log10(track->getStartE()));
+                h->Fill(log10(track->getStartE()));
+
                 if (track->getInAcceptance())
                     h_acc->Fill(1);
                 if (track->getStopInDetector())
@@ -199,6 +234,42 @@ int analysis(const std::string & file, int events = 1000)
 
     h_range->Write();
     h_distance->Write();
+
+    h_ene_spectrum->Write();
+    TCanvas * can = new TCanvas("can_ene_spectrum", "ene_spectrum", 800, 600);
+    can->cd();
+    h_ene_spectrum->SetLineWidth(2);
+    h_ene_spectrum->Draw();
+
+    TLegend * leg = new TLegend(0.8, 0.1, 1.0, 0.8);
+    leg->AddEntry(h_ene_spectrum, "Total", "l");
+
+    int color = 1;
+    for(PidMap::iterator it = pid_spectrum.begin(); it != pid_spectrum.end(); ++it)
+    {
+        TH1I * h = it->second;
+        h->Draw("same");
+        h->Write();
+        h->SetLineColor(color);
+        ++color;
+
+        long pid = it->first;
+        if (pid > 1000000000)
+        {
+            int a = (pid % 10000) / 10;
+            int z = (pid % 10000000) / 10000;
+            char buff[200];
+            sprintf(buff, "=^{%d}_{%d}%s", a, z, elements_names[z]);
+            leg->AddEntry(h, buff, "l");
+        }
+        else
+        {
+            leg->AddEntry(h, "=^{1}_{1}H", "l");
+        }
+    }
+    leg->Draw();
+    can->SetLogy(kTRUE);
+    can->Write();
 
     dataManager->save();
 

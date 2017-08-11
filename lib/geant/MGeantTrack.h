@@ -59,8 +59,8 @@ public:
     std::vector<string> getProcesses() const { return processes; }
     void setProcesses(const std::vector<string> & v) { processes = v; }
 
-    Int_t getG4Id() const { return g4Id; }
-    void setG4Id(Int_t i) { g4Id = i; }
+    Long_t getG4Id() const { return g4Id; }
+    void setG4Id(Long_t i) { g4Id = i; }
 
     Bool_t getStopInDetector() const { return stopInDetector; }
     void setStopInDetector(Bool_t b) { stopInDetector = b; }
@@ -106,7 +106,7 @@ private:
     } start, stop;
     Bool_t scattering;
     std::vector<string> processes;
-    Int_t g4Id;
+    Long_t g4Id;
     Bool_t stopInDetector;
     std::vector<Int_t> secondariesID;
     Int_t trackID;
