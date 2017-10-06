@@ -29,8 +29,22 @@ public:
     ~MFibersCalSim();
     virtual void Clear(Option_t* opt = "");
 
+    void setKineticEnergy(Float_t t) { T = t; }
+    Float_t getKineticEnergy() const { return T; }
+
+    void setTotalEnergy(Float_t e) { E = e; }
+    Float_t getTotalEnergy() const { return E; }
+
+    void setEnergyLoss(Float_t e) { dEdx = e; }
+    Float_t getEnergyLoss() const { return dEdx; }
+
 private:
     ClassDef(MFibersCalSim, 1);
+
+    Float_t T;  // kinetic energy
+    Float_t E;  // total energy
+
+    Float_t dEdx;  // energy loss
 };
 
 #endif // MFIBERSCALSIM_H

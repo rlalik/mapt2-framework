@@ -33,7 +33,7 @@ C_MainWindow::C_MainWindow(QWidget *parent)
 
     m_winYZ = new C_window_2D(C_view_2D::ZY, dataManager);
     m_winYZ->move(this->pos()+QPoint(450,140));
-    m_winXZ->setWindowTitle("Y-Z plane");
+    m_winYZ->setWindowTitle("Y-Z plane");
     m_winYZ->show();
 
     m_win3D = new C_window_3D(dataManager);

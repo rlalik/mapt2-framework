@@ -69,7 +69,7 @@ int analysis(const std::string & file, int events = 1000)
     Int_t bin_max = 8;
     TH1 * h_ene_spectrum = new TH1I("h_ene_spectrum", "h_ene_spectrum;log10(E) / MeV;Counts", bins, bin_min, bin_max);
 
-    char * elements_names[28] = {
+    const char * elements_names[28] = {
         "H", "He",
         "Li", "Be", "B", "C", "N", "O", "F", "Ne",
         "Na", "Mg", "Al", "Si", "P", "S", "Cl", "Ar",

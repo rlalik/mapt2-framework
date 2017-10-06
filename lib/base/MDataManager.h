@@ -24,7 +24,7 @@ private:
     //! \brief Constructor.
     MDataManager();
     MDataManager(MDataManager const &) {}
-    MDataManager & operator=(MDataManager const &) {}
+    MDataManager & operator=(MDataManager const &) { return *this; }
 
 public:
     static MDataManager * instance();
@@ -52,19 +52,22 @@ public:
     //! \brief Returns number of entries in the current tree.
     int getEntriesFast();
 
-    void setSimulation(bool simulation) { sim = simulation; }
+    void setSimulation(bool simulation);
 
     bool registerCategory(MCategory::Cat cat, std::string name, size_t dim, size_t * sizes, bool simulation);
 
-    MCategory * buildCategory(MCategory::Cat cat);
-    MCategory * getCategory(MCategory::Cat cat);
-    MCategory * openCategory(MCategory::Cat cat);
+    MCategory * buildCategory(MCategory::Cat cat, bool persistent = true);
+    MCategory * getCategory(MCategory::Cat cat, bool persistent = true);
+    MCategory * openCategory(MCategory::Cat cat, bool persistent = true);
 
     void setOutputFileName(string s) { outputFileName = s; }
     void setInputFileName(string s) { inputFileName = s; }
 
     int getCurrentEntryNumber() { return currentEntry; }
     int getNumberOfEntries() { return numberOfEntries; }
+
+private:
+    void initBranches();
 
     //! \brief Needed for creation of shared library
     ClassDef(MDataManager, 1);
@@ -90,7 +93,11 @@ private:
 
     struct CategoryInfo
     {
+        CategoryInfo();
+        CategoryInfo(CategoryInfo & ci);
+
         bool registered = false;
+        bool persistent = false;
         MCategory::Cat cat;
         std::string name;
         bool simulation;
@@ -105,6 +112,7 @@ private:
     CatMap categories;
     static MDataManager * dm;
     bool sim;
+    bool branches_set;
 };
 
 #endif /* DATAMANAGER_H */

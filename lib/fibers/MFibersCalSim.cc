@@ -19,7 +19,7 @@
 
 #include "MFibersCalSim.h"
 
-MFibersCalSim::MFibersCalSim() : MFibersCal()
+MFibersCalSim::MFibersCalSim() : MFibersCal(), T(0.0), E(0.0), dEdx(0.0)
 {
 
 }
@@ -31,7 +31,9 @@ MFibersCalSim::~MFibersCalSim()
 
 void MFibersCalSim::Clear(Option_t* )
 {
-
+    T = 0.0;
+    E = 0.0;
+    dEdx = 0.0;
 }
 
 ClassImp(MFibersCalSim);

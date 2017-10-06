@@ -16,14 +16,21 @@ public:
 
     void Clear(Option_t* options = "");
 
-    void setEnergy(Double_t energy) { energyDeposition = energy; }
-    Double_t getEnergy() const { return energyDeposition; }
+    void setEnergyLoss(Double_t energy) { energyLoss = energy; }
+    void addEnergyLoss(Double_t energy) { energyLoss += energy; }
+    Double_t getEnergyLoss() const { return energyLoss; }
+
+    void setEnergyDeposition(Double_t energy) { energyDeposition = energy; }
+    void addEnergyDeposition(Double_t energy) { energyDeposition += energy; }
+    Double_t getEnergyDeposition() const { return energyDeposition; }
 
     void setEnergyQuenching(Double_t energy) { energyDepositionQuenching = energy; }
 
     void setPhotons(Int_t photon) { opticalPhotonCount += photon; }
     void setTotalEnergy(Double_t e) { totalEnergy += e; }
     Double_t getTotalEnergy() const { return totalEnergy; }
+    void setKineticEnergy(Double_t e) { kineticEnergy += e; }
+    Double_t getKineticEnergy() const { return kineticEnergy; }
 
 //     Int_t getFiberHits() const { return fiberHits; }
 //     void addFiberHitX() { ++fiberHits_x; ++fiberHits; }
@@ -38,9 +45,11 @@ public:
     Int_t getY() const { return y; }
 
 private:
+    Double_t energyLoss;
     Double_t energyDeposition;
     Double_t energyDepositionQuenching;
     Double_t totalEnergy;
+    Double_t kineticEnergy;
     Int_t opticalPhotonCount;
     Int_t fiberHits;
     Int_t x;

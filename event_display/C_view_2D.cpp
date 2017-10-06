@@ -4,6 +4,8 @@
 #include "MGeantTrack.h"
 #include "MGeantFibersRaw.h"
 
+float energy_color_scale = 20.0;
+
 C_view_2D::C_view_2D(PLANE plane, MDataManager* d, QWidget *parent) :
     pl(plane), QWidget(parent)
 {
@@ -103,8 +105,9 @@ void C_view_2D::paintEvent(QPaintEvent *)
         loc[0] = 0;
         loc[1] = fiber_y;
         loc[2] = fiber_x;
-        MGeantFibersRaw * p = (MGeantFibersRaw *)catGeantFibersRaw->getObject(loc);if (p)
-            val = QString::number(p->getTotalEnergy());
+        MGeantFibersRaw * p = (MGeantFibersRaw *)catGeantFibersRaw->getObject(loc);
+        if (p)
+            val = QString::number(p->getEnergyLoss());
         
         s = u_lab + "position: " + QString::number(fiber_x) +"\n" + v_lab + " position: " + QString::number(fiber_y)
             +"\nvalue: " + val;
@@ -142,7 +145,7 @@ void C_view_2D::paintEvent(QPaintEvent *)
             MGeantFibersRaw * p = (MGeantFibersRaw *)catGeantFibersRaw->getObject(loc);
             if (p)
             {
-                color = p->getTotalEnergy()/normfactor;
+                color = p->getEnergyLoss()/energy_color_scale;
             }
 
             if (color > 1)

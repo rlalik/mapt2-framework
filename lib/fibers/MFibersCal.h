@@ -34,11 +34,14 @@ public:
 
     void setU(Float_t _u) { u = _u; }
     void setY(Float_t _y) { y = _y; }
-    void setEnergy(Float_t _e) { e = _e; }
+    void setEnergyDeposition(Float_t e) { e_dep = e; }
+    void addEnergyDeposition(Float_t e) { e_dep += e; }
 
     Float_t getU() const { return u; }
     Float_t getY() const { return y; }
-    Float_t getEnergy() const { return e; }
+    Float_t getEnergyDeposition() const { return e_dep; }
+
+    void print() const;
 
 private:
     Int_t module;
@@ -48,7 +51,7 @@ private:
     Float_t u;  // u-coord
     Float_t y;  // y-coord
 
-    Float_t e;  // energy
+    Float_t e_dep;  // energy
 
     ClassDef(MFibersCal, 1);
 };

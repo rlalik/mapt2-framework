@@ -32,7 +32,7 @@ private:
     //! \brief Constructor.
     MDetectorManager();
     MDetectorManager(MDetectorManager const &) {}
-    MDetectorManager & operator=(MDetectorManager const &) {}
+    MDetectorManager & operator=(MDetectorManager const &) { return *this; }
 
 public:
     static MDetectorManager * instance();

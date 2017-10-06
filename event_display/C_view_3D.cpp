@@ -7,6 +7,8 @@
 #include "MGeantFibersRaw.h"
 #include "MGeantTrack.h"
 
+extern float energy_color_scale;
+
 C_view_3D::C_view_3D(MDataManager* da, QWidget *parent) :
     dataManager(da), QGLWidget(parent)
 {
@@ -311,7 +313,7 @@ void C_view_3D::update3D()
 
             // set color
             float color;
-            color = p->getTotalEnergy()/20.0;
+            color = p->getEnergyLoss()/energy_color_scale;
             if (color >1)
                 color = 1;
 

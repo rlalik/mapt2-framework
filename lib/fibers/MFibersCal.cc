@@ -37,7 +37,12 @@ void MFibersCal::Clear(Option_t* )
 
     u = 0;
     y = 0;
-    e = 0;
+    e_dep = 0.0;
+}
+
+void MFibersCal::print() const
+{
+    printf("fiber m,l,f=%d,%d,%d  u,y=%f,%f  Eloss=%f\n", module, layer, fiber, u, y, e_dep);
 }
 
 ClassImp(MFibersCal);

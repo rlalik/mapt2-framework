@@ -267,7 +267,17 @@ int main(int argc, char** argv)
         // inititalize
         string command_init_vis = "/control/execute " + config->Get_init_vis_file();
         UImanager->ApplyCommand(command_init_vis);
-        
+
+        UImanager->ApplyCommand("/process/msc/verbose 1");
+
+        if (config->getFlagMsc() == false)
+        {
+            // disable multiple scattering
+            printf("* Diable multiple scattering\n");
+//             UImanager->ApplyCommand("/process/msc/inactivate");
+            UImanager->ApplyCommand("/process/inactivate msc");
+        }
+
         // If this simulation is executed on the cluster, set the random seeds to job_number, job_number
         if(config->Get_cluster_job())
         {
@@ -311,7 +321,13 @@ int main(int argc, char** argv)
         string command_init_vis = "/control/execute " + config->Get_init_vis_file();
         UImanager->ApplyCommand(command_init_vis);
         
-        
+        if (config->getFlagMsc() == false)
+        {
+            // disable multiple scattering
+            printf("* Diable multiple scattering\n");
+            UImanager->ApplyCommand("/process/msc/inactivate");
+        }
+
         // If this simulation is executed on the cluster, set the random seeds to job_number, job_number
         if(config->Get_cluster_job())
         {
@@ -335,7 +351,6 @@ int main(int argc, char** argv)
             string command_gun_mac = "/control/execute " + config->Get_gun_mac_file();
             UImanager->ApplyCommand(command_gun_mac);
         }
-        
         // start ui session
         ui->SessionStart();
         delete ui;

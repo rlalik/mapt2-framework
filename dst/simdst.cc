@@ -54,6 +54,8 @@ int simdst(const std::string & file, int events = 1000)
     int ev_limit = events < dataManager->getEntriesFast() ? events : dataManager->getEntriesFast();
     std::cout << dataManager->getEntriesFast() << " events, analyze " << ev_limit << std::endl;
 
+    dataManager->openCategory(MCategory::CatGeantTrack, true);
+
     // initialize parameters
     MParManager * pm = MParManager::instance();
     pm->setParamSource("params.txt");

@@ -131,10 +131,19 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
         G4double energy_step = step->GetTotalEnergyDeposit() - step->GetNonIonizingEnergyDeposit(); //take here only ionization energy loss
         // formular for  quenching
         double energy_step_quenching =  calculate_quenched_energy(step, kB, energy_step);
-        
-        detector_response->setEnergy(energy_step);
+
+        detector_response->addEnergyLoss(step->GetTotalEnergyDeposit());
+        detector_response->addEnergyDeposition(energy_step);
+
+//         printf("add dEdx=%f loss=%f  depos=%f  e_in=%f   e_out=%f\n", energy_step, detector_response->getEnergyLoss(), detector_response->getEnergyDeposition(), step->GetPreStepPoint()->GetKineticEnergy(), step->GetPostStepPoint()->GetKineticEnergy());
+
         detector_response->setEnergyQuenching(energy_step_quenching);
-        detector_response->setTotalEnergy(energy_step);
+        Float_t t_e = detector_response->getKineticEnergy();
+        if (t_e == 0.0)
+        {
+            detector_response->setKineticEnergy(step->GetPreStepPoint()->GetKineticEnergy());
+            detector_response->setTotalEnergy(step->GetPreStepPoint()->GetTotalEnergy());
+        }
     }
 }
 

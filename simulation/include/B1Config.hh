@@ -19,7 +19,7 @@ class B1Config
   B1Config();
   ~B1Config();
 
-  void SetConfigFileName (string file);
+  void SetConfigFileName (const string & file);
   bool ReadConfigFile ();
 
   string Get_init_vis_file ();
@@ -41,8 +41,11 @@ class B1Config
   string Get_rootFile ();
   string Get_particleName ();
 
-  void readline (string l);
-  string GetParameter (string l);
+  bool getFlagMsc() const { return flag_msc; }
+
+  void readline (const string & l);
+  string getStringParameter (const string & l);
+  bool getBoolParameter (const string & l);
 
   void PrintConfig ();
 
@@ -67,6 +70,8 @@ class B1Config
   bool useRootHistoForGun;
   string rootFile;
   string particleName;
+
+  bool flag_msc;
 
   int mode;                          // batch mode = 1 / interactive mode = 2 / batch mode no beamOn = 3
   int number_of_events;

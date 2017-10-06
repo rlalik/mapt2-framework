@@ -33,7 +33,7 @@ private:
     //! \brief Constructor.
     MParManager();
     MParManager(MParManager const &) {}
-    MParManager & operator=(MParManager const &) {}
+    MParManager & operator=(MParManager const &) { return *this; }
 
 public:
     static MParManager * instance();

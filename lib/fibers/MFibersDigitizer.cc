@@ -94,9 +94,13 @@ bool MFibersDigitizer::execute()
             pCal = new (pCal) MFibersCalSim;
         }
 
+        pCal->setAddress(mod, lay, fib);
         pCal->setU(u);
         pCal->setY(y);
-        pCal->setEnergy(pHit->getEnergy());
+        pCal->setEnergyLoss(pHit->getEnergyLoss());
+        pCal->setEnergyDeposition(pHit->getEnergyDeposition());
+        pCal->setKineticEnergy(pHit->getKineticEnergy());
+        pCal->setTotalEnergy(pHit->getTotalEnergy());
     }
 
     return true;

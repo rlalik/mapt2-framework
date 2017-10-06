@@ -32,7 +32,7 @@ private:
     //! \brief Constructor.
     MTaskManager();
     MTaskManager(MTaskManager const &) {}
-    MTaskManager & operator=(MTaskManager const &) {}
+    MTaskManager & operator=(MTaskManager const &) { return *this; }
 
 public:
     static MTaskManager * instance();

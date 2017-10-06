@@ -4,7 +4,8 @@
 #include <string>
 
 
-B1Config::B1Config ()
+B1Config::B1Config () :
+    flag_msc(true)
 {
   config_file = "";
   init_vis_file= "";
@@ -74,7 +75,7 @@ bool B1Config::ReadConfigFile()
 }
 
 
-void B1Config::readline (string l)
+void B1Config::readline (const string & l)
 {
   string line = l;
   string s = "";
@@ -87,31 +88,31 @@ void B1Config::readline (string l)
   // Init Visualisation file
   else if (line.find("InitVis file") != string::npos )
     {
-      init_vis_file = GetParameter (line);
+      init_vis_file = getStringParameter(line);
     }
 
   // Visualisation file
   else if (line.find("Visualisation file") != string::npos)
     {
-      vis_file = GetParameter (line);
+      vis_file = getStringParameter(line);
     }
 
   // Gun mac file
   else if (line.find("Gun mac file") != string::npos)
     {
-      gun_mac_file = GetParameter (line);
+      gun_mac_file = getStringParameter(line);
     }
 
   // Geometry file
   else if (line.find("Geometry file") != string::npos)
     {
-      geometry_file = GetParameter (line);
+      geometry_file = getStringParameter(line);
     }
 
   // mode
   else if (line.find("Mode") != string::npos)
     {
-      string mode_s = GetParameter (line);
+      string mode_s = getStringParameter(line);
 
       std::stringstream convert(mode_s); // stringstream used for the conversion initialized with the contents of Text
 
@@ -122,7 +123,7 @@ void B1Config::readline (string l)
   // number of Events
   else if (line.find("Number of Events") != string::npos)
     {
-      string number_s = GetParameter (line);
+      string number_s = getStringParameter(line);
 
       std::stringstream convert(number_s); // stringstream used for the conversion initialized with the contents of Text
 
@@ -133,7 +134,7 @@ void B1Config::readline (string l)
   // optical processes
   else if (line.find("Optical processes") != string::npos)
     {
-      string para  = GetParameter (line);
+      string para  = getStringParameter(line);
 
       if (para == "true")
 	{
@@ -148,25 +149,25 @@ void B1Config::readline (string l)
   // root filename
   else if (line.find("Root filename") != string::npos)
     {
-      filename = GetParameter (line);
+      filename = getStringParameter(line);
     }
 
   // root tree title
   else if (line.find("Root tree title") != string::npos)
     {
-      tree_title = GetParameter (line);
+      tree_title = getStringParameter(line);
     }
 
   // root treename
   else if (line.find("Root tree name") != string::npos)
     {
-      treename = GetParameter (line);
+      treename = getStringParameter(line);
     }
 
   // cluster job
   else if (line.find("Cluster job") != string::npos)
     {
-          string para  = GetParameter (line);
+          string para  = getStringParameter(line);
 
           if (para == "true")
     	{
@@ -181,7 +182,7 @@ void B1Config::readline (string l)
   // job number
   else if (line.find("Job number") != string::npos)
     {
-      string job_s = GetParameter (line);
+      string job_s = getStringParameter(line);
 
       std::stringstream convert(job_s); // stringstream used for the conversion initialized with the contents of Text
 
@@ -192,7 +193,7 @@ void B1Config::readline (string l)
   // kB
   else if (line.find("Birks coefficient") != string::npos)
     {
-      string kB_s = GetParameter (line);
+      string kB_s = getStringParameter(line);
 
       std::stringstream convert(kB_s); // stringstream used for the conversion initialized with the contents of Text
 
@@ -204,7 +205,7 @@ void B1Config::readline (string l)
   // maxStep
   else if (line.find("Maximal Step in Fiber") != string::npos)
     {
-      string maxStep_s = GetParameter (line);
+      string maxStep_s = getStringParameter(line);
 
       std::stringstream convert(maxStep_s); // stringstream used for the conversion initialized with the contents of Text
 
@@ -216,7 +217,7 @@ void B1Config::readline (string l)
     // electronCutValue
     else if (line.find("Electron Cut Value") != string::npos)
     {
-        string electronCutValue_s = GetParameter (line);
+        string electronCutValue_s = getStringParameter(line);
 
         std::stringstream convert(electronCutValue_s); // stringstream used for the conversion initialized with the contents of Text
 
@@ -227,7 +228,7 @@ void B1Config::readline (string l)
     // use histogram for gun
     else if (line.find("Root Histo for gun") != string::npos)
       {
-            string para  = GetParameter (line);
+            string para  = getStringParameter(line);
 
             if (para == "true")
           {
@@ -242,13 +243,19 @@ void B1Config::readline (string l)
     // root gun histo
       else if (line.find("Path to Gun Histo") != string::npos)
         {
-          rootFile = GetParameter (line);
+          rootFile = getStringParameter(line);
         }
 
     // root treename
     else if (line.find("Particle type") != string::npos)
     {
-        particleName = GetParameter (line);
+        particleName = getStringParameter(line);
+    }
+
+    // multiple scattering
+    else if (line.find("msc") != string::npos)
+    {
+        flag_msc = getBoolParameter(line);
     }
 }
 
@@ -276,13 +283,13 @@ void B1Config::PrintConfig ()
   printf("Root Histo for gun: %d\n", useRootHistoForGun);
   printf("Root File Histo Gun: %s\n", rootFile.c_str());
   printf("Particle Type: %s\n", particleName.c_str());
+  printf("Msc: %d\n", (int)flag_msc);
   printf("\n\n");
-
 }
 
 
 
-string B1Config::GetParameter (string l)
+string B1Config::getStringParameter (const string & l)
 {
   string line = l;
   string parameter = "";
@@ -294,6 +301,24 @@ string B1Config::GetParameter (string l)
   return parameter;
 }
 
+bool B1Config::getBoolParameter (const string & l)
+{
+    size_t start = l.find_first_of(":");
+    string parameter = l.substr(start +1, l.npos);
+
+    bool res = false;
+    try
+    {
+        res = std::stoi(parameter);
+    }
+    catch (...)
+    {
+        fprintf(stderr, "Incorrect input: %s\n", l.c_str());
+        res = false;
+    }
+
+    return res;
+}
 
 
 string B1Config::Get_init_vis_file ()
@@ -319,7 +344,7 @@ string B1Config::Get_geometry_file ()
   return geometry_file;
 }
 
-void B1Config::SetConfigFileName (string file)
+void B1Config::SetConfigFileName (const string & file)
 {
   config_file = file;
 }
