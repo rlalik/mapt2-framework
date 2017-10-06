@@ -51,6 +51,7 @@ add_subdirectory(simulation)
 add_subdirectory(event_display)
 add_subdirectory(analysis)
 add_subdirectory(dst)
+add_subdirectory(particle_filter)
 
 message("")
 message("Add to your profile")
