@@ -25,7 +25,7 @@ include_directories(${CADMESH_INCLUDE_DIRS})
 
 
 # Root
-#set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}")
 find_package(ROOT REQUIRED)
 include_directories(${ROOT_INCLUDE_DIR})
 set(LIBS ${LIBS} ${ROOT_LIBRARIES})
@@ -33,15 +33,15 @@ set(LIBS ${LIBS} ${ROOT_LIBRARIES})
 
 # CGAL
 find_package(CGAL)
-if (DEFINED CGAL_FOUND)
-  message(STATUS ${CGAL_VERSION})
-  if (CGAL_VERSION VERSION_LESS 4.1)
-    message(SEND_ERROR "CGAL version 4.1 or newer not found!")
-  endif()
-  include_directories(${CGAL_INCLUDE_DIRS})
-  message(STATUS "CGAL version: " ${CGAL_VERSION})
+if (CGAL_CONFIG_LOADED)
+	if (CGAL_VERSION VERSION_LESS 4.1)
+		message(SEND_ERROR "CGAL version 4.1 or newer not found!")
+	endif()
+	include_directories(${CGAL_INCLUDE_DIRS})
+	include(${CGAL_USE_FILE})
+	message(STATUS "CGAL version: " ${CGAL_VERSION})
 else()
-  message(SEND_ERROR "CGAL library not found!")
+	message(SEND_ERROR "CGAL library not found!")
 endif()
 
 
