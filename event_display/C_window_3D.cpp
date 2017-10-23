@@ -59,7 +59,19 @@ void C_window_3D::update()
         QString s1 = "Active fibers: " + QString::number(catGeantFibersRaw->getEntries());
         m_l1->setText(s1);
 
-        QString s3 = "Maximum value: " + QString::number(catGeantFibersRaw->getEntries());    // FIXME
+        Double_t max_dEdx = 0.0;
+        for (int i = 0; i < catGeantFibersRaw->getEntries(); ++i)
+        {
+            MGeantFibersRaw * p = (MGeantFibersRaw *)catGeantFibersRaw->getObject(i);
+            if (p)
+            {
+                Double_t e_dep = p->getEnergyDeposition();
+                if (e_dep > max_dEdx)
+                    max_dEdx = e_dep;
+            }
+        }
+
+        QString s3 = "Maximum value: " + QString::number(max_dEdx);
         m_l3->setText(s3);
     }
 
