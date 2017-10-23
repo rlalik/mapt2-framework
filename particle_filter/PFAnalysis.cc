@@ -51,6 +51,7 @@ int main(int argc,char** argv)
     {
         static struct option long_options[] = {
             { "job", required_argument, 0, 'j' },
+            { "jobsnumber", required_argument, 0, 'k' },
             { "events", required_argument, 0, 'e' },
             { "output", required_argument, 0, 'o' },
             { "geometry", required_argument, 0, 'g' },
@@ -60,7 +61,7 @@ int main(int argc,char** argv)
 
         int option_index = 0;
 
-        c = getopt_long(argc, argv, "e:g:j:n:o:", long_options, &option_index);
+        c = getopt_long(argc, argv, "e:g:j:k:n:o:", long_options, &option_index);
 
         if (c == -1)
             break;
@@ -75,6 +76,9 @@ int main(int argc,char** argv)
                 break;
             case 'j':
                 jobNumber = atoi(optarg);
+                break;
+            case 'k':
+                numberOfEventsAnalyzed = atoi(optarg);
                 break;
             case 'n':
                 test_particles_number = atoi(optarg);
@@ -108,9 +112,13 @@ int main(int argc,char** argv)
     std::cout << "path to save file: " << savePath  << "\n";
 
     TString oname = data;
+    TString pfname = data;
 
     if (oname.EndsWith(".root"))
+    {
         oname.ReplaceAll(".root", "_pf.root");
+        pfname.ReplaceAll(".root", "");
+    }
     else
         oname.Append("_pf.root");
 
@@ -147,7 +155,9 @@ int main(int argc,char** argv)
 
         // generate save file name
         string savePathPrior = savePath + "Prior" + to_string(i) + ".root";
-        string savePath_ = savePath + to_string(i) + ".root";
+        char buff[200];
+        sprintf(buff, "%s_pf_e%06d.root", pfname.Data(), i);
+        string savePath_ = buff;
 
         // get the current entry
         dataManager->getEntry(i);

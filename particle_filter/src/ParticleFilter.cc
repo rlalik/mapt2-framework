@@ -202,7 +202,10 @@ bool ParticleFilter::filter()
     std::cout << "\nThere are "<< numMeasurements << " measurements (fibers)" << "\n";
     std::cout << "------------------------------------------------------";
     std::cout <<"\nTest particles: "<< number <<  "\n\n\n";
-    
+
+    if (numMeasurements < 0)
+        return false;
+
     Particle* oldP = new Particle();
     Particle* newP = new Particle();
     
