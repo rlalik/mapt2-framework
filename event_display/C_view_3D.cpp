@@ -1,6 +1,7 @@
 #include "C_view_3D.h"
 #include <QtGui>
 #include <QDebug>
+#include <QFileInfo>
 
 // MAPT-framework
 #include "MDataManager.h"
@@ -12,7 +13,14 @@ extern float energy_color_scale;
 C_view_3D::C_view_3D(MDataManager* da, QWidget *parent) :
     dataManager(da), QGLWidget(parent)
 {
-    geometry = new UserGeant4Geometry("geometry.txt",true);
+    const QString geo_file("geometry.txt");
+    QFileInfo geo_file_info(geo_file);
+    if (! (geo_file_info.exists() and geo_file_info.isFile()) )
+    {
+        std::cerr << "Geometry file " << geo_file.toStdString() << " doesn't exists!" << std::endl;
+        std::exit(EXIT_FAILURE);
+    }
+    geometry = new UserGeant4Geometry(geo_file.toStdString(), true);
 
     geometry->construct();
 

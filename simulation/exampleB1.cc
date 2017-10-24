@@ -248,7 +248,7 @@ int main(int argc, char** argv)
         // vis mac
         string command_vis = "/control/execute vis.mac" ;
         UImanager->ApplyCommand(command_vis);
-        
+
         if (!config->Get_useRootHistoForGun ())
         {
             // Load default GPS mac
@@ -260,67 +260,18 @@ int main(int argc, char** argv)
         delete ui;
     }
     
-    else if ((modus == 1) || (modus == 3))                       // batch mode
+    else if (modus > 0)                       // batch mode
     {
-        printf("\nBatch mode: %d\n", modus);
-        
+        if ((modus == 1) || (modus == 3))
+            printf("\nBatch mode: %d\n", modus);
+
         // inititalize
         string command_init_vis = "/control/execute " + config->Get_init_vis_file();
         UImanager->ApplyCommand(command_init_vis);
 
-        UImanager->ApplyCommand("/process/msc/verbose 1");
+        if ((modus == 1) || (modus == 3))
+            UImanager->ApplyCommand("/process/msc/verbose 1");
 
-        if (config->getFlagMsc() == false)
-        {
-            // disable multiple scattering
-            printf("* Diable multiple scattering\n");
-//             UImanager->ApplyCommand("/process/msc/inactivate");
-            UImanager->ApplyCommand("/process/inactivate msc");
-        }
-
-        // If this simulation is executed on the cluster, set the random seeds to job_number, job_number
-        if(config->Get_cluster_job())
-        {
-            // int to string
-            int job_number = config->Get_job_number();
-            stringstream ss;
-            ss << job_number;
-            string str = ss.str();
-            // create command
-            string command_random = "/random/setSeeds " + str  + " " + str ;
-            UImanager->ApplyCommand(command_random);
-        }
-        
-        if (!config->Get_useRootHistoForGun ())
-        {
-            // load gun mac
-            string command_gun_mac = "/control/execute " + config->Get_gun_mac_file();
-            UImanager->ApplyCommand(command_gun_mac);
-        }
-        
-        // start run (only in mode = 1)
-        // int to string
-        if(modus == 1)
-        {
-            int number = config->Get_number_of_events();
-            stringstream ss;
-            ss << number;
-            string str = ss.str();
-            string command_run_beamOn = "/run/beamOn " + str;
-            printf("\nBeamOn command: %s\n", command_run_beamOn.c_str());
-            UImanager->ApplyCommand(command_run_beamOn);
-        }
-        else if (modus == 3)
-        {
-        }
-    }
-    
-    else if (modus == 2)                             // interactive mode
-    {
-        // init mac
-        string command_init_vis = "/control/execute " + config->Get_init_vis_file();
-        UImanager->ApplyCommand(command_init_vis);
-        
         if (config->getFlagMsc() == false)
         {
             // disable multiple scattering
@@ -340,22 +291,44 @@ int main(int argc, char** argv)
             string command_random = "/random/setSeeds " + str  + " " + str ;
             UImanager->ApplyCommand(command_random);
         }
-        
-        // vis mac
-        string command_vis = "/control/execute " + config->Get_vis_file();
-        UImanager->ApplyCommand(command_vis);
-        
+
+        if (modus == 2)                             // interactive mode
+        {
+            // vis mac
+            string command_vis = "/control/execute " + config->Get_vis_file();
+            UImanager->ApplyCommand(command_vis);
+        }
+
         if (!config->Get_useRootHistoForGun ())
         {
             // load gun mac
             string command_gun_mac = "/control/execute " + config->Get_gun_mac_file();
             UImanager->ApplyCommand(command_gun_mac);
         }
-        // start ui session
-        ui->SessionStart();
-        delete ui;
+        
+        // start run (only in mode = 1)
+        // int to string
+        if(modus == 1)
+        {
+            int number = config->Get_number_of_events();
+            stringstream ss;
+            ss << number;
+            string str = ss.str();
+            string command_run_beamOn = "/run/beamOn " + str;
+            printf("\nBeamOn command: %s\n", command_run_beamOn.c_str());
+            UImanager->ApplyCommand(command_run_beamOn);
+        }
+        else if (modus == 2)                             // interactive mode
+        {
+            // start ui session
+            ui->SessionStart();
+            delete ui;
+        }
+        else if (modus == 3)
+        {
+        }
     }
-
+    
     bool status = data_manager->save();
     printf("\nTree saved with status=%d\n", status);
 

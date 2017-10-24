@@ -203,7 +203,7 @@ bool ParticleFilter::filter()
     std::cout << "------------------------------------------------------";
     std::cout <<"\nTest particles: "<< number <<  "\n\n\n";
 
-    if (numMeasurements < 0)
+    if (numMeasurements <= 0)
         return false;
 
     Particle* oldP = new Particle();
