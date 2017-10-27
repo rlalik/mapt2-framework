@@ -58,7 +58,7 @@ add_subdirectory(event_display)
 add_subdirectory(analysis)
 add_subdirectory(dst)
 add_subdirectory(particle_filter)
-add_subdirectory(python)
+# add_subdirectory(python)
 
 
 
