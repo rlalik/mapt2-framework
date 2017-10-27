@@ -25,6 +25,8 @@
 #include "MTaskManager.h"
 #include "MParManager.h"
 
+class MTask;
+
 class MDetector : public TNamed
 {
 private:
@@ -41,8 +43,17 @@ public:
     MTaskManager * tm() { return MTaskManager::instance(); }
     MParManager * pm() { return MParManager::instance(); }
 
+    void addTask(MTask * task, int step);
+
+    void setTaskMask(unsigned int m) { task_mask = m; }
+    unsigned int getTaskMask() const { return task_mask; }
+
+protected:
+    unsigned int task_mask;
+
 private:
     ClassDef(MDetector, 1);
+
 };
 
 #endif // MDETECTOR_H

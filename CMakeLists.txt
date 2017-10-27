@@ -1,7 +1,13 @@
 #----------------------------------------------------------------------------
 # Setup the project
+cmake_policy(PUSH)
+cmake_policy(SET CMP0048 NEW)
+cmake_policy(POP)
 cmake_minimum_required(VERSION 3.4 FATAL_ERROR)
-project(MAPT-Framework CXX)
+project(MAPT
+    VERSION 1.9.9
+    LANGUAGES CXX
+)
 
 list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
 
@@ -52,6 +58,51 @@ add_subdirectory(event_display)
 add_subdirectory(analysis)
 add_subdirectory(dst)
 add_subdirectory(particle_filter)
+add_subdirectory(python)
+
+
+
+# Export the package for use from the build-tree
+# (this registers the build-tree with a global CMake-registry)
+export(PACKAGE ${CMAKE_PROJECT_NAME})
+string(TOUPPER "${PROJECT_NAME}" CAPS_PROJECT_NAME)
+
+include(GNUInstallDirs)
+
+##### set paths
+if(WIN32 AND NOT CYGWIN)
+	set(DEF_CMAKE_INSTALL_CMAKEDIR cmake)
+else()
+	set(DEF_CMAKE_INSTALL_CMAKEDIR ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME})
+endif()
+set(CMAKE_INSTALL_CMAKEDIR ${DEF_CMAKE_INSTALL_CMAKEDIR} CACHE PATH "Installation directory for CMake files")
+
+include(CMakePackageConfigHelpers)
+configure_package_config_file(Config.cmake.in ${CMAKE_PROJECT_NAME}Config.cmake
+	INSTALL_DESTINATION ${CMAKE_INSTALL_CMAKEDIR}
+	PATH_VARS CMAKE_INSTALL_INCLUDEDIR CMAKE_INSTALL_LIBDIR CMAKE_INSTALL_BINDIR)
+
+write_basic_package_version_file(${CMAKE_PROJECT_NAME}ConfigVersion.cmake
+	VERSION ${PROJECT_VERSION}
+	COMPATIBILITY SameMajorVersion)
+
+install(FILES 
+	${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}Config.cmake
+	${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}ConfigVersion.cmake
+	DESTINATION ${CMAKE_INSTALL_CMAKEDIR})
+
+# Add all targets to the build-tree export set
+export(TARGETS MAPT Fibers GeantSim
+	FILE ${CMAKE_PROJECT_NAME}Targets.cmake)
+
+# # Install the export set for use with the install-tree
+# install(TARGETS MAPT Fibers GeantSim
+# 	EXPORT ${CMAKE_PROJECT_NAME}Targets
+# 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+# 	COMPONENT shlib COMPONENT dev)
+
+install(EXPORT ${CMAKE_PROJECT_NAME}Targets
+	DESTINATION ${CMAKE_INSTALL_CMAKEDIR} COMPONENT dev)
 
 message("")
 message("Add to your profile")

@@ -36,4 +36,9 @@ void MFibersCalSim::Clear(Option_t* )
     dEdx = 0.0;
 }
 
+void MFibersCalSim::print() const
+{
+    MFibersCal::print();
+}
+
 ClassImp(MFibersCalSim);

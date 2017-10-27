@@ -20,7 +20,7 @@
 #ifndef MFIBERSCALSIM_H
 #define MFIBERSCALSIM_H
 
-#include <MFibersCal.h>
+#include "MFibersCal.h"
 
 class MFibersCalSim : public MFibersCal
 {
@@ -37,6 +37,8 @@ public:
 
     void setEnergyLoss(Float_t e) { dEdx = e; }
     Float_t getEnergyLoss() const { return dEdx; }
+
+    void print() const;
 
 private:
     ClassDef(MFibersCalSim, 1);

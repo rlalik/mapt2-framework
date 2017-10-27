@@ -43,9 +43,9 @@ MTaskManager::~MTaskManager()
 
 }
 
-void MTaskManager::addTask(MTask* task, int weight)
+void MTaskManager::addTask(MTask* task, int step)
 {
-    tasks.insert( std::pair<int, MTask *>(weight, task) );
+    tasks.insert( std::pair<int, MTask *>(step, task) );
 }
 
 void MTaskManager::initTasks()

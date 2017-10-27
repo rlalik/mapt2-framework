@@ -38,7 +38,7 @@ public:
     static MTaskManager * instance();
     ~MTaskManager();
 
-    void addTask(MTask * task, int weight);
+    void addTask(MTask * task, int step);
 
     void initTasks();
     void reinitTasks();

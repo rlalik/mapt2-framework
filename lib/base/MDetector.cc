@@ -19,7 +19,9 @@
 
 #include "MDetector.h"
 
-MDetector::MDetector(const std::string & name) : TNamed(name.c_str(), name.c_str())
+#include "MTask.h"
+
+MDetector::MDetector(const std::string & name) : TNamed(name.c_str(), name.c_str()), task_mask(0xff)
 {
 
 }
@@ -27,6 +29,13 @@ MDetector::MDetector(const std::string & name) : TNamed(name.c_str(), name.c_str
 MDetector::~MDetector()
 {
 
+}
+
+void MDetector::addTask(MTask * task, int step)
+{
+    // add task only is mask allows for it
+    if (task_mask & (1 << step))
+        tm()->addTask(task, step);
 }
 
 ClassImp(MDetector);

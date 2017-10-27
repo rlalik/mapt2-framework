@@ -25,3 +25,7 @@ void MGeantFibersRaw::Clear(Option_t* options)
 {
     clear();
 }
+
+void MGeantFibersRaw::print() const
+{
+}

@@ -34,3 +34,9 @@ target_link_libraries(${LIBRARY_NAME} ${ROOT_LIBRARIES})
 install(TARGETS ${LIBRARY_NAME} DESTINATION lib)
 # install(FILES Event.h Track.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 install(FILES ${LIBRARY_HDRS} DESTINATION include)
+
+# Install the export set for use with the install-tree
+install(TARGETS GeantSim
+	EXPORT ${CMAKE_PROJECT_NAME}Targets
+	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	COMPONENT shlib COMPONENT dev)

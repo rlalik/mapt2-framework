@@ -34,7 +34,7 @@ MFibersDetector::~MFibersDetector()
 
 bool MFibersDetector::initTasks()
 {
-    tm()->addTask(new MFibersDigitizer(), 0);
+    addTask(new MFibersDigitizer(), 0);
 
     return true;
 }

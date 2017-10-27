@@ -44,6 +44,8 @@ public:
     Int_t getX() const { return x; }
     Int_t getY() const { return y; }
 
+    void print() const;
+
 private:
     Double_t energyLoss;
     Double_t energyDeposition;
