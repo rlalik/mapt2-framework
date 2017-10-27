@@ -102,27 +102,33 @@ int analysis(const std::string & file, int events = 1000)
         {
             fprintf(stderr, "No category %s\n", "CatGeantTrack");
         }
-
-        tracks_num = catGeantTrack->getEntries();
-        printf("Category %s has %d entries\n", "CatGeantTrack", tracks_num);
+        else
+        {
+            tracks_num = catGeantTrack->getEntries();
+            printf("Category %s has %d entries\n", "CatGeantTrack", tracks_num);
+        }
 
         //*********************************************************************
         if (!catGeantFibersRaw)
         {
             fprintf(stderr, "No category %s\n", "CatGeantFibersRaw");
         }
-
-        tracks_num = catGeantFibersRaw->getEntries();
-        printf("Category %s has %d entries\n", "CatGeantFibersRaw", tracks_num);
+        else
+        {
+            tracks_num = catGeantFibersRaw->getEntries();
+            printf("Category %s has %d entries\n", "CatGeantFibersRaw", tracks_num);
+        }
 
         //*********************************************************************
         if (!catFibersCalSim)
         {
             printf("No category %s\n", "CatFibersCal");
         }
-
-        tracks_num = catFibersCalSim->getEntries();
-        fprintf(stderr, "Category %s has %d entries\n", "CatFibersCal", tracks_num);
+        else
+        {
+            tracks_num = catFibersCalSim->getEntries();
+            fprintf(stderr, "Category %s has %d entries\n", "CatFibersCal", tracks_num);
+        }
     }
 
     return 0;
