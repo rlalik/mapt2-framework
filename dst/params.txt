@@ -27,4 +27,8 @@ fFibersPitch: Float_t \
  2 2 2 2 2 2 2 2 \
  2 2 2 2 2 2
 
+[MFibersCalibratorPar]
+fAdcGain: Float_t 1.0
+fAdcOffset: Float_t 0.0
+
 [MFibersDigitizerPar]

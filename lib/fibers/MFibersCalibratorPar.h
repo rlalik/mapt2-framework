@@ -28,6 +28,14 @@ public:
     bool getParams(MParContainer * parcont);
     bool putParams(MParContainer * parcont) const;
     void clear();
+    void print() const;
+
+    Int_t getAdcGain() const { return fAdcGain; }
+    Int_t getAdcOffset() const { return fAdcOffset; }
+
+private:
+    Float_t fAdcGain;
+    Float_t fAdcOffset;
 };
 
 #endif // MFIBERSCALIBRATORPAR_H

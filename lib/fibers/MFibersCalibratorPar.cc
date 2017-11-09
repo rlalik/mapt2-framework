@@ -21,16 +21,24 @@
 
 #include "MParContainer.h"
 
+void MFibersCalibratorPar::clear()
+{
+    fAdcGain = 1.0;
+    fAdcOffset = 0.0;
+}
+
 bool MFibersCalibratorPar::getParams(MParContainer* parcont)
 {
-    return true;
+    if (!parcont->fill("fAdcGain", fAdcGain)) return false;
+    if (!parcont->fill("fAdcOffset", fAdcOffset)) return false;
 }
 
 bool MFibersCalibratorPar::putParams(MParContainer* parcont) const
 {
-    return true;
 }
 
-void MFibersCalibratorPar::clear()
+void MFibersCalibratorPar::print() const
 {
+    printf(" +++\n adc gain = %g\n", fAdcGain);
+    printf(" adc offset = %g\n", fAdcOffset);
 }

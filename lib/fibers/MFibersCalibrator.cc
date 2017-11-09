@@ -65,6 +65,9 @@ bool MFibersCalibrator::execute()
 {
     int size = catFibersRaw->getEntries();
 
+    Float_t adc_gain = pCalibratorPar->getAdcGain();
+    Float_t adc_offset = pCalibratorPar->getAdcOffset();
+
     for (int i = 0; i < size; ++i)
     {
         MFibersRaw * pRaw = (MFibersRaw *)catFibersRaw->getObject(i);
@@ -85,10 +88,9 @@ bool MFibersCalibrator::execute()
         Float_t adc = pRaw->getADC();
 
         // do your magic here with u, y and adc
-        // ..
-        Float_t lab_u = 0;
-        Float_t lab_y = 0;
-        Float_t energy = 0;
+        Float_t lab_u = u;
+        Float_t lab_y = y;
+        Float_t energy = adc_gain * adc + adc_offset;
 
         MLocator loc(3);
         loc[0] = mod;
