@@ -8,18 +8,26 @@ SET (LIBRARY_NAME Fibers)
 SET (LIBRARY_HDRS
     MFibersDetector.h
     MFibersGeomPar.h
+    MFibersUnpacker.h
+    MFibersRaw.h
+    MFibersCalibrator.h
+    MFibersCalibratorPar.h
+    MFibersCal.h
     MFibersDigitizer.h
     MFibersDigitizerPar.h
-    MFibersCal.h
     MFibersCalSim.h
 )
 
 SET(LIBRARY_SRCS
     MFibersDetector.cc
     MFibersGeomPar.cc
+    MFibersUnpacker.cc
+    MFibersRaw.cc
+    MFibersCalibrator.cc
+    MFibersCalibratorPar.cc
+    MFibersCal.cc
     MFibersDigitizer.cc
     MFibersDigitizerPar.cc
-    MFibersCal.cc
     MFibersCalSim.cc
 )
 

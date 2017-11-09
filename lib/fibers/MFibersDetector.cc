@@ -20,8 +20,10 @@
 #include "MFibersDetector.h"
 
 #include "MFibersGeomPar.h"
+#include "MFibersCalibratorPar.h"
 #include "MFibersDigitizerPar.h"
 
+#include "MFibersUnpacker.h"
 #include "MFibersDigitizer.h"
 
 MFibersDetector::MFibersDetector(const std::string & name) : MDetector(name)
@@ -34,7 +36,14 @@ MFibersDetector::~MFibersDetector()
 
 bool MFibersDetector::initTasks()
 {
-    addTask(new MFibersDigitizer(), 0);
+    if (isSimulation())
+    {
+        addTask(new MFibersDigitizer(), 0);
+    }
+    else
+    {
+        addTask(new MFibersUnpacker(), 0);
+    }
 
     return true;
 }
@@ -42,7 +51,15 @@ bool MFibersDetector::initTasks()
 bool MFibersDetector::initContainers()
 {
     pm()->addParameterContainer("MFibersGeomPar",  new MFibersGeomPar());
-    pm()->addParameterContainer("MFibersDigitizerPar",  new MFibersDigitizerPar());
+
+    if (isSimulation())
+    {
+        pm()->addParameterContainer("MFibersDigitizerPar",  new MFibersDigitizerPar());
+    }
+    else
+    {
+        pm()->addParameterContainer("MFibersCalibratorPar",  new MFibersCalibratorPar());
+    }
 
     return true;
 }
@@ -55,10 +72,16 @@ bool MFibersDetector::initCategories()
     sizes[0] = 1;
     sizes[1] = 30;
     sizes[2] = 30;
-    if (!dm->registerCategory(MCategory::CatGeantFibersRaw, "MGeantFibersRaw", 3, sizes, true)) return false;
-    if (!dm->registerCategory(MCategory::CatFibersRaw, "MFibersRaw", 3, sizes, true)) return false;
-    if (!dm->registerCategory(MCategory::CatFibersCal, "MFibersCal", 3, sizes, false)) return false;
-    if (!dm->registerCategory(MCategory::CatFibersCal, "MFibersCalSim", 3, sizes, true)) return false;
+    if (isSimulation())
+    {
+        if (!dm->registerCategory(MCategory::CatGeantFibersRaw, "MGeantFibersRaw", 3, sizes, true)) return false;
+        if (!dm->registerCategory(MCategory::CatFibersCal, "MFibersCalSim", 3, sizes, true)) return false;
+    }
+    else
+    {
+        if (!dm->registerCategory(MCategory::CatFibersRaw, "MFibersRaw", 3, sizes, true)) return false;
+        if (!dm->registerCategory(MCategory::CatFibersCal, "MFibersCal", 3, sizes, false)) return false;
+    }
 
     return true;
 }

@@ -53,6 +53,7 @@ public:
     int getEntriesFast();
 
     void setSimulation(bool simulation);
+    bool isSimulation() const { return sim; }
 
     bool registerCategory(MCategory::Cat cat, std::string name, size_t dim, size_t * sizes, bool simulation);
 
