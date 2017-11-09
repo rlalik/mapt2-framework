@@ -7,7 +7,7 @@
 #include "C_data.h"
 
 // MAPT Framework
-#include "MDataManager.h"
+#include "MMAPTManager.h"
 
 class QPushButton;
 class QMenuBar;
@@ -20,7 +20,7 @@ class C_window_2D : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit C_window_2D(C_view_2D::PLANE plane, MDataManager* d, QWidget *parent = 0);
+    explicit C_window_2D(C_view_2D::PLANE plane, MMAPTManager* d, QWidget *parent = 0);
     ~C_window_2D();
 
     bool IsOpen();
@@ -32,7 +32,7 @@ private:
     QAction* m_action;			// Aktion im Menu
     C_view_2D* m_center;		// Ansicht
     bool m_isopen;			// Ist Fenster geoeffnet?
-    MDataManager* dataManager;			// Zeiger auf Datenklassen-Instanz
+    MMAPTManager* dataManager;			// Zeiger auf Datenklassen-Instanz
 };
 
 #endif // C_WINDOW_2D_H

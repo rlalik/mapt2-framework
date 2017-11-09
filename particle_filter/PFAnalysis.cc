@@ -14,7 +14,7 @@
 // MAPT-Analysis framework includes
 #include <UserCGALGeometry.h>
 #include <UserGeant4Geometry.h>
-#include <MDataManager.h>
+#include <MMAPTManager.h>
 #include <MDetectorManager.h>
 #include <MFibersDetector.h>
 #include <MTaskManager.h>
@@ -122,7 +122,7 @@ int main(int argc,char** argv)
     else
         oname.Append("_pf.root");
 
-    MDataManager * dataManager = MDataManager::instance();
+    MMAPTManager * dataManager = MMAPTManager::instance();
     dataManager->setSimulation(true);
     dataManager->setInputFileName(data);
     dataManager->open();

@@ -22,7 +22,7 @@
 
 #include <TNamed.h>
 
-#include "MDataManager.h"
+#include "MMAPTManager.h"
 #include "MTaskManager.h"
 #include "MParManager.h"
 
@@ -49,7 +49,7 @@ public:
     void setTaskMask(unsigned int m) { task_mask = m; }
     unsigned int getTaskMask() const { return task_mask; }
 
-    bool isSimulation() const { return MDataManager::instance()->isSimulation(); }
+    bool isSimulation() const { return MMAPTManager::instance()->isSimulation(); }
 
 protected:
     unsigned int task_mask;

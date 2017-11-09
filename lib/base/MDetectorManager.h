@@ -22,7 +22,7 @@
 
 #include <vector>
 
-#include "MDataManager.h"
+#include "MMAPTManager.h"
 
 class MDetector;
 
@@ -45,7 +45,7 @@ public:
     void initParameterContainers();
     void initCategories();
 
-    MDataManager * dm() { return MDataManager::instance(); }
+    MMAPTManager * dm() { return MMAPTManager::instance(); }
 
 private:
     typedef std::map<std::string, MDetector *> DetectorsMap;

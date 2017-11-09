@@ -1,6 +1,6 @@
 #include "C_window_3D.h"
 
-#include "MDataManager.h"
+#include "MMAPTManager.h"
 #include "MGeantFibersRaw.h"
 #include "MGeantTrack.h"
 
@@ -8,7 +8,7 @@
 // Konstruktor
 // ----------------------------------------------------------------------------------------------------------------------------------
 //
-C_window_3D::C_window_3D(MDataManager* da, QWidget *parent) :
+C_window_3D::C_window_3D(MMAPTManager* da, QWidget *parent) :
     dataManager(da), QMainWindow(parent)
 {
     // Fenster einrichten

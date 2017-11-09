@@ -67,7 +67,7 @@ bool MFibersDetector::initContainers()
 bool MFibersDetector::initCategories()
 {
     size_t sizes[3];
-    MDataManager * dm = MDataManager::instance();
+    MMAPTManager * dm = MMAPTManager::instance();
 
     sizes[0] = 1;
     sizes[1] = 30;

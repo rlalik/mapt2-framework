@@ -20,7 +20,7 @@
 #include "MGeantTrack.h"
 #include "MGeantFibersRaw.h"
 
-#include "MDataManager.h"
+#include "MMAPTManager.h"
 #include "MDetectorManager.h"
 #include "MTaskManager.h"
 #include "MParManager.h"
@@ -39,7 +39,7 @@ int simdst(const std::string & file, int events = 1000)
         oname.Append("_digi.root");
 
     // Init data manager
-    MDataManager * dataManager = MDataManager::instance();
+    MMAPTManager * dataManager = MMAPTManager::instance();
     dataManager->setSimulation(true);
 
     // input files

@@ -27,7 +27,7 @@
 #include <vector>
 #include <map>
 
-#include "MDataManager.h"
+#include "MMAPTManager.h"
 
 typedef std::pair<std::string, std::vector<std::string> > TypeDataField;
 typedef std::map<std::string, TypeDataField> ParMap;
@@ -54,7 +54,7 @@ public:
 
     bool initParam(const std::string & name, const std::string & type, const std::vector<std::string> & values);
 
-    MDataManager * dm() { return MDataManager::instance(); }
+    MMAPTManager * dm() { return MMAPTManager::instance(); }
 
     void setLineSplit(size_t n) { line_split = n; }
 

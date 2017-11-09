@@ -16,7 +16,7 @@
 
 // shared libraries Event.so
 class B1EventAction;
-class MDataManager;
+class MMAPTManager;
 class MGeantTrack;
 
 // geometry shared library
@@ -32,7 +32,7 @@ class G4Track;
 class B1TrackingAction : public G4UserTrackingAction
 {
 public:
-    B1TrackingAction(B1EventAction* eventAction, MDataManager* root, B1DetectorConstruction* det);
+    B1TrackingAction(B1EventAction* eventAction, MMAPTManager* root, B1DetectorConstruction* det);
     virtual ~B1TrackingAction() {}
     
     void PreUserTrackingAction(const G4Track* track);
@@ -40,7 +40,7 @@ public:
     
 private:
     B1EventAction*  fEventAction;
-    MDataManager* data_manager;
+    MMAPTManager* data_manager;
     MGeantTrack* current_particle;
     B1DetectorConstruction* detector_construction;
 };

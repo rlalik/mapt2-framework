@@ -6,11 +6,11 @@ project(MAPT-Framework-Library CXX)
 SET (LIBRARY_NAME MAPT)
 
 SET (LIBRARY_HDRS
+    MMAPTManager.h
     MCategory.h
     MCategoryIndex.h
     MCategoryHeader.h
     MLocator.h
-    MDataManager.h
     MTaskManager.h
     MTask.h
     MDetectorManager.h
@@ -21,11 +21,11 @@ SET (LIBRARY_HDRS
 )
 
 SET(LIBRARY_SRCS
+    MMAPTManager.cc
     MCategory.cc
     MCategoryIndex.cc
     MCategoryHeader.cc
     MLocator.cc
-    MDataManager.cc
     MTaskManager.cc
     MTask.cc
     MDetectorManager.cc

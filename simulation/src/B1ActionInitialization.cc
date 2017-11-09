@@ -5,9 +5,9 @@
 #include "B1SteppingAction.hh"
 #include "B1TrackingAction.hh"
 
-#include "MDataManager.h"
+#include "MMAPTManager.h"
 
-B1ActionInitialization::B1ActionInitialization(MDataManager* root, B1Config* conf, B1DetectorConstruction* det)
+B1ActionInitialization::B1ActionInitialization(MMAPTManager* root, B1Config* conf, B1DetectorConstruction* det)
 : G4VUserActionInitialization()
 {
     data_manager = root;

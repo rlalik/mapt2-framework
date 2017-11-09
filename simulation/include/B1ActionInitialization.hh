@@ -37,19 +37,19 @@
 
 /// Action initialization class.
 
-class MDataManager;
+class MMAPTManager;
 
 class B1ActionInitialization : public G4VUserActionInitialization
 {
 public:
-    B1ActionInitialization(MDataManager* root, B1Config* conf, B1DetectorConstruction* det);
+    B1ActionInitialization(MMAPTManager* root, B1Config* conf, B1DetectorConstruction* det);
     virtual ~B1ActionInitialization();
     
     virtual void BuildForMaster() const;
     virtual void Build() const;
     
 private:
-    MDataManager* data_manager;
+    MMAPTManager* data_manager;
     B1Config* config;
     B1DetectorConstruction* detector_construction;
 };

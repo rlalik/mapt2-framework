@@ -5,11 +5,11 @@
 #include "B1TrackingAction.hh"
 #include "B1EventAction.hh"
 
-#include <MDataManager.h>
+#include <MMAPTManager.h>
 #include <MGeantTrack.h>
 #include <MGeantFibersRaw.h>
 
-B1TrackingAction::B1TrackingAction(B1EventAction* eventAction, MDataManager* root, B1DetectorConstruction* det) :
+B1TrackingAction::B1TrackingAction(B1EventAction* eventAction, MMAPTManager* root, B1DetectorConstruction* det) :
     G4UserTrackingAction(), fEventAction(eventAction)
 {
     data_manager = root;

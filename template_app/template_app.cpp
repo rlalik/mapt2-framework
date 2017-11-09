@@ -23,7 +23,7 @@
 #include "MGeantFibersRaw.h"
 #include "MFibersCalSim.h"
 
-#include "MDataManager.h"
+#include "MMAPTManager.h"
 #include "MParManager.h"
 #include "MDetectorManager.h"
 
@@ -41,7 +41,7 @@ int analysis(const std::string & file, int events = 1000)
         oname.Append("_ana.root");
 
     // create Data Manager
-    MDataManager * dataManager = MDataManager::instance();  // get instance
+    MMAPTManager * dataManager = MMAPTManager::instance();  // get instance
     dataManager->setSimulation(true);                       // mark that those are simulations
     dataManager->setInputFileName(file);                    // get input file
     dataManager->open();                                    // open the file

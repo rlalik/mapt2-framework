@@ -1,4 +1,4 @@
-#include "MDataManager.h"
+#include "MMAPTManager.h"
 
 #include "MCategory.h"
 
@@ -7,26 +7,26 @@
 MCategory * gNullMCategoryPtr = 0;
 
 // Needed for Creation of shared libs
-ClassImp(MDataManager);
+ClassImp(MMAPTManager);
 
-MDataManager * MDataManager::dm = nullptr;
+MMAPTManager * MMAPTManager::dm = nullptr;
 
-MDataManager * MDataManager::instance()
+MMAPTManager * MMAPTManager::instance()
 {
     if (!dm)
-        dm = new MDataManager;
+        dm = new MMAPTManager;
 
     return dm;
 }
 
-MDataManager::MDataManager() :
+MMAPTManager::MMAPTManager() :
     outputFile(nullptr), outputTree(nullptr), outputTreeTitle("M"), outputTreeName("M"), outputFileName("output.root"),
     inputFile(nullptr), inputTree(nullptr), inputTreeTitle("M"), inputTreeName("M"), inputFileName("input.root"),
     numberOfEntries(-1), currentEntry(-1), branches_set(false)
 {
 }
 
-void MDataManager::setSimulation(bool simulation)
+void MMAPTManager::setSimulation(bool simulation)
 {
     sim = simulation;
     if (sim)
@@ -39,13 +39,13 @@ void MDataManager::setSimulation(bool simulation)
 }
 
 
-bool MDataManager::book()
+bool MMAPTManager::book()
 {
     // Create file and open it
     outputFile = new TFile(outputFileName.c_str(), "RECREATE");
     if (!outputFile->IsOpen())
     {
-        std::cerr  << "[Error] in MDataManager: could not create saveFile" << std::endl;
+        std::cerr  << "[Error] in MMAPTManager: could not create saveFile" << std::endl;
         return false;
     }
 
@@ -55,7 +55,7 @@ bool MDataManager::book()
     return true;
 }
 
-bool MDataManager::save()
+bool MMAPTManager::save()
 {
     if (outputFile)
     {
@@ -69,7 +69,7 @@ bool MDataManager::save()
 }
 
 
-Int_t MDataManager::fill()
+Int_t MMAPTManager::fill()
 {
     if (!branches_set)
         initBranches();
@@ -87,17 +87,17 @@ Int_t MDataManager::fill()
     return status;
 }
 
-bool MDataManager::open()
+bool MMAPTManager::open()
 {
     inputFile = TFile::Open(inputFileName.c_str());
 	if (inputFile == 0)
     {
-		std::cerr << "[Error] in MDataManager: cannot open ROOT file" << "\n";
+		std::cerr << "[Error] in MMAPTManager: cannot open ROOT file" << "\n";
 		return false;
 	}
 	inputTree = (TTree*) inputFile->Get(inputTreeName.c_str());
     if (!inputTree) {
-        std::cerr << "[Error] in MDataManager open: openTree == NULL" << "\n";
+        std::cerr << "[Error] in MMAPTManager open: openTree == NULL" << "\n";
         return false;
     }
 
@@ -106,7 +106,7 @@ bool MDataManager::open()
     return true;
 }
 
-bool MDataManager::registerCategory(MCategory::Cat cat, std::string name, size_t dim, size_t * sizes, bool simulation)
+bool MMAPTManager::registerCategory(MCategory::Cat cat, std::string name, size_t dim, size_t * sizes, bool simulation)
 {
     int pos = cat * (1+(int)simulation);
 
@@ -129,7 +129,7 @@ bool MDataManager::registerCategory(MCategory::Cat cat, std::string name, size_t
     return true;
 }
 
-void MDataManager::initBranches()
+void MMAPTManager::initBranches()
 {
     size_t limit = MCategory::CatLimitDoNotUse * 2;
     for (size_t i = 0; i < limit; ++i)
@@ -144,7 +144,7 @@ void MDataManager::initBranches()
     branches_set = true;
 }
 
-MCategory * MDataManager::buildCategory(MCategory::Cat cat, bool persistent)
+MCategory * MMAPTManager::buildCategory(MCategory::Cat cat, bool persistent)
 {
     if (!outputTree)
         return gNullMCategoryPtr;
@@ -173,7 +173,7 @@ MCategory * MDataManager::buildCategory(MCategory::Cat cat, bool persistent)
     return gNullMCategoryPtr;
 }
 
-MCategory * MDataManager::getCategory(MCategory::Cat cat, bool persistent)
+MCategory * MMAPTManager::getCategory(MCategory::Cat cat, bool persistent)
 {
     int pos = cat * (1+(int)sim);
     CategoryInfo cinfo = cinfovec[pos];
@@ -188,7 +188,7 @@ MCategory * MDataManager::getCategory(MCategory::Cat cat, bool persistent)
     return gNullMCategoryPtr;
 }
 
-MCategory * MDataManager::openCategory(MCategory::Cat cat, bool persistent)
+MCategory * MMAPTManager::openCategory(MCategory::Cat cat, bool persistent)
 {
     if (!inputTree)
         return gNullMCategoryPtr;
@@ -226,11 +226,11 @@ MCategory * MDataManager::openCategory(MCategory::Cat cat, bool persistent)
         return gNullMCategoryPtr;
 }
 
-void MDataManager::getEntry(int i)
+void MMAPTManager::getEntry(int i)
 {
     if (!inputTree)
     {
-        std::cerr << "[Warning] in MDataManager: no input tree is opened. cannot get any entry." << "\n";
+        std::cerr << "[Warning] in MMAPTManager: no input tree is opened. cannot get any entry." << "\n";
         return;
     }
 
@@ -241,18 +241,18 @@ void MDataManager::getEntry(int i)
     }
 }
 
-int MDataManager::getEntriesFast ()
+int MMAPTManager::getEntriesFast ()
 {
     if (!inputTree)
     {
-        std::cerr << "[Warning] in MDataManager: no input tree is opened. cannot get any entry." << "\n";
+        std::cerr << "[Warning] in MMAPTManager: no input tree is opened. cannot get any entry." << "\n";
         return -1;
     }
     numberOfEntries = inputTree->GetEntriesFast();
     return numberOfEntries;
 }
 
-void MDataManager::print() const
+void MMAPTManager::print() const
 {
     outputFile->cd();
     printf("There are %d categories in the output tree\n", categories.size());
@@ -262,7 +262,7 @@ void MDataManager::print() const
     }
 }
 
-void MDataManager::clear()
+void MMAPTManager::clear()
 {
     for (CatMap::const_iterator it = categories.begin(); it != categories.end(); ++it)
     {
@@ -270,14 +270,14 @@ void MDataManager::clear()
     }
 }
 
-MDataManager::CategoryInfo::CategoryInfo()
+MMAPTManager::CategoryInfo::CategoryInfo()
 {
     registered = false;
     persistent = false;
     ptr = nullptr;
 }
 
-MDataManager::CategoryInfo::CategoryInfo(MDataManager::CategoryInfo& ci)
+MMAPTManager::CategoryInfo::CategoryInfo(MMAPTManager::CategoryInfo& ci)
 {
     registered = ci.registered;
     cat = ci.cat;

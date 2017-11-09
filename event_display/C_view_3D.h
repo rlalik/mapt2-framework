@@ -18,13 +18,13 @@
 #include <vector>
 #include <TVector3.h>
 
-class MDataManager;
+class MMAPTManager;
 
 class C_view_3D : public QGLWidget
 {
     Q_OBJECT
 public:
-    explicit C_view_3D(MDataManager* da, QWidget *parent = 0);
+    explicit C_view_3D(MMAPTManager* da, QWidget *parent = 0);
     ~C_view_3D();
 
     void initializeGL();
@@ -42,7 +42,7 @@ private:
     int beta;
     double distance;
 
-    MDataManager* dataManager;
+    MMAPTManager* dataManager;
     C_view_coordinatesystem* coordinates;
 
     QMatrix4x4 pMatrix;

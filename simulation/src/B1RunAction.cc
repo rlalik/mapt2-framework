@@ -39,7 +39,7 @@
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
 
-B1RunAction::B1RunAction(MDataManager* root)
+B1RunAction::B1RunAction(MMAPTManager* root)
 : G4UserRunAction()
 {
     data_manager = root;

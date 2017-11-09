@@ -20,7 +20,7 @@
 #ifndef MPAR_H
 #define MPAR_H
 
-#include "MDataManager.h"
+#include "MMAPTManager.h"
 
 class MParContainer;
 
@@ -36,7 +36,7 @@ public:
     virtual void clear() = 0;
     virtual void print() const;
 
-    MDataManager * dm() { return MDataManager::instance(); }
+    MMAPTManager * dm() { return MMAPTManager::instance(); }
 
 private:
     MParContainer * parcont;

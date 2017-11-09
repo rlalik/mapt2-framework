@@ -6,7 +6,7 @@
 
 float energy_color_scale = 20.0;
 
-C_view_2D::C_view_2D(PLANE plane, MDataManager* d, QWidget *parent) :
+C_view_2D::C_view_2D(PLANE plane, MMAPTManager* d, QWidget *parent) :
     pl(plane), QWidget(parent)
 {
     dataManager = d;

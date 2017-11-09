@@ -1,5 +1,5 @@
-#ifndef DATAMANAGER_H
-#define DATAMANAGER_H
+#ifndef MMAPTMANAGER_H
+#define MMAPTMANAGER_H
 
 using namespace std;
 
@@ -15,21 +15,21 @@ using namespace std;
 
 //! \brief Access point to load, read and write data.
 /*!
-  The MDataManager is responsible to manage all data operations. It loads a root
+  The MMAPTManager is responsible to manage all data operations. It loads a root
   tree from specified file.
 */
-class MDataManager: public TObject
+class MMAPTManager: public TObject
 {
 private:
     //! \brief Constructor.
-    MDataManager();
-    MDataManager(MDataManager const &) {}
-    MDataManager & operator=(MDataManager const &) { return *this; }
+    MMAPTManager();
+    MMAPTManager(MMAPTManager const &) {}
+    MMAPTManager & operator=(MMAPTManager const &) { return *this; }
 
 public:
-    static MDataManager * instance();
+    static MMAPTManager * instance();
 
-    virtual ~MDataManager() {};
+    virtual ~MMAPTManager() {};
 
     void print() const;
     void clear();
@@ -71,7 +71,7 @@ private:
     void initBranches();
 
     //! \brief Needed for creation of shared library
-    ClassDef(MDataManager, 1);
+    ClassDef(MMAPTManager, 1);
 
 private:
     // file and tree to save the events
@@ -111,7 +111,7 @@ private:
 
     typedef std::map<MCategory::Cat, MCategory *> CatMap;
     CatMap categories;
-    static MDataManager * dm;
+    static MMAPTManager * dm;
     bool sim;
     bool branches_set;
 };

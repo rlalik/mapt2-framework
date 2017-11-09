@@ -36,14 +36,14 @@
 
 #include <map>
 
-class MDataManager;
+class MMAPTManager;
 class MGeantTrack;
 
 /// Event action class
 class B1EventAction : public G4UserEventAction
 {
 public:
-    B1EventAction(MDataManager* root);
+    B1EventAction(MMAPTManager* root);
     virtual ~B1EventAction();
 
     virtual void BeginOfEventAction(const G4Event* event);
@@ -54,7 +54,7 @@ public:
     MGeantTrack * getParticle(int trackID) const;
 
 private:
-    MDataManager* data_manager;
+    MMAPTManager* data_manager;
     std::map<int, MGeantTrack *> track_map;
 };
 

@@ -1,6 +1,6 @@
 #include "C_mainwindow.h"
 
-#include "MDataManager.h"
+#include "MMAPTManager.h"
 #include "MDetectorManager.h"
 #include "MGeantTrack.h"
 #include "MGeantFibersRaw.h"
@@ -18,7 +18,7 @@ C_MainWindow::C_MainWindow(QWidget *parent)
     setWindowTitle("Live Event Display");
 
     // load data
-    dataManager = MDataManager::instance();
+    dataManager = MMAPTManager::instance();
     dataManager->setSimulation(true);
 
     // initialize detectors

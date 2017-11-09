@@ -39,7 +39,7 @@
 #include "B1DetectorConstruction.hh"
 
 // shared libraries Event.so
-class MDataManager;
+class MMAPTManager;
 class MCategory;
 class MGeantTrack;
 
@@ -58,7 +58,7 @@ class G4LogicalVolume;
 class B1SteppingAction : public G4UserSteppingAction
 {
   public:
-    B1SteppingAction(B1EventAction* eventAction, MDataManager* root, B1DetectorConstruction* det,double kB_);
+    B1SteppingAction(B1EventAction* eventAction, MMAPTManager* root, B1DetectorConstruction* det,double kB_);
     virtual ~B1SteppingAction();
 
     // method from the base class
@@ -68,7 +68,7 @@ class B1SteppingAction : public G4UserSteppingAction
     MGeantTrack* current_particle;
 
     B1EventAction*  fEventAction;
-    MDataManager* data_manager;
+    MMAPTManager* data_manager;
     B1DetectorConstruction* detector_construction;
     double kB;
 };

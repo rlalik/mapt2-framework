@@ -34,7 +34,7 @@
 #include "B1Config.hh"
 #include "B1PhysicsList.hh"
 
-#include "MDataManager.h"
+#include "MMAPTManager.h"
 #include "MDetectorManager.h"
 
 #include "MFibersDetector.h"
@@ -168,7 +168,7 @@ int main(int argc, char** argv)
     runManager->SetUserInitialization(detector_construction);
     
     // DataManager
-    MDataManager* data_manager = MDataManager::instance();
+    MMAPTManager* data_manager = MMAPTManager::instance();
     data_manager->setSimulation(true);
 
     // initialize detectors

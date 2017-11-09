@@ -22,7 +22,7 @@
 #include "MGeantFibersRaw.h"
 #include "MGeantTrack.h"
 
-#include "MDataManager.h"
+#include "MMAPTManager.h"
 
 using namespace std;
 
@@ -35,7 +35,7 @@ int analysis(const std::string & file, int events = 1000)
     else
         oname.Append("_ana.root");
 
-    MDataManager * dataManager = MDataManager::instance();
+    MMAPTManager * dataManager = MMAPTManager::instance();
     dataManager->setSimulation(true);
     dataManager->setInputFileName(file);
     dataManager->open();

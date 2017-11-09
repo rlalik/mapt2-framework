@@ -18,7 +18,7 @@ ParticleFilter::~ParticleFilter()
     temps.clear();
 }
 
-bool ParticleFilter::initEvent(MDataManager * event_, double deltaE, double deltaPos, double deltaDir)
+bool ParticleFilter::initEvent(MMAPTManager * event_, double deltaE, double deltaPos, double deltaDir)
 {
     event = event_;
     catFibersCal = event->getCategory(MCategory::CatFibersCal);

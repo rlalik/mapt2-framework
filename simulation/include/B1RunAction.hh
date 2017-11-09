@@ -33,7 +33,7 @@
 
 #include "G4UserRunAction.hh"
 #include "globals.hh"
-#include "MDataManager.h"
+#include "MMAPTManager.h"
 
 class G4Run;
 class G4LogicalVolume;
@@ -47,7 +47,7 @@ class G4LogicalVolume;
 class B1RunAction : public G4UserRunAction
 {
 public:
-    B1RunAction(MDataManager* root);
+    B1RunAction(MMAPTManager* root);
     virtual ~B1RunAction();
 
     virtual G4Run* GenerateRun();
@@ -55,7 +55,7 @@ public:
     virtual void   EndOfRunAction(const G4Run*);
 
 private:
-    MDataManager* data_manager;
+    MMAPTManager* data_manager;
 
 };
 

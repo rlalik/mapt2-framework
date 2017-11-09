@@ -4,13 +4,13 @@
 #include <QFileInfo>
 
 // MAPT-framework
-#include "MDataManager.h"
+#include "MMAPTManager.h"
 #include "MGeantFibersRaw.h"
 #include "MGeantTrack.h"
 
 extern float energy_color_scale;
 
-C_view_3D::C_view_3D(MDataManager* da, QWidget *parent) :
+C_view_3D::C_view_3D(MMAPTManager* da, QWidget *parent) :
     dataManager(da), QGLWidget(parent)
 {
     const QString geo_file("geometry.txt");

@@ -7,13 +7,13 @@
 
 // MAPT-framework
 
-class MDataManager;
+class MMAPTManager;
 
 class C_window_3D : public QMainWindow
 {
     Q_OBJECT
 public:
-    explicit C_window_3D(MDataManager * da, QWidget *parent = 0);
+    explicit C_window_3D(MMAPTManager * da, QWidget *parent = 0);
     ~C_window_3D();
     void update();
 
@@ -26,7 +26,7 @@ private:
     QLabel* m_l3;
 
     C_view_3D* m_view3D;
-    MDataManager* dataManager;
+    MMAPTManager* dataManager;
 
 protected:
 };

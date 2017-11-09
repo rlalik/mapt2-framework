@@ -8,7 +8,7 @@
 #include "C_window_2D.h"
 
 // MAPT Framework
-class MDataManager;
+class MMAPTManager;
 class MGeantSim;
 
 
@@ -29,7 +29,7 @@ public:
     void openFile(const QString & fn);
 
 private:
-    MDataManager* dataManager;
+    MMAPTManager* dataManager;
 //     MCategory * catGeantTrack;
 //     MCategory * catGeantFibersRaw;
 

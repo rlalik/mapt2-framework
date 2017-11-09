@@ -36,10 +36,10 @@
 #include "G4Event.hh"
 #include "G4RunManager.hh"
 
-#include "MDataManager.h"
+#include "MMAPTManager.h"
 #include "MGeantTrack.h"
 
-B1EventAction::B1EventAction(MDataManager* root)
+B1EventAction::B1EventAction(MMAPTManager* root)
 : G4UserEventAction()
 {
     data_manager = root;

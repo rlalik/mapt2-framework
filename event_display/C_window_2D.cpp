@@ -4,7 +4,7 @@
 // Konstruktor
 // ----------------------------------------------------------------------------------------------------------------------------------
 //
-C_window_2D::C_window_2D(C_view_2D::PLANE plane, MDataManager* d, QWidget *parent) :
+C_window_2D::C_window_2D(C_view_2D::PLANE plane, MMAPTManager* d, QWidget *parent) :
     dataManager(d), QMainWindow(parent)
 {
     // Fenster einrichten

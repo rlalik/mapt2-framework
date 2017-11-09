@@ -38,11 +38,11 @@
 #include "G4OpticalPhoton.hh"
 #include "G4EmCalculator.hh"
 
-#include "MDataManager.h"
+#include "MMAPTManager.h"
 #include "MGeantTrack.h"
 #include "MGeantFibersRaw.h"
 
-B1SteppingAction::B1SteppingAction(B1EventAction* eventAction, MDataManager* root, B1DetectorConstruction* det, double kB_)
+B1SteppingAction::B1SteppingAction(B1EventAction* eventAction, MMAPTManager* root, B1DetectorConstruction* det, double kB_)
 : G4UserSteppingAction(), data_manager(root), detector_construction(det), kB(kB_), fEventAction(eventAction)
 {
 }

@@ -35,7 +35,7 @@
 #include "RandomGenerator.h"
 #include "Physics.h"
 
-#include "MDataManager.h"
+#include "MMAPTManager.h"
 #include "MFibersCalSim.h"
 
 using namespace std::chrono;
@@ -54,7 +54,7 @@ public:
     ~ParticleFilter();
 
     //! \brief initialize the filter for a event
-    bool initEvent(MDataManager* event_, double deltaE, double deltaPos, double deltaDir);
+    bool initEvent(MMAPTManager* event_, double deltaE, double deltaPos, double deltaDir);
 
     //! \brief generating the particles according to prior
     Particle* generateParticleFromSimulatedEvent(double deltaE, double deltaDir, double deltaPos);
@@ -114,7 +114,7 @@ private:
     bool checkInitialisation();
 
     //! \brief current event (initialized in initEvent)
-    MDataManager* event;
+    MMAPTManager* event;
 
     //! \brief current hits (initialized in initEvent)
     MCategory* catGeantTrack;

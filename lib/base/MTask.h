@@ -20,7 +20,7 @@
 #ifndef MTASK_H
 #define MTASK_H
 
-#include "MDataManager.h"
+#include "MMAPTManager.h"
 
 class MTask
 {
@@ -35,7 +35,7 @@ public:
 
     virtual bool finalize() = 0;
 
-    MDataManager * dm() { return MDataManager::instance(); }
+    MMAPTManager * dm() { return MMAPTManager::instance(); }
 };
 
 #endif // MTASK_H
