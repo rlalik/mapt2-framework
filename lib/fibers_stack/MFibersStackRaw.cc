@@ -17,28 +17,32 @@
  *
  */
 
-#include "MFibersCalibratorPar.h"
+#include "MFibersStackRaw.h"
 
-#include "MParContainer.h"
-
-void MFibersCalibratorPar::clear()
+MFibersStackRaw::MFibersStackRaw() : TObject()
 {
-    fAdcGain = 1.0;
-    fAdcOffset = 0.0;
+    Clear();
 }
 
-bool MFibersCalibratorPar::getParams(MParContainer* parcont)
+MFibersStackRaw::~MFibersStackRaw()
 {
-    if (!parcont->fill("fAdcGain", fAdcGain)) return false;
-    if (!parcont->fill("fAdcOffset", fAdcOffset)) return false;
+
 }
 
-bool MFibersCalibratorPar::putParams(MParContainer* parcont) const
+void MFibersStackRaw::Clear(Option_t* )
 {
+    module = -1;
+    layer = -1;
+    fiber = -1;
+
+    u = 0;
+    y = 0;
+    adc = 0.0;
 }
 
-void MFibersCalibratorPar::print() const
+void MFibersStackRaw::print() const
 {
-    printf(" +++\n adc gain = %g\n", fAdcGain);
-    printf(" adc offset = %g\n", fAdcOffset);
+    printf("fiber m,l,f=%d,%d,%d  u,y=%f,%f  ADC=%f\n", module, layer, fiber, u, y, adc);
 }
+
+ClassImp(MFibersStackRaw);

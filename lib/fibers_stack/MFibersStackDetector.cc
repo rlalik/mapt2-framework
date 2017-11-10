@@ -17,54 +17,54 @@
  *
  */
 
-#include "MFibersDetector.h"
+#include "MFibersStackDetector.h"
 
-#include "MFibersGeomPar.h"
-#include "MFibersCalibratorPar.h"
-#include "MFibersDigitizerPar.h"
+#include "MFibersStackGeomPar.h"
+#include "MFibersStackCalibratorPar.h"
+#include "MFibersStackDigitizerPar.h"
 
-#include "MFibersUnpacker.h"
-#include "MFibersDigitizer.h"
+#include "MFibersStackUnpacker.h"
+#include "MFibersStackDigitizer.h"
 
-MFibersDetector::MFibersDetector(const std::string & name) : MDetector(name)
+MFibersStackDetector::MFibersStackDetector(const std::string & name) : MDetector(name)
 {
 }
 
-MFibersDetector::~MFibersDetector()
+MFibersStackDetector::~MFibersStackDetector()
 {
 }
 
-bool MFibersDetector::initTasks()
+bool MFibersStackDetector::initTasks()
 {
     if (isSimulation())
     {
-        addTask(new MFibersDigitizer(), 0);
+        addTask(new MFibersStackDigitizer(), 0);
     }
     else
     {
-        addTask(new MFibersUnpacker(), 0);
+        addTask(new MFibersStackUnpacker(), 0);
     }
 
     return true;
 }
 
-bool MFibersDetector::initContainers()
+bool MFibersStackDetector::initContainers()
 {
-    pm()->addParameterContainer("MFibersGeomPar",  new MFibersGeomPar());
+    pm()->addParameterContainer("MFibersStackGeomPar",  new MFibersStackGeomPar());
 
     if (isSimulation())
     {
-        pm()->addParameterContainer("MFibersDigitizerPar",  new MFibersDigitizerPar());
+        pm()->addParameterContainer("MFibersStackDigitizerPar",  new MFibersStackDigitizerPar());
     }
     else
     {
-        pm()->addParameterContainer("MFibersCalibratorPar",  new MFibersCalibratorPar());
+        pm()->addParameterContainer("MFibersStackCalibratorPar",  new MFibersStackCalibratorPar());
     }
 
     return true;
 }
 
-bool MFibersDetector::initCategories()
+bool MFibersStackDetector::initCategories()
 {
     size_t sizes[3];
     MMAPTManager * dm = MMAPTManager::instance();
@@ -75,12 +75,12 @@ bool MFibersDetector::initCategories()
     if (isSimulation())
     {
         if (!dm->registerCategory(MCategory::CatGeantFibersRaw, "MGeantFibersRaw", 3, sizes, true)) return false;
-        if (!dm->registerCategory(MCategory::CatFibersCal, "MFibersCalSim", 3, sizes, true)) return false;
+        if (!dm->registerCategory(MCategory::CatFibersStackCal, "MFibersStackCalSim", 3, sizes, true)) return false;
     }
     else
     {
-        if (!dm->registerCategory(MCategory::CatFibersRaw, "MFibersRaw", 3, sizes, true)) return false;
-        if (!dm->registerCategory(MCategory::CatFibersCal, "MFibersCal", 3, sizes, false)) return false;
+        if (!dm->registerCategory(MCategory::CatFibersStackRaw, "MFibersStackRaw", 3, sizes, true)) return false;
+        if (!dm->registerCategory(MCategory::CatFibersStackCal, "MFibersStackCal", 3, sizes, false)) return false;
     }
 
     return true;

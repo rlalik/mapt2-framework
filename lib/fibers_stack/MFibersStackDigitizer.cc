@@ -19,24 +19,24 @@
 
 #include <iostream>
 
-#include "MFibersDigitizer.h"
-#include "MFibersDigitizerPar.h"
-#include "MFibersGeomPar.h"
+#include "MFibersStackDigitizer.h"
+#include "MFibersStackDigitizerPar.h"
+#include "MFibersStackGeomPar.h"
 #include "MGeantFibersRaw.h"
-#include "MFibersCalSim.h"
+#include "MFibersStackCalSim.h"
 
 #include "MParManager.h"
 #include "MCategory.h"
 
-MFibersDigitizer::MFibersDigitizer() : MTask(), catGeantFibersRaw(nullptr), pDigiPar(nullptr), pGeomPar(nullptr)
+MFibersStackDigitizer::MFibersStackDigitizer() : MTask(), catGeantFibersRaw(nullptr), pDigiPar(nullptr), pGeomPar(nullptr)
 {
 }
 
-MFibersDigitizer::~MFibersDigitizer()
+MFibersStackDigitizer::~MFibersStackDigitizer()
 {
 }
 
-bool MFibersDigitizer::init()
+bool MFibersStackDigitizer::init()
 {
     catGeantFibersRaw = dm()->getCategory(MCategory::CatGeantFibersRaw);
     if (!catGeantFibersRaw)
@@ -45,24 +45,24 @@ bool MFibersDigitizer::init()
         return false;
     }
 
-    catFibersCalSim = dm()->buildCategory(MCategory::CatFibersCal);
+    catFibersCalSim = dm()->buildCategory(MCategory::CatFibersStackCal);
     if (!catFibersCalSim)
     {
-        std::cerr << "No CatFibersCal category" << "\n";
+        std::cerr << "No CatFibersStackCal category" << "\n";
         return false;
     }
 
-    pGeomPar = (MFibersGeomPar*) MParManager::instance()->getParameterContainer("MFibersGeomPar");
+    pGeomPar = (MFibersStackGeomPar*) MParManager::instance()->getParameterContainer("MFibersStackGeomPar");
     if (!pGeomPar)
     {
-        std::cerr << "Parameter container 'MFibersGeomPar' was not obtained!" << std::endl;
+        std::cerr << "Parameter container 'MFibersStackGeomPar' was not obtained!" << std::endl;
         exit(EXIT_FAILURE);
     }
 
     return true;
 }
 
-bool MFibersDigitizer::execute()
+bool MFibersStackDigitizer::execute()
 {
     int size = catGeantFibersRaw->getEntries();
 
@@ -87,11 +87,11 @@ bool MFibersDigitizer::execute()
         loc[1] = lay;
         loc[2] = fib;
 
-        MFibersCalSim * pCal = (MFibersCalSim *) catFibersCalSim->getObject(loc);
+        MFibersStackCalSim * pCal = (MFibersStackCalSim *) catFibersCalSim->getObject(loc);
         if (!pCal)
         {
-            pCal = (MFibersCalSim *) catFibersCalSim->getSlot(loc);
-            pCal = new (pCal) MFibersCalSim;
+            pCal = (MFibersStackCalSim *) catFibersCalSim->getSlot(loc);
+            pCal = new (pCal) MFibersStackCalSim;
         }
 
         pCal->setAddress(mod, lay, fib);
@@ -106,7 +106,7 @@ bool MFibersDigitizer::execute()
     return true;
 }
 
-bool MFibersDigitizer::finalize()
+bool MFibersStackDigitizer::finalize()
 {
     return true;
 }

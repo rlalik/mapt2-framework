@@ -92,7 +92,7 @@ install(FILES
 	DESTINATION ${CMAKE_INSTALL_CMAKEDIR})
 
 # Add all targets to the build-tree export set
-export(TARGETS MAPT Fibers GeantSim
+export(TARGETS MAPT FibersStack GeantSim
 	FILE ${CMAKE_PROJECT_NAME}Targets.cmake)
 
 # # Install the export set for use with the install-tree

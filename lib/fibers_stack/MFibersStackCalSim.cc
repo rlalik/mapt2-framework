@@ -17,20 +17,28 @@
  *
  */
 
-#include "MFibersDigitizerPar.h"
+#include "MFibersStackCalSim.h"
 
-#include "MParContainer.h"
-
-bool MFibersDigitizerPar::getParams(MParContainer* parcont)
+MFibersStackCalSim::MFibersStackCalSim() : MFibersStackCal(), T(0.0), E(0.0), dEdx(0.0)
 {
-    return true;
+
 }
 
-bool MFibersDigitizerPar::putParams(MParContainer* parcont) const
+MFibersStackCalSim::~MFibersStackCalSim()
 {
-    return true;
+
 }
 
-void MFibersDigitizerPar::clear()
+void MFibersStackCalSim::Clear(Option_t* )
 {
+    T = 0.0;
+    E = 0.0;
+    dEdx = 0.0;
 }
+
+void MFibersStackCalSim::print() const
+{
+    MFibersStackCal::print();
+}
+
+ClassImp(MFibersStackCalSim);

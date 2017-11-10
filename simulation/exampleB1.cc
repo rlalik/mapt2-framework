@@ -37,7 +37,7 @@
 #include "MMAPTManager.h"
 #include "MDetectorManager.h"
 
-#include "MFibersDetector.h"
+#include "MFibersStackDetector.h"
 
 #include <string>
 
@@ -174,7 +174,7 @@ int main(int argc, char** argv)
     // initialize detectors
     MDetectorManager * detm = MDetectorManager::instance();
 
-    detm->addDetector(new MFibersDetector("Fibers"));
+    detm->addDetector(new MFibersStackDetector("FibersStack"));
 
 //     detm->initParameterContainers();
     detm->initCategories();

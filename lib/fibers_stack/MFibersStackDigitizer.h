@@ -17,17 +17,31 @@
  *
  */
 
-#ifndef MFIBERSDIGITIZERPAR_H
-#define MFIBERSDIGITIZERPAR_H
+#ifndef MFIBERSSTACKDIGITIZER_H
+#define MFIBERSSTACKDIGITIZER_H
 
-#include "MPar.h"
+#include "MTask.h"
 
-class MFibersDigitizerPar : public MPar
+class MCategory;
+class MFibersStackDigitizerPar;
+class MFibersStackGeomPar;
+
+class MFibersStackDigitizer : public MTask
 {
 public:
-    bool getParams(MParContainer * parcont);
-    bool putParams(MParContainer * parcont) const;
-    void clear();
+    MFibersStackDigitizer();
+    virtual ~MFibersStackDigitizer();
+
+    bool init();
+    bool execute();
+    bool finalize();
+
+private:
+    MCategory * catGeantFibersRaw;
+    MCategory * catFibersCalSim;
+
+    MFibersStackDigitizerPar * pDigiPar;
+    MFibersStackGeomPar * pGeomPar;
 };
 
-#endif // MFIBERSDIGITIZERPAR_H
+#endif // MFIBERSSTACKDIGITIZER_H

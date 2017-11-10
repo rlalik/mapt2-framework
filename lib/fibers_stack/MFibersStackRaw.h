@@ -17,16 +17,16 @@
  *
  */
 
-#ifndef MFIBERSCAL_H
-#define MFIBERSCAL_H
+#ifndef MFIBERSSTACKRAW_H
+#define MFIBERSSTACKRAW_H
 
 #include <TObject.h>
 
-class MFibersCal : public TObject
+class MFibersStackRaw : public TObject
 {
 public:
-    MFibersCal();
-    ~MFibersCal();
+    MFibersStackRaw();
+    ~MFibersStackRaw();
     virtual void Clear(Option_t* opt = "");
 
     void setAddress(Int_t m, Int_t l, Int_t f) { module = m; layer = l; fiber = f; }
@@ -34,12 +34,11 @@ public:
 
     void setU(Float_t _u) { u = _u; }
     void setY(Float_t _y) { y = _y; }
-    void setEnergyDeposition(Float_t e) { e_dep = e; }
-    void addEnergyDeposition(Float_t e) { e_dep += e; }
+    void setADC(Float_t e) { adc = e; }
 
     Float_t getU() const { return u; }
     Float_t getY() const { return y; }
-    Float_t getEnergyDeposition() const { return e_dep; }
+    Float_t getADC() const { return adc; }
 
     void print() const;
 
@@ -51,9 +50,9 @@ private:
     Float_t u;  // u-coord
     Float_t y;  // y-coord
 
-    Float_t e_dep;  // energy
+    Float_t adc;  // adc
 
-    ClassDef(MFibersCal, 1);
+    ClassDef(MFibersStackRaw, 1);
 };
 
-#endif // MFIBERSCAL_H
+#endif // MFIBERSSTACKRAW_H

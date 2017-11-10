@@ -17,42 +17,29 @@
  *
  */
 
-#ifndef MFIBERSRAW_H
-#define MFIBERSRAW_H
+#ifndef MFIBERSSTACKCALIBRATOR_H
+#define MFIBERSSTACKCALIBRATOR_H
 
-#include <TObject.h>
+#include "MTask.h"
 
-class MFibersRaw : public TObject
+class MCategory;
+class MFibersStackCalibratorPar;
+
+class MFibersStackCalibrator : public MTask
 {
 public:
-    MFibersRaw();
-    ~MFibersRaw();
-    virtual void Clear(Option_t* opt = "");
+    MFibersStackCalibrator();
+    virtual ~MFibersStackCalibrator();
 
-    void setAddress(Int_t m, Int_t l, Int_t f) { module = m; layer = l; fiber = f; }
-    void getAddress(Int_t & m, Int_t & l, Int_t & f) const { m = module; l = layer; f = fiber; }
-
-    void setU(Float_t _u) { u = _u; }
-    void setY(Float_t _y) { y = _y; }
-    void setADC(Float_t e) { adc = e; }
-
-    Float_t getU() const { return u; }
-    Float_t getY() const { return y; }
-    Float_t getADC() const { return adc; }
-
-    void print() const;
+    bool init();
+    bool execute();
+    bool finalize();
 
 private:
-    Int_t module;
-    Int_t layer;
-    Int_t fiber;
+    MCategory * catFibersRaw;
+    MCategory * catFibersCal;
 
-    Float_t u;  // u-coord
-    Float_t y;  // y-coord
-
-    Float_t adc;  // adc
-
-    ClassDef(MFibersRaw, 1);
+    MFibersStackCalibratorPar * pCalibratorPar;
 };
 
-#endif // MFIBERSRAW_H
+#endif // MFIBERSSTACKCALIBRATOR_H

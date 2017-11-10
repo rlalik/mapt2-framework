@@ -19,7 +19,7 @@ endif()
 add_executable(template_app template_app.cpp)
 target_link_libraries(template_app ${ROOT_LIBRARIES})
 
-target_link_libraries(template_app MAPT GeantSim Fibers)
+target_link_libraries(template_app MAPT GeantSim FibersStack)
 
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX

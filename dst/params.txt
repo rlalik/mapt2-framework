@@ -1,4 +1,4 @@
-[MFibersGeomPar]
+[MFibersStackGeomPar]
 nModules: Int_t 1
 nLayers: Int_t 30
 nFibers: Int_t \
@@ -27,8 +27,8 @@ fFibersPitch: Float_t \
  2 2 2 2 2 2 2 2 \
  2 2 2 2 2 2
 
-[MFibersCalibratorPar]
+[MFibersStackCalibratorPar]
 fAdcGain: Float_t 1.0
 fAdcOffset: Float_t 0.0
 
-[MFibersDigitizerPar]
+[MFibersStackDigitizerPar]

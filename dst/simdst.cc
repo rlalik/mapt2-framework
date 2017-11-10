@@ -25,7 +25,7 @@
 #include "MTaskManager.h"
 #include "MParManager.h"
 
-#include "MFibersDetector.h"
+#include "MFibersStackDetector.h"
 
 using namespace std;
 
@@ -64,7 +64,7 @@ int simdst(const std::string & file, int events = 1000)
     // initialize detectors
     MDetectorManager * detm = MDetectorManager::instance();
 
-    detm->addDetector(new MFibersDetector("Fibers"));
+    detm->addDetector(new MFibersStackDetector("FibersStack"));
 
     detm->initTasks();
     detm->initParameterContainers();

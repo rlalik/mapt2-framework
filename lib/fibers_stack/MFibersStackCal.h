@@ -17,36 +17,43 @@
  *
  */
 
-#ifndef MFIBERSCALSIM_H
-#define MFIBERSCALSIM_H
+#ifndef MFIBERSSTACKCAL_H
+#define MFIBERSSTACKCAL_H
 
-#include "MFibersCal.h"
+#include <TObject.h>
 
-class MFibersCalSim : public MFibersCal
+class MFibersStackCal : public TObject
 {
 public:
-    MFibersCalSim();
-    ~MFibersCalSim();
+    MFibersStackCal();
+    ~MFibersStackCal();
     virtual void Clear(Option_t* opt = "");
 
-    void setKineticEnergy(Float_t t) { T = t; }
-    Float_t getKineticEnergy() const { return T; }
+    void setAddress(Int_t m, Int_t l, Int_t f) { module = m; layer = l; fiber = f; }
+    void getAddress(Int_t & m, Int_t & l, Int_t & f) const { m = module; l = layer; f = fiber; }
 
-    void setTotalEnergy(Float_t e) { E = e; }
-    Float_t getTotalEnergy() const { return E; }
+    void setU(Float_t _u) { u = _u; }
+    void setY(Float_t _y) { y = _y; }
+    void setEnergyDeposition(Float_t e) { e_dep = e; }
+    void addEnergyDeposition(Float_t e) { e_dep += e; }
 
-    void setEnergyLoss(Float_t e) { dEdx = e; }
-    Float_t getEnergyLoss() const { return dEdx; }
+    Float_t getU() const { return u; }
+    Float_t getY() const { return y; }
+    Float_t getEnergyDeposition() const { return e_dep; }
 
     void print() const;
 
 private:
-    ClassDef(MFibersCalSim, 1);
+    Int_t module;
+    Int_t layer;
+    Int_t fiber;
 
-    Float_t T;  // kinetic energy
-    Float_t E;  // total energy
+    Float_t u;  // u-coord
+    Float_t y;  // y-coord
 
-    Float_t dEdx;  // energy loss
+    Float_t e_dep;  // energy
+
+    ClassDef(MFibersStackCal, 1);
 };
 
-#endif // MFIBERSCALSIM_H
+#endif // MFIBERSSTACKCAL_H

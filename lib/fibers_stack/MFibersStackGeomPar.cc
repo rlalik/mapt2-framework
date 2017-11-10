@@ -18,27 +18,27 @@
  */
 #include <iostream>
 
-#include "MFibersGeomPar.h"
+#include "MFibersStackGeomPar.h"
 
 #include "MParContainer.h"
 
-MFibersGeomPar::MFibersGeomPar() : MPar(), mods(nullptr)
+MFibersStackGeomPar::MFibersStackGeomPar() : MPar(), mods(nullptr)
 {
 }
 
-MFibersGeomPar::~MFibersGeomPar()
+MFibersStackGeomPar::~MFibersStackGeomPar()
 {
     delete [] mods;
 }
 
-void MFibersGeomPar::clear()
+void MFibersStackGeomPar::clear()
 {
     delete [] mods;
     mods = nullptr;
     modules = 0;
 }
 
-bool MFibersGeomPar::getParams(MParContainer* parcont)
+bool MFibersStackGeomPar::getParams(MParContainer* parcont)
 {
     if (!parcont->fill("nModules", modules)) return false;
 
@@ -125,11 +125,11 @@ bool MFibersGeomPar::getParams(MParContainer* parcont)
     return true;
 }
 
-bool MFibersGeomPar::putParams(MParContainer* parcont) const
+bool MFibersStackGeomPar::putParams(MParContainer* parcont) const
 {
 }
 
-void MFibersGeomPar::print() const
+void MFibersStackGeomPar::print() const
 {
     printf("Number of modules = %d\n", modules);
     for (int m = 0; m < modules; ++m)
@@ -154,7 +154,7 @@ void MFibersGeomPar::print() const
     }
 }
 
-Int_t MFibersGeomPar::getLayers(Int_t m) const
+Int_t MFibersStackGeomPar::getLayers(Int_t m) const
 {
     if (mods and m < modules)
         return mods[m].layers;
@@ -162,7 +162,7 @@ Int_t MFibersGeomPar::getLayers(Int_t m) const
         return -1;
 }
 
-Int_t MFibersGeomPar::getFibers(Int_t m, Int_t l) const
+Int_t MFibersStackGeomPar::getFibers(Int_t m, Int_t l) const
 {
     if (mods and m < modules and l < mods[m].layers)
         return mods[m].fibers[l];
@@ -170,7 +170,7 @@ Int_t MFibersGeomPar::getFibers(Int_t m, Int_t l) const
         return -1;
 }
 
-Float_t MFibersGeomPar::getLayerRotation(Int_t m, Int_t l) const
+Float_t MFibersStackGeomPar::getLayerRotation(Int_t m, Int_t l) const
 {
     if (mods and m < modules and l < mods[m].layers)
         return mods[m].layer_rotation[l];
@@ -178,7 +178,7 @@ Float_t MFibersGeomPar::getLayerRotation(Int_t m, Int_t l) const
         return -10000.;
 }
 
-Float_t MFibersGeomPar::getFiberOffsetX(Int_t m, Int_t l) const
+Float_t MFibersStackGeomPar::getFiberOffsetX(Int_t m, Int_t l) const
 {
     if (mods and m < modules and l < mods[m].layers)
         return mods[m].fiber_offset_x[l];
@@ -186,7 +186,7 @@ Float_t MFibersGeomPar::getFiberOffsetX(Int_t m, Int_t l) const
         return -10000.;
 }
 
-Float_t MFibersGeomPar::getFiberOffsetY(Int_t m, Int_t l) const
+Float_t MFibersStackGeomPar::getFiberOffsetY(Int_t m, Int_t l) const
 {
     if (mods and m < modules and l < mods[m].layers)
         return mods[m].fiber_offset_y[l];
@@ -194,7 +194,7 @@ Float_t MFibersGeomPar::getFiberOffsetY(Int_t m, Int_t l) const
         return -10000.;
 }
 
-Float_t MFibersGeomPar::getFibersPitch(Int_t m, Int_t l) const
+Float_t MFibersStackGeomPar::getFibersPitch(Int_t m, Int_t l) const
 {
     if (mods and m < modules and l < mods[m].layers)
         return mods[m].fibers_pitch[l];

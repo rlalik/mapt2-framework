@@ -17,32 +17,25 @@
  *
  */
 
-#include "MFibersRaw.h"
+#ifndef MFIBERSSTACKCALIBRATORPAR_H
+#define MFIBERSSTACKCALIBRATORPAR_H
 
-MFibersRaw::MFibersRaw() : TObject()
+#include "MPar.h"
+
+class MFibersStackCalibratorPar : public MPar
 {
-    Clear();
-}
+public:
+    bool getParams(MParContainer * parcont);
+    bool putParams(MParContainer * parcont) const;
+    void clear();
+    void print() const;
 
-MFibersRaw::~MFibersRaw()
-{
+    Int_t getAdcGain() const { return fAdcGain; }
+    Int_t getAdcOffset() const { return fAdcOffset; }
 
-}
+private:
+    Float_t fAdcGain;
+    Float_t fAdcOffset;
+};
 
-void MFibersRaw::Clear(Option_t* )
-{
-    module = -1;
-    layer = -1;
-    fiber = -1;
-
-    u = 0;
-    y = 0;
-    adc = 0.0;
-}
-
-void MFibersRaw::print() const
-{
-    printf("fiber m,l,f=%d,%d,%d  u,y=%f,%f  ADC=%f\n", module, layer, fiber, u, y, adc);
-}
-
-ClassImp(MFibersRaw);
+#endif // MFIBERSSTACKCALIBRATORPAR_H

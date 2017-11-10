@@ -20,8 +20,8 @@
 
 // MAPT-Analysis framework includes
 #include "MGeantTrack.h"
-#include "MGeantFibersRaw.h"
-#include "MFibersCalSim.h"
+#include "MGeantFibersStackRaw.h"
+#include "MFibersStackCalSim.h"
 
 #include "MMAPTManager.h"
 #include "MParManager.h"
@@ -59,7 +59,7 @@ int analysis(const std::string & file, int events = 1000)
     MDetectorManager * detm = MDetectorManager::instance();
 
     // add here each detector you need to include
-    MFibersDetector * fd = new MFibersDetector("Fibers");
+    MFibersDetector * fd = new MFibersDetector("FibersStack");
     fd->setTaskMask(0);             // disable all tasks, e.g. digitizer will override MFibersCalSim
     detm->addDetector(fd);
     // ... more detectors

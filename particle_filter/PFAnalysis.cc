@@ -16,7 +16,7 @@
 #include <UserGeant4Geometry.h>
 #include <MMAPTManager.h>
 #include <MDetectorManager.h>
-#include <MFibersDetector.h>
+#include <MFibersStackDetector.h>
 #include <MTaskManager.h>
 
 // includes
@@ -130,12 +130,12 @@ int main(int argc,char** argv)
     // initialize detectors
     MDetectorManager * detm = MDetectorManager::instance();
 
-    detm->addDetector(new MFibersDetector("Fibers"));
+    detm->addDetector(new MFibersStackDetector("FibersStack"));
     detm->initCategories();
 
     dataManager->openCategory(MCategory::CatGeantTrack);
     dataManager->openCategory(MCategory::CatGeantFibersRaw);
-    dataManager->openCategory(MCategory::CatFibersCal);
+    dataManager->openCategory(MCategory::CatFibersStackCal);
     dataManager->setOutputFileName(oname.Data());
     dataManager->book();
 

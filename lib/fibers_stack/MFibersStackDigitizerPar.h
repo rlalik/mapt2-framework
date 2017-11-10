@@ -17,28 +17,17 @@
  *
  */
 
-#include "MFibersCalSim.h"
+#ifndef MFIBERSSTACKDIGITIZERPAR_H
+#define MFIBERSSTACKDIGITIZERPAR_H
 
-MFibersCalSim::MFibersCalSim() : MFibersCal(), T(0.0), E(0.0), dEdx(0.0)
+#include "MPar.h"
+
+class MFibersStackDigitizerPar : public MPar
 {
+public:
+    bool getParams(MParContainer * parcont);
+    bool putParams(MParContainer * parcont) const;
+    void clear();
+};
 
-}
-
-MFibersCalSim::~MFibersCalSim()
-{
-
-}
-
-void MFibersCalSim::Clear(Option_t* )
-{
-    T = 0.0;
-    E = 0.0;
-    dEdx = 0.0;
-}
-
-void MFibersCalSim::print() const
-{
-    MFibersCal::print();
-}
-
-ClassImp(MFibersCalSim);
+#endif // MFIBERSSTACKDIGITIZERPAR_H

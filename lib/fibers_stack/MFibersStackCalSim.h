@@ -17,20 +17,36 @@
  *
  */
 
-#ifndef MFIBERSDETECTOR_H
-#define MFIBERSDETECTOR_H
+#ifndef MFIBERSSTACKCALSIM_H
+#define MFIBERSSTACKCALSIM_H
 
-#include "MDetector.h"
+#include "MFibersStackCal.h"
 
-class MFibersDetector : public MDetector
+class MFibersStackCalSim : public MFibersStackCal
 {
 public:
-    MFibersDetector(const std::string & name);
-    ~MFibersDetector();
+    MFibersStackCalSim();
+    ~MFibersStackCalSim();
+    virtual void Clear(Option_t* opt = "");
 
-    bool initTasks();
-    bool initContainers();
-    bool initCategories();
+    void setKineticEnergy(Float_t t) { T = t; }
+    Float_t getKineticEnergy() const { return T; }
+
+    void setTotalEnergy(Float_t e) { E = e; }
+    Float_t getTotalEnergy() const { return E; }
+
+    void setEnergyLoss(Float_t e) { dEdx = e; }
+    Float_t getEnergyLoss() const { return dEdx; }
+
+    void print() const;
+
+private:
+    ClassDef(MFibersStackCalSim, 1);
+
+    Float_t T;  // kinetic energy
+    Float_t E;  // total energy
+
+    Float_t dEdx;  // energy loss
 };
 
-#endif // MFIBERSDETECTOR_H
+#endif // MFIBERSSTACKCALSIM_H

@@ -17,31 +17,28 @@
  *
  */
 
-#ifndef MFIBERSDIGITIZER_H
-#define MFIBERSDIGITIZER_H
+#include "MFibersStackCalibratorPar.h"
 
-#include "MTask.h"
+#include "MParContainer.h"
 
-class MCategory;
-class MFibersDigitizerPar;
-class MFibersGeomPar;
-
-class MFibersDigitizer : public MTask
+void MFibersStackCalibratorPar::clear()
 {
-public:
-    MFibersDigitizer();
-    virtual ~MFibersDigitizer();
+    fAdcGain = 1.0;
+    fAdcOffset = 0.0;
+}
 
-    bool init();
-    bool execute();
-    bool finalize();
+bool MFibersStackCalibratorPar::getParams(MParContainer* parcont)
+{
+    if (!parcont->fill("fAdcGain", fAdcGain)) return false;
+    if (!parcont->fill("fAdcOffset", fAdcOffset)) return false;
+}
 
-private:
-    MCategory * catGeantFibersRaw;
-    MCategory * catFibersCalSim;
+bool MFibersStackCalibratorPar::putParams(MParContainer* parcont) const
+{
+}
 
-    MFibersDigitizerPar * pDigiPar;
-    MFibersGeomPar * pGeomPar;
-};
-
-#endif // MFIBERSDIGITIZER_H
+void MFibersStackCalibratorPar::print() const
+{
+    printf(" +++\n adc gain = %g\n", fAdcGain);
+    printf(" adc offset = %g\n", fAdcOffset);
+}

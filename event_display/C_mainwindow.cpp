@@ -5,7 +5,7 @@
 #include "MGeantTrack.h"
 #include "MGeantFibersRaw.h"
 
-#include "MFibersDetector.h"
+#include "MFibersStackDetector.h"
 
 #include <QtGui>
 
@@ -23,7 +23,7 @@ C_MainWindow::C_MainWindow(QWidget *parent)
 
     // initialize detectors
     MDetectorManager * detm = MDetectorManager::instance();
-    detm->addDetector(new MFibersDetector("Fibers"));
+    detm->addDetector(new MFibersStackDetector("FibersStack"));
     detm->initCategories();
 
     m_winXZ = new C_window_2D(C_view_2D::XY, dataManager);

@@ -16,8 +16,8 @@ public:
         CatGeantTrack,
         CatGeantFibersRaw,
         // fibers
-        CatFibersRaw,
-        CatFibersCal,
+        CatFibersStackRaw,
+        CatFibersStackCal,
         CatFiberTrack,
         // tracks
         // Limit 

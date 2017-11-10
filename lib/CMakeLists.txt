@@ -14,4 +14,4 @@ link_directories(
 
 add_subdirectory(base)
 add_subdirectory(geant)
-add_subdirectory(fibers)
+add_subdirectory(fibers_stack)

@@ -19,49 +19,49 @@
 
 #include <iostream>
 
-#include "MFibersCalibrator.h"
-#include "MFibersCalibratorPar.h"
-#include "MFibersRaw.h"
-#include "MFibersCal.h"
+#include "MFibersStackCalibrator.h"
+#include "MFibersStackCalibratorPar.h"
+#include "MFibersStackRaw.h"
+#include "MFibersStackCal.h"
 
 #include "MParManager.h"
 #include "MCategory.h"
 
-MFibersCalibrator::MFibersCalibrator() : MTask(), catFibersRaw(nullptr), catFibersCal(nullptr), pCalibratorPar(nullptr)
+MFibersStackCalibrator::MFibersStackCalibrator() : MTask(), catFibersRaw(nullptr), catFibersCal(nullptr), pCalibratorPar(nullptr)
 {
 }
 
-MFibersCalibrator::~MFibersCalibrator()
+MFibersStackCalibrator::~MFibersStackCalibrator()
 {
 }
 
-bool MFibersCalibrator::init()
+bool MFibersStackCalibrator::init()
 {
-    catFibersRaw = dm()->getCategory(MCategory::CatFibersRaw);
+    catFibersRaw = dm()->getCategory(MCategory::CatFibersStackRaw);
     if (!catFibersRaw)
     {
-        std::cerr << "No CatFibersRaw category" << "\n";
+        std::cerr << "No CatFibersStackRaw category" << "\n";
         return false;
     }
 
-    catFibersCal = dm()->buildCategory(MCategory::CatFibersCal);
+    catFibersCal = dm()->buildCategory(MCategory::CatFibersStackCal);
     if (!catFibersCal)
     {
-        std::cerr << "No CatFibersCal category" << "\n";
+        std::cerr << "No CatFibersStackCal category" << "\n";
         return false;
     }
 
-    pCalibratorPar = (MFibersCalibratorPar*) MParManager::instance()->getParameterContainer("MFibersCalibratorPar");
+    pCalibratorPar = (MFibersStackCalibratorPar*) MParManager::instance()->getParameterContainer("MFibersStackCalibratorPar");
     if (!pCalibratorPar)
     {
-        std::cerr << "Parameter container 'MFibersCalibratorPar' was not obtained!" << std::endl;
+        std::cerr << "Parameter container 'MFibersStackCalibratorPar' was not obtained!" << std::endl;
         exit(EXIT_FAILURE);
     }
 
     return true;
 }
 
-bool MFibersCalibrator::execute()
+bool MFibersStackCalibrator::execute()
 {
     int size = catFibersRaw->getEntries();
 
@@ -70,7 +70,7 @@ bool MFibersCalibrator::execute()
 
     for (int i = 0; i < size; ++i)
     {
-        MFibersRaw * pRaw = (MFibersRaw *)catFibersRaw->getObject(i);
+        MFibersStackRaw * pRaw = (MFibersStackRaw *)catFibersRaw->getObject(i);
         if (!pRaw)
         {
             printf("Hit doesnt exists!\n");
@@ -97,11 +97,11 @@ bool MFibersCalibrator::execute()
         loc[1] = lay;
         loc[2] = fib;
 
-        MFibersCal * pCal = (MFibersCal *) catFibersCal->getObject(loc);
+        MFibersStackCal * pCal = (MFibersStackCal *) catFibersCal->getObject(loc);
         if (!pCal)
         {
-            pCal = (MFibersCal *) catFibersCal->getSlot(loc);
-            pCal = new (pCal) MFibersCal;
+            pCal = (MFibersStackCal *) catFibersCal->getSlot(loc);
+            pCal = new (pCal) MFibersStackCal;
         }
 
         pCal->setAddress(mod, lay, fib);
@@ -113,7 +113,7 @@ bool MFibersCalibrator::execute()
     return true;
 }
 
-bool MFibersCalibrator::finalize()
+bool MFibersStackCalibrator::finalize()
 {
     return true;
 }

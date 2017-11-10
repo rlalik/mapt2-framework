@@ -21,7 +21,7 @@ ParticleFilter::~ParticleFilter()
 bool ParticleFilter::initEvent(MMAPTManager * event_, double deltaE, double deltaPos, double deltaDir)
 {
     event = event_;
-    catFibersCal = event->getCategory(MCategory::CatFibersCal);
+    catFibersCal = event->getCategory(MCategory::CatFibersStackCal);
     catGeantTrack = event->getCategory(MCategory::CatGeantTrack);
 
 //     printf("============== RANDOM PARTICLES =================\n");
@@ -211,7 +211,7 @@ bool ParticleFilter::filter()
     
     for (int i = 0; i < numMeasurements; ++i)
     {
-        MFibersCal * f = (MFibersCal *)(catFibersCal->getObject(i));
+        MFibersStackCal * f = (MFibersStackCal *)(catFibersCal->getObject(i));
         f->print();
     }
 
@@ -456,7 +456,7 @@ double ParticleFilter::evaluate(Particle* p, int volumeIndex)
 //         int n = catFibersCal->getEntries();
 //         for (int i = 0; i < n; ++i)
 //         {
-//             MFibersCal * hit = (MFibersCal*) catFibersCal->getObject(i);
+//             MFibersStackCal * hit = (MFibersStackCal*) catFibersCal->getObject(i);
 //             hit->getAddress(m_, l_, f_);
 //             printf("object at %d,%d,%d\n", 0, l_, f_);
 //         }
@@ -479,14 +479,14 @@ double ParticleFilter::evaluate(Particle* p, int volumeIndex)
 //         printf("************* current  *************\n");
 //         printf("[t=%02d  pidx=%03d] asking for %d,%d,%d", f_cnt, f_pidx, 0, loc[1], loc[2]);
 
-        MFibersCalSim * hit = (MFibersCalSim*) catFibersCal->getObject(loc);
+        MFibersStackCalSim * hit = (MFibersStackCalSim*) catFibersCal->getObject(loc);
         if (!hit)
         {
             //             Int_t m_, l_, f_;
             //             int n = catFibersCal->getEntries();
             //             for (int i = 0; i < n; ++i)
             //             {
-            //                 MFibersCal * hit = (MFibersCal*) catFibersCal->getObject(i);
+            //                 MFibersStackCal * hit = (MFibersStackCal*) catFibersCal->getObject(i);
             //                 hit->getAddress(m_, l_, f_);
             //                 printf("object at %d,%d,%d\n", 0, l_, f_);
             //             }

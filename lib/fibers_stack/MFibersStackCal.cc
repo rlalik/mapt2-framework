@@ -17,26 +17,32 @@
  *
  */
 
-#ifndef MFIBERSUNPACKER_H
-#define MFIBERSUNPACKER_H
+#include "MFibersStackCal.h"
 
-#include "MTask.h"
-
-class MCategory;
-class MFibersGeomPar;
-
-class MFibersUnpacker : public MTask
+MFibersStackCal::MFibersStackCal() : TObject()
 {
-public:
-    MFibersUnpacker();
-    virtual ~MFibersUnpacker();
+    Clear();
+}
 
-    bool init();
-    bool execute();
-    bool finalize();
+MFibersStackCal::~MFibersStackCal()
+{
 
-private:
-    MCategory * catFibersRaw;
-};
+}
 
-#endif // MFIBERSUNPACKER_H
+void MFibersStackCal::Clear(Option_t* )
+{
+    module = -1;
+    layer = -1;
+    fiber = -1;
+
+    u = 0;
+    y = 0;
+    e_dep = 0.0;
+}
+
+void MFibersStackCal::print() const
+{
+    printf("fiber m,l,f=%d,%d,%d  u,y=%f,%f  Eloss=%f\n", module, layer, fiber, u, y, e_dep);
+}
+
+ClassImp(MFibersStackCal);

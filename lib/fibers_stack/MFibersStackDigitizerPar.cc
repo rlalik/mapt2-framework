@@ -17,29 +17,20 @@
  *
  */
 
-#ifndef MFIBERSCALIBRATOR_H
-#define MFIBERSCALIBRATOR_H
+#include "MFibersStackDigitizerPar.h"
 
-#include "MTask.h"
+#include "MParContainer.h"
 
-class MCategory;
-class MFibersCalibratorPar;
-
-class MFibersCalibrator : public MTask
+bool MFibersStackDigitizerPar::getParams(MParContainer* parcont)
 {
-public:
-    MFibersCalibrator();
-    virtual ~MFibersCalibrator();
+    return true;
+}
 
-    bool init();
-    bool execute();
-    bool finalize();
+bool MFibersStackDigitizerPar::putParams(MParContainer* parcont) const
+{
+    return true;
+}
 
-private:
-    MCategory * catFibersRaw;
-    MCategory * catFibersCal;
-
-    MFibersCalibratorPar * pCalibratorPar;
-};
-
-#endif // MFIBERSCALIBRATOR_H
+void MFibersStackDigitizerPar::clear()
+{
+}

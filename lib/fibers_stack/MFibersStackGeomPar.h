@@ -17,19 +17,19 @@
  *
  */
 
-#ifndef MFIBERSGEOMPAR_H
-#define MFIBERSGEOMPAR_H
+#ifndef MFIBERSSTACKGEOMPAR_H
+#define MFIBERSSTACKGEOMPAR_H
 
 #include <TArrayI.h>
 #include <TArrayF.h>
 
 #include "MPar.h"
 
-class MFibersGeomPar : public MPar
+class MFibersStackGeomPar : public MPar
 {
 public:
-    MFibersGeomPar();
-    virtual ~MFibersGeomPar();
+    MFibersStackGeomPar();
+    virtual ~MFibersStackGeomPar();
 
     bool getParams(MParContainer * parcont);
     bool putParams(MParContainer * parcont) const;
@@ -59,4 +59,4 @@ private:
     SingleModule * mods;
 };
 
-#endif // MFIBERSGEOMPAR_H
+#endif // MFIBERSSTACKGEOMPAR_H

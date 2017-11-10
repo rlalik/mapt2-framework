@@ -3,32 +3,32 @@
 cmake_minimum_required(VERSION 3.4 FATAL_ERROR)
 project(MAPT-Framework-Library CXX)
 
-SET (LIBRARY_NAME Fibers)
+SET (LIBRARY_NAME FibersStack)
 
 SET (LIBRARY_HDRS
-    MFibersDetector.h
-    MFibersGeomPar.h
-    MFibersUnpacker.h
-    MFibersRaw.h
-    MFibersCalibrator.h
-    MFibersCalibratorPar.h
-    MFibersCal.h
-    MFibersDigitizer.h
-    MFibersDigitizerPar.h
-    MFibersCalSim.h
+    MFibersStackDetector.h
+    MFibersStackGeomPar.h
+    MFibersStackUnpacker.h
+    MFibersStackRaw.h
+    MFibersStackCalibrator.h
+    MFibersStackCalibratorPar.h
+    MFibersStackCal.h
+    MFibersStackDigitizer.h
+    MFibersStackDigitizerPar.h
+    MFibersStackCalSim.h
 )
 
 SET(LIBRARY_SRCS
-    MFibersDetector.cc
-    MFibersGeomPar.cc
-    MFibersUnpacker.cc
-    MFibersRaw.cc
-    MFibersCalibrator.cc
-    MFibersCalibratorPar.cc
-    MFibersCal.cc
-    MFibersDigitizer.cc
-    MFibersDigitizerPar.cc
-    MFibersCalSim.cc
+    MFibersStackDetector.cc
+    MFibersStackGeomPar.cc
+    MFibersStackUnpacker.cc
+    MFibersStackRaw.cc
+    MFibersStackCalibrator.cc
+    MFibersStackCalibratorPar.cc
+    MFibersStackCal.cc
+    MFibersStackDigitizer.cc
+    MFibersStackDigitizerPar.cc
+    MFibersStackCalSim.cc
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
@@ -52,7 +52,7 @@ install(TARGETS ${LIBRARY_NAME} DESTINATION lib)
 install(FILES ${LIBRARY_HDRS} DESTINATION include)
 
 # Install the export set for use with the install-tree
-install(TARGETS Fibers
+install(TARGETS ${LIBRRAY_NAME}
 	EXPORT ${CMAKE_PROJECT_NAME}Targets
 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	COMPONENT shlib COMPONENT dev)

@@ -35,7 +35,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../lib)
 link_directories(${PROJECT_SOURCE_DIR}/../lib)
 include_directories(${PROJECT_SOURCE_DIR}/../lib/base)
 include_directories(${PROJECT_SOURCE_DIR}/../lib/geant)
-include_directories(${PROJECT_SOURCE_DIR}/../lib/fibers)
+include_directories(${PROJECT_SOURCE_DIR}/../lib/fibers_stack)
 
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.h)
@@ -43,7 +43,7 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.h)
 add_executable(particle_filter PFAnalysis.cc ${sources} ${headers})
 target_link_libraries(particle_filter ${ROOT_LIBRARIES})
 
-target_link_libraries(particle_filter MAPT GeantSim Fibers Geometry)
+target_link_libraries(particle_filter MAPT GeantSim FibersStack Geometry)
 target_link_libraries(particle_filter ${CGAL_LIBRARIES})
 
 #----------------------------------------------------------------------------

@@ -19,33 +19,33 @@
 
 #include <iostream>
 
-#include "MFibersUnpacker.h"
-#include "MFibersRaw.h"
+#include "MFibersStackUnpacker.h"
+#include "MFibersStackRaw.h"
 
 #include "MParManager.h"
 #include "MCategory.h"
 
-MFibersUnpacker::MFibersUnpacker() : MTask(), catFibersRaw(nullptr)
+MFibersStackUnpacker::MFibersStackUnpacker() : MTask(), catFibersRaw(nullptr)
 {
 }
 
-MFibersUnpacker::~MFibersUnpacker()
+MFibersStackUnpacker::~MFibersStackUnpacker()
 {
 }
 
-bool MFibersUnpacker::init()
+bool MFibersStackUnpacker::init()
 {
-    catFibersRaw = dm()->buildCategory(MCategory::CatFibersRaw);
+    catFibersRaw = dm()->buildCategory(MCategory::CatFibersStackRaw);
     if (!catFibersRaw)
     {
-        std::cerr << "No CatFibersRaw category" << "\n";
+        std::cerr << "No CatFibersStackRaw category" << "\n";
         return false;
     }
 
     return true;
 }
 
-bool MFibersUnpacker::execute()
+bool MFibersStackUnpacker::execute()
 {
     // get input here
 
@@ -73,11 +73,11 @@ bool MFibersUnpacker::execute()
         loc[1] = lay;
         loc[2] = fib;
 
-        MFibersRaw * pRaw = (MFibersRaw *) catFibersRaw->getObject(loc);
+        MFibersStackRaw * pRaw = (MFibersStackRaw *) catFibersRaw->getObject(loc);
         if (!pRaw)
         {
-            pRaw = (MFibersRaw *) catFibersRaw->getSlot(loc);
-            pRaw = new (pRaw) MFibersRaw;
+            pRaw = (MFibersStackRaw *) catFibersRaw->getSlot(loc);
+            pRaw = new (pRaw) MFibersStackRaw;
         }
 
         pRaw->setAddress(mod, lay, fib);
@@ -89,7 +89,7 @@ bool MFibersUnpacker::execute()
     return true;
 }
 
-bool MFibersUnpacker::finalize()
+bool MFibersStackUnpacker::finalize()
 {
     return true;
 }

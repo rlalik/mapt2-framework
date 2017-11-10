@@ -17,25 +17,20 @@
  *
  */
 
-#ifndef MFIBERSCALIBRATORPAR_H
-#define MFIBERSCALIBRATORPAR_H
+#ifndef MFIBERSSTACKDETECTOR_H
+#define MFIBERSSTACKDETECTOR_H
 
-#include "MPar.h"
+#include "MDetector.h"
 
-class MFibersCalibratorPar : public MPar
+class MFibersStackDetector : public MDetector
 {
 public:
-    bool getParams(MParContainer * parcont);
-    bool putParams(MParContainer * parcont) const;
-    void clear();
-    void print() const;
+    MFibersStackDetector(const std::string & name);
+    ~MFibersStackDetector();
 
-    Int_t getAdcGain() const { return fAdcGain; }
-    Int_t getAdcOffset() const { return fAdcOffset; }
-
-private:
-    Float_t fAdcGain;
-    Float_t fAdcOffset;
+    bool initTasks();
+    bool initContainers();
+    bool initCategories();
 };
 
-#endif // MFIBERSCALIBRATORPAR_H
+#endif // MFIBERSSTACKDETECTOR_H
