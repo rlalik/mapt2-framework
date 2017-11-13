@@ -59,6 +59,19 @@ bool MFibersStackDigitizer::init()
         exit(EXIT_FAILURE);
     }
 
+    Int_t modules = pGeomPar->getModules();
+    layer_fiber_limit.resize(modules);
+    for (int m = 0; m < modules; ++m)
+    {
+        Int_t cnt_fibers = 0;
+        Int_t layers = pGeomPar->getLayers(m);
+        layer_fiber_limit[m].resize(layers);
+        for (int l = 0; l < layers; ++l)
+        {
+            cnt_fibers += pGeomPar->getFibers(m, l);
+            layer_fiber_limit[m][l] = cnt_fibers;
+        }
+    }
     return true;
 }
 
@@ -78,9 +91,23 @@ bool MFibersStackDigitizer::execute()
         Int_t mod = 0;
         Int_t address = 0;
 
-        pHit->getAddress(mod, address);
         Int_t lay = 0;
         Int_t fib = 0;
+
+        pHit->getAddress(mod, address);
+        int layers = pGeomPar->getLayers(mod);
+        for (int l = 0; l < layers; ++l)
+        {
+            if (address < layer_fiber_limit[mod][l])
+            {
+                lay = l;
+                if (l > 0)
+                    fib = address - layer_fiber_limit[mod][l-1];
+                else
+                    fib = address;
+                break;
+            }
+        }
 
         Float_t u = pGeomPar->getFiberOffsetX(mod, lay) + fib * pGeomPar->getFibersPitch(mod, lay);
         Float_t y = pGeomPar->getFiberOffsetY(mod, lay);

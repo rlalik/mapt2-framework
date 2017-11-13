@@ -22,6 +22,8 @@
 
 #include "MTask.h"
 
+#include <vector>
+
 class MCategory;
 class MFibersStackDigitizerPar;
 class MFibersStackGeomPar;
@@ -42,6 +44,8 @@ private:
 
     MFibersStackDigitizerPar * pDigiPar;
     MFibersStackGeomPar * pGeomPar;
+
+    std::vector<std::vector<Int_t> > layer_fiber_limit;
 };
 
 #endif // MFIBERSSTACKDIGITIZER_H
