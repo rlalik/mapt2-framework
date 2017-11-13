@@ -16,6 +16,9 @@ public:
 
     void Clear(Option_t* options = "");
 
+    void setAddress(Int_t m, Int_t f) { module = m; fiber = f; }
+    void getAddress(Int_t & m, Int_t & f) const { m = module; f = fiber; }
+
     void setEnergyLoss(Double_t energy) { energyLoss = energy; }
     void addEnergyLoss(Double_t energy) { energyLoss += energy; }
     Double_t getEnergyLoss() const { return energyLoss; }
@@ -32,21 +35,12 @@ public:
     void setKineticEnergy(Double_t e) { kineticEnergy += e; }
     Double_t getKineticEnergy() const { return kineticEnergy; }
 
-//     Int_t getFiberHits() const { return fiberHits; }
-//     void addFiberHitX() { ++fiberHits_x; ++fiberHits; }
-//     Int_t getFiberHitsX() const { return fiberHits_z; }
-//     void addFiberHitZ() { ++fiberHits_z; ++fiberHits; }
-//     Int_t getFiberHitsZ() const { return fiberHits_z; }
-
-    void setX(Int_t _x) { x = _x; }
-    void setY(Int_t _y) { y = _y; }
-
-    Int_t getX() const { return x; }
-    Int_t getY() const { return y; }
-
     void print() const;
 
 private:
+    Int_t module;
+    Int_t fiber;
+
     Double_t energyLoss;
     Double_t energyDeposition;
     Double_t energyDepositionQuenching;
@@ -54,8 +48,6 @@ private:
     Double_t kineticEnergy;
     Int_t opticalPhotonCount;
     Int_t fiberHits;
-    Int_t x;
-    Int_t y;
 
     // Needed for creation of shared library
     ClassDef(MGeantFibersRaw, 1);

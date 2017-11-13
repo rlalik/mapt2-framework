@@ -60,7 +60,7 @@ public:
     int getNextStep (TVector3 startPoint, TVector3 direction,TVector3 &newPIn, TVector3 &newPOut, int &volumeIndex);
 
     //! \brief Returns the CADFiberCGAL indentified by its position (x,y) in the Hits30x30 array.
-    CADFiberCGAL* getFiber(int x, int y);
+    CADFiberCGAL* getFiber(int module, int fiber);
 
 
     string getGeometryFilePath () {return geometryFilePath;};

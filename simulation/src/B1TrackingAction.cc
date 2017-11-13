@@ -47,38 +47,34 @@ void B1TrackingAction::PreUserTrackingAction(const G4Track* track)
         G4LogicalVolume* volume = track->GetTouchableHandle()->GetVolume()->GetLogicalVolume();
         // get the DetectorPart according to the current step logical volume
         AbsPart* part = detector_construction->getGeo()->getPart(volume);
-        
+
         // does the part exist?
         if (part == NULL)
         {
             return;
         }
-        
+
         // Photon in fiber
         // is the current volume a fiber?
         CADFiber* fiber = dynamic_cast<CADFiber*> (part);
         if (fiber)
         {
             MCategory * catGeantFibersRaw = data_manager->getCategory(MCategory::CatGeantFibersRaw);
-            int x_fiber = fiber->getFiberX();
-            int y_fiber = fiber->getFiberY();
-            MLocator loc(3);
-            loc[0] = 0;
-            loc[1] = y_fiber;
-            loc[2] = x_fiber;
+            int m_fiber = 0;    // TODO get module name somehow
+            int f_fiber = fiber->getNumber();
+            MLocator loc(2);
+            loc[0] = m_fiber;
+            loc[1] = f_fiber;
 
             MGeantFibersRaw * detector_response = (MGeantFibersRaw *) catGeantFibersRaw->getObject(loc);
             if (!detector_response)
             {
                 detector_response = (MGeantFibersRaw *) catGeantFibersRaw->getSlot(loc);
                 detector_response = new (detector_response) MGeantFibersRaw;
-                detector_response->setX(x_fiber);
-                detector_response->setY(y_fiber);
+                detector_response->setAddress(m_fiber, f_fiber);
             }
-
             detector_response->setPhotons(1);
         }
-        
         ((G4Track*)track)->SetTrackStatus(fStopAndKill);
     }
 

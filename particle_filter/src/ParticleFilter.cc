@@ -428,10 +428,9 @@ double ParticleFilter::evaluate(Particle* p, int volumeIndex)
     {
         //         p->print();
         double m = TMath::Abs(p->geteIn() - p->geteOut());
-        MLocator loc(3);
-        loc[0] = 0;
-        loc[1] = fiber->getFiberY();
-        loc[2] = fiber->getFiberX();
+        MLocator loc(2);
+        loc[0] = fiber->getModule();
+        loc[1] = fiber->getNumber();
 
         MFibersStackCalSim * hit = (MFibersStackCalSim*) catFibersCal->getObject(loc);
         if (!hit)

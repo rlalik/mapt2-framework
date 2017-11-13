@@ -1,7 +1,7 @@
 #include "CADFiber.h"
 
-CADFiber::CADFiber (bool drawable_)
-: CADPart(drawable_) {
+CADFiber::CADFiber(bool drawable_) : CADPart(drawable_)
+{
     midpoint = TVector3 (0,0,0);
     deltaX = 0;
     deltaY = 0;
@@ -9,21 +9,17 @@ CADFiber::CADFiber (bool drawable_)
     maxStep = 0;
 }
 
-void CADFiber::Init (string path_, string material_, string color_, int number_)
+void CADFiber::Init(string path_, string material_, string color_, int number_)
 {
     Init (path_, material_, color_);
-    number = number_;
-    // calculate fiberX and fiberY from number
-    fiberY = 29 - (number-1)/30;
-    fiberX = 29 - (number-1)%30;
-
+    number = number_ - 1;
 
     // generate midpoint and deltas out of vertices -> assumption: Fiber is a quader
     if (drawable)
         calculatePositionAndDeltas();
 }
 
-void CADFiber::calculatePositionAndDeltas ()
+void CADFiber::calculatePositionAndDeltas()
 {
     double x1,x2,y1,y2,z1,z2 = 0;
 
@@ -32,7 +28,7 @@ void CADFiber::calculatePositionAndDeltas ()
         x1 = vertices[0].x();
         y1 = vertices[0].y();
         z1 = vertices[0].z();
-        for (int i=0; i<numberVertices; i++)
+        for (int i = 0; i < numberVertices; ++i)
         {
             if (x1 != vertices[i].x())
             {
@@ -57,7 +53,8 @@ void CADFiber::calculatePositionAndDeltas ()
     }
 }
 
-void CADFiber::setMaxStep (double maxStep_) {
+void CADFiber::setMaxStep(double maxStep_)
+{
     maxStep = maxStep_;
     userLimit = new G4UserLimits(maxStep);
     logical->SetUserLimits(userLimit);

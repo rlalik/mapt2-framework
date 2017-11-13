@@ -46,17 +46,20 @@ int UserCGALGeometry::getNextStep (TVector3 startPoint, TVector3 direction, TVec
 }
 
 
-CADFiberCGAL* UserCGALGeometry::getFiber(int x, int y)
+CADFiberCGAL* UserCGALGeometry::getFiber(int module, int fiber)
 {
-    CADFiberCGAL* fiber;
-    for (int i=0;i<parts.size();i++)
+    // TODO can we optimize it with direct access?
+    return dynamic_cast<CADFiberCGAL*> (parts.at(fiber)); // FIXME include modules here
+
+    CADFiberCGAL* f;
+    for (int i = 0; i < parts.size(); ++i)
     {
-        fiber = dynamic_cast<CADFiberCGAL*> (parts.at(i));
-        if (fiber != 0)
+        f = dynamic_cast<CADFiberCGAL*> (parts.at(i));
+        if (f != 0)
         {
-            if ((fiber->getFiberX() == x) && (fiber->getFiberY() == y))
+            if ((f->getModule() == module) && (f->getNumber() == fiber))
             {
-                return fiber;
+                return f;
             }
         }
     }

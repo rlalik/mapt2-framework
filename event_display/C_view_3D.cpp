@@ -316,8 +316,8 @@ void C_view_3D::update3D()
         {
             MGeantFibersRaw * p = (MGeantFibersRaw *)catGeantFibersRaw->getObject(i);
 
-            int y = p->getY();
-            int x = p->getX();
+            int m, f;
+            p->getAddress(m, f);
 
             // set color
             float color;
@@ -327,7 +327,7 @@ void C_view_3D::update3D()
 
             // paint only hits
             if (color != 0) {
-                AbsPart* part = dynamic_cast<AbsPart*> (geometry->getFiber(x,y));
+                AbsPart* part = dynamic_cast<AbsPart*> (geometry->getFiber(m,f));
                 std::vector<TVector3> verticesPart = part->getVertices();
                 std::vector<std::vector<int> > trianglesPart =part->getTriangles();
 

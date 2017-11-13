@@ -26,11 +26,17 @@ class MFibersStackDetector : public MDetector
 {
 public:
     MFibersStackDetector(const std::string & name);
+    MFibersStackDetector(const std::string & name, size_t m, size_t l, size_t f);
     ~MFibersStackDetector();
 
     bool initTasks();
     bool initContainers();
     bool initCategories();
+
+private:
+    const size_t modules;
+    const size_t layers;
+    const size_t fibers;
 };
 
 #endif // MFIBERSSTACKDETECTOR_H

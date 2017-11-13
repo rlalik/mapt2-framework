@@ -112,22 +112,20 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
     if (fiber)
     {
         MCategory * catGeantFibersRaw = data_manager->getCategory(MCategory::CatGeantFibersRaw);
-        int x_fiber = fiber->getFiberX();
-        int y_fiber = fiber->getFiberY();
-        MLocator loc(3);
-        loc[0] = 0;
-        loc[1] = y_fiber;
-        loc[2] = x_fiber;
+        int m_fiber = 0;    // TODO get module name somehow
+        int f_fiber = fiber->getNumber();
+        MLocator loc(2);
+        loc[0] = m_fiber;
+        loc[1] = f_fiber;
 
         MGeantFibersRaw * detector_response = (MGeantFibersRaw *) catGeantFibersRaw->getObject(loc);
         if (!detector_response)
         {
             detector_response = (MGeantFibersRaw *) catGeantFibersRaw->getSlot(loc);
             detector_response = new (detector_response) MGeantFibersRaw;
-            detector_response->setX(x_fiber);
-            detector_response->setY(y_fiber);
+            detector_response->setAddress(m_fiber, f_fiber);
         }
-        
+
         G4double energy_step = step->GetTotalEnergyDeposit() - step->GetNonIonizingEnergyDeposit(); //take here only ionization energy loss
         // formular for  quenching
         double energy_step_quenching =  calculate_quenched_energy(step, kB, energy_step);

@@ -72,7 +72,7 @@ class UserGeant4Geometry {
     void addPart(AbsPart* part_);
 
     //! \brief Returns the CADFiber indentified by its position (x,y) in the Hits30x30 array.
-    CADFiber* getFiber(int x, int y);
+    CADFiber* getFiber(int module, int fiber);
 
     //! \brief Returns the detector part identified by its G4LogicalVolume.
     AbsPart* getPart (G4LogicalVolume* vol);

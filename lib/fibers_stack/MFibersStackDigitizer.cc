@@ -76,8 +76,11 @@ bool MFibersStackDigitizer::execute()
         }
 
         Int_t mod = 0;
-        Int_t lay = pHit->getY();
-        Int_t fib = pHit->getX();
+        Int_t address = 0;
+
+        pHit->getAddress(mod, address);
+        Int_t lay = 0;
+        Int_t fib = 0;
 
         Float_t u = pGeomPar->getFiberOffsetX(mod, lay) + fib * pGeomPar->getFibersPitch(mod, lay);
         Float_t y = pGeomPar->getFiberOffsetY(mod, lay);

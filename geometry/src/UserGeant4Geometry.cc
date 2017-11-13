@@ -87,17 +87,21 @@ void UserGeant4Geometry::addPart (AbsPart* part_)
     }
 }
 
-CADFiber* UserGeant4Geometry::getFiber(int x, int y)
+CADFiber* UserGeant4Geometry::getFiber(int module, int fiber)
 {
-    CADFiber* fiber;
-    for (int i=0;i<parts.size();i++)
+    // TODO can we optimize it with direct access?
+    return dynamic_cast<CADFiber*> (parts.at(fiber)); // FIXME include modules here
+
+    CADFiber* f;
+    for (int i = 0; i < parts.size(); ++i)
     {
-        fiber = dynamic_cast<CADFiber*> (parts.at(i));
-        if (fiber != 0)
+        f = dynamic_cast<CADFiber*> (parts.at(i));
+        if (f != 0)
         {
-            if ((fiber->getFiberX() == x) && (fiber->getFiberY() == y))
+            if ((f->getModule() == module) && (f->getNumber() == fiber))
             {
-                return fiber;
+                printf("found %d for %d,%d\n", i, module, fiber);
+                return f;
             }
         }
     }
@@ -106,7 +110,7 @@ CADFiber* UserGeant4Geometry::getFiber(int x, int y)
 
 AbsPart* UserGeant4Geometry::getPart (G4LogicalVolume* vol)
 {
-    for (int i=0;i<parts.size();i++)
+    for (int i = 0; i < parts.size(); ++i)
     {
         if (parts[i]->getLogical() == vol)
         {
@@ -118,7 +122,7 @@ AbsPart* UserGeant4Geometry::getPart (G4LogicalVolume* vol)
 
 AbsPart* UserGeant4Geometry::getPart (int volumeIndex_)
 {
-    for (int i=0;i<parts.size();i++)
+    for (int i = 0; i < parts.size(); ++i)
     {
         if (parts[i]->getVolumeIndex() == volumeIndex_)
         {

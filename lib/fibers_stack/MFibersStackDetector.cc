@@ -26,7 +26,13 @@
 #include "MFibersStackUnpacker.h"
 #include "MFibersStackDigitizer.h"
 
-MFibersStackDetector::MFibersStackDetector(const std::string & name) : MDetector(name)
+MFibersStackDetector::MFibersStackDetector(const std::string & name) : MDetector(name),
+modules(1), layers(30), fibers(30)
+{
+}
+
+MFibersStackDetector::MFibersStackDetector(const std::string & name, size_t m, size_t l, size_t f) :
+    MDetector(name), modules(m), layers(l), fibers(f)
 {
 }
 
@@ -69,12 +75,16 @@ bool MFibersStackDetector::initCategories()
     size_t sizes[3];
     MMAPTManager * dm = MMAPTManager::instance();
 
-    sizes[0] = 1;
-    sizes[1] = 30;
-    sizes[2] = 30;
+    sizes[0] = modules;
+    sizes[1] = layers;
+    sizes[2] = fibers;
     if (isSimulation())
     {
-        if (!dm->registerCategory(MCategory::CatGeantFibersRaw, "MGeantFibersRaw", 3, sizes, true)) return false;
+        size_t sim_sizes[2];
+        sim_sizes[0] = modules;
+        sim_sizes[1] = layers * fibers;
+
+        if (!dm->registerCategory(MCategory::CatGeantFibersRaw, "MGeantFibersRaw", 2, sim_sizes, true)) return false;
         if (!dm->registerCategory(MCategory::CatFibersStackCal, "MFibersStackCalSim", 3, sizes, true)) return false;
     }
     else
