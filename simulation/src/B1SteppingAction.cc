@@ -56,10 +56,10 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
     G4LogicalVolume* volume
     = step->GetPreStepPoint()->GetTouchableHandle()
     ->GetVolume()->GetLogicalVolume();
-    
+
     // get the DetectorPart according to the current step logical volume
     AbsPart* part = detector_construction->getGeo()->getPart(volume);
-    
+
     // Is there a detector part?
     if (part == NULL)
         return;
@@ -70,7 +70,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
 
     // particle passed the detector
     current_particle->setInAcceptance(true);
-    
+
     // get the step defining process and add it to the process list of the current particle if the process is important
     // important processes are defined in the else if section
     const G4String process = step->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName();
@@ -155,14 +155,14 @@ G4double calculate_quenched_energy(const G4Step* step, G4double kB, G4double E_d
     G4EmCalculator *EmCalculator = new G4EmCalculator();
     G4ParticleDefinition* particle = step->GetTrack()->GetDefinition();
     G4Material* material = step->GetPreStepPoint()->GetMaterial();
-    
+
     G4double dEdx = EmCalculator->GetDEDX(E_before, particle, material, 0);
     E_quenched += E_dep / (1 + kB * dEdx);
-    
-    
+
+
     //G4double range_step = range_diff / (double) substeps;
-    
-    
+
+
     //for (int n = 0; n < substeps; n++){
     //	G4double E1 = 0;
     //	G4double E2 = 0;
@@ -192,7 +192,7 @@ G4double calculate_quenched_energy(const G4Step* step, G4double kB, G4double E_d
     //
     //	}
     //}
-    
+
     delete EmCalculator;
     return E_quenched;
 }

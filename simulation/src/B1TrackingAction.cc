@@ -86,15 +86,15 @@ void B1TrackingAction::PreUserTrackingAction(const G4Track* track)
     // start position
     G4ThreeVector start_position = track->GetPosition();
     current_particle->setStartXYZ(start_position.x(),start_position.y(),start_position.z());
-    
+
     // start direction
     G4ThreeVector start_direction = track->GetMomentumDirection();
     current_particle->setStartPxPyPz(start_direction.x(),start_direction.y(),start_direction.z());
-    
+
     // PDG encoding
     int pdg = (int) track->GetDynamicParticle()->GetDefinition()->GetPDGEncoding();
     current_particle->setG4Id(pdg);
-    
+
     // start energy
     double start_energy = track->GetKineticEnergy();
     current_particle->setStartE(start_energy);
@@ -109,13 +109,13 @@ void B1TrackingAction::PostUserTrackingAction(const G4Track* track)
     // end direction
     G4ThreeVector end_direction = track->GetMomentumDirection();
     current_particle->setStopPxPyPz(end_direction.x(),end_direction.y(),end_direction.z());
-    
+
     // end energy
     if (track->GetKineticEnergy() > 0)
     {
         current_particle->setStopInDetector(false);
     }
-    
+
     // scattering
     TVector3 sta_dir(current_particle->getStartPx(), current_particle->getStartPy(), current_particle->getStartPz());
     TVector3 sto_dir(current_particle->getStopPx(), current_particle->getStopPy(), current_particle->getStopPz());

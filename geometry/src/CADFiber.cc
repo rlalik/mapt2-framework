@@ -23,7 +23,6 @@ void CADFiber::Init (string path_, string material_, string color_, int number_)
         calculatePositionAndDeltas();
 }
 
-
 void CADFiber::calculatePositionAndDeltas ()
 {
     double x1,x2,y1,y2,z1,z2 = 0;
