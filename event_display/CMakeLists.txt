@@ -73,4 +73,4 @@ add_executable(EventDisplay ${SOURCES} ${MOC_SRCS} ${RES_SOURCES} ${UI_HEADERS})
 # build it (link libraries)
 target_link_libraries(EventDisplay ${QT_LIBRARIES} MAPT GeantSim Geometry FibersStack)
 
-install(TARGETS EventDisplay DESTINATION bin)
+install(TARGETS EventDisplay DESTINATION ${CMAKE_INSTALL_BINDIR})

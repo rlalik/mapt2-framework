@@ -66,4 +66,4 @@ add_subdirectory(example)
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
-install(TARGETS mapt_simulation DESTINATION bin)
+install(TARGETS mapt_simulation DESTINATION ${CMAKE_INSTALL_BINDIR})

@@ -18,4 +18,4 @@ target_link_libraries(mapt_simdst MAPT GeantSim FibersStack)
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
-install(TARGETS mapt_simdst DESTINATION bin)
+install(TARGETS mapt_simdst DESTINATION ${CMAKE_INSTALL_BINDIR})

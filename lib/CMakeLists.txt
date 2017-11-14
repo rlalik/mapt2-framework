@@ -3,7 +3,7 @@
 cmake_minimum_required(VERSION 3.4 FATAL_ERROR)
 project(MAPT-Framework-Library CXX)
 
-set(MODULES base geant fibers)
+set(MODULES base geant fibers_stack)
 include_directories(
     ${MODULES}
 )

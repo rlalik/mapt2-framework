@@ -48,8 +48,8 @@ add_library(${LIBRARY_NAME} SHARED
 
 target_link_libraries(${LIBRARY_NAME} ${ROOT_LIBRARIES})
 
-install(TARGETS ${LIBRARY_NAME} DESTINATION lib)
-install(FILES ${LIBRARY_HDRS} DESTINATION include)
+install(TARGETS ${LIBRARY_NAME} DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(FILES ${LIBRARY_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # Install the export set for use with the install-tree
 install(TARGETS ${LIBRRAY_NAME}

@@ -20,14 +20,14 @@
 
 // MAPT-Analysis framework includes
 #include "MGeantTrack.h"
-#include "MGeantFibersStackRaw.h"
+#include "MGeantFibersRaw.h"
 #include "MFibersStackCalSim.h"
 
 #include "MMAPTManager.h"
 #include "MParManager.h"
 #include "MDetectorManager.h"
 
-#include "MFibersDetector.h"
+#include "MFibersStackDetector.h"
 
 using namespace std;
 
@@ -59,7 +59,7 @@ int analysis(const std::string & file, int events = 1000)
     MDetectorManager * detm = MDetectorManager::instance();
 
     // add here each detector you need to include
-    MFibersDetector * fd = new MFibersDetector("FibersStack");
+    MFibersStackDetector * fd = new MFibersStackDetector("FibersStack");
     fd->setTaskMask(0);             // disable all tasks, e.g. digitizer will override MFibersCalSim
     detm->addDetector(fd);
     // ... more detectors
@@ -82,10 +82,10 @@ int analysis(const std::string & file, int events = 1000)
     MCategory * catGeantFibersRaw = dataManager->openCategory(MCategory::CatGeantFibersRaw);
 
     // Open this category if you need access to detector cal: fibers
-    MCategory * catFibersCalSim = dataManager->openCategory(MCategory::CatFibersCal);
+    MCategory * catFibersStackCalSim = dataManager->openCategory(MCategory::CatFibersStackCal);
 
     // build this category if you need access to tracks: fibers
-    //MCategory * catFibersTracks = dataManager->buildCategory(MCategory::CatFibersTracks);   // example
+    //MCategory * catFibersStackTracks = dataManager->buildCategory(MCategory::CatFibersTracks);   // example
     
     int ev_limit = events < dataManager->getEntriesFast() ? events : dataManager->getEntriesFast();
     std::cout << dataManager->getEntriesFast() << " events, analyze " << ev_limit << std::endl;
@@ -120,13 +120,13 @@ int analysis(const std::string & file, int events = 1000)
         }
 
         //*********************************************************************
-        if (!catFibersCalSim)
+        if (!catFibersStackCalSim)
         {
             printf("No category %s\n", "CatFibersCal");
         }
         else
         {
-            tracks_num = catFibersCalSim->getEntries();
+            tracks_num = catFibersStackCalSim->getEntries();
             fprintf(stderr, "Category %s has %d entries\n", "CatFibersCal", tracks_num);
         }
     }

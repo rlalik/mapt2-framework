@@ -10,7 +10,7 @@ add_definitions("-std=c++11")
 find_package(ROOT REQUIRED COMPONENTS Core)
 include_directories(${ROOT_INCLUDE_DIR})
 
-find_package(MAPT QUIET COMPONENTS MAPT Fibers GeantSim)
+find_package(MAPT QUIET COMPONENTS MAPT FibersStack GeantSim)
 if (MAPT_FOUND)
     include_directories(${MAPT_INCLUDE_DIR})
     link_directories(${MAPT_LIBRARY_DIR})
@@ -24,4 +24,5 @@ target_link_libraries(template_app MAPT GeantSim FibersStack)
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
-install(TARGETS template_app DESTINATION bin)
+include(GNUInstallDirs)
+install(TARGETS template_app DESTINATION ${CMAKE_INSTALL_BINDIR})

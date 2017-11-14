@@ -49,4 +49,4 @@ target_link_libraries(particle_filter ${CGAL_LIBRARIES})
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
-install(TARGETS particle_filter DESTINATION bin)
+install(TARGETS particle_filter DESTINATION ${CMAKE_INSTALL_BINDIR})

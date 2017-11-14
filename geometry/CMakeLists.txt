@@ -73,4 +73,4 @@ target_link_libraries(Geometry ${CGAL_LIBRARIES})
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
-install(TARGETS Geometry DESTINATION lib)
+install(TARGETS Geometry DESTINATION ${CMAKE_INSTALL_LIBDIR})
