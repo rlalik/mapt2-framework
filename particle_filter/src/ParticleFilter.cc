@@ -4,20 +4,8 @@
 #include "MCategory.h"
 #include "MGeantTrack.h"
 
-ParticleFilter::ParticleFilter(UserCGALGeometry* geo, int num) : debugLvl(1), evalSigma(0.05), number(num), geometry(geo) {}
-
-int f_cnt = 0;
-int f_pidx = 0;
-ParticleFilter::~ParticleFilter()
+ParticleFilter::ParticleFilter(UserCGALGeometry* geo, int num) : debugLvl(1), evalSigma(0.05), number(num), geometry(geo)
 {
-    for (int i=0;i<number;i++)
-    {
-        delete particles[i];
-        delete temps[i];
-    }
-    particles.clear();
-    temps.clear();
-
     pGeomPar = (MFibersStackGeomPar*) MParManager::instance()->getParameterContainer("MFibersStackGeomPar");
     if (!pGeomPar)
     {
@@ -38,6 +26,19 @@ ParticleFilter::~ParticleFilter()
             layer_fiber_limit[m][l] = cnt_fibers;
         }
     }
+}
+
+int f_cnt = 0;
+int f_pidx = 0;
+ParticleFilter::~ParticleFilter()
+{
+    for (int i=0;i<number;i++)
+    {
+        delete particles[i];
+        delete temps[i];
+    }
+    particles.clear();
+    temps.clear();
 }
 
 bool ParticleFilter::initEvent(MMAPTManager * event_, double deltaE, double deltaPos, double deltaDir)
