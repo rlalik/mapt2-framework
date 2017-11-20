@@ -1,5 +1,6 @@
 #include "ParticleFilter.h"
 
+#include "MParManager.h"
 #include "MCategory.h"
 #include "MGeantTrack.h"
 
@@ -16,6 +17,27 @@ ParticleFilter::~ParticleFilter()
     }
     particles.clear();
     temps.clear();
+
+    pGeomPar = (MFibersStackGeomPar*) MParManager::instance()->getParameterContainer("MFibersStackGeomPar");
+    if (!pGeomPar)
+    {
+        std::cerr << "Parameter container 'MFibersStackGeomPar' was not obtained!" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    Int_t modules = pGeomPar->getModules();
+    layer_fiber_limit.resize(modules);
+    for (int m = 0; m < modules; ++m)
+    {
+        Int_t cnt_fibers = 0;
+        Int_t layers = pGeomPar->getLayers(m);
+        layer_fiber_limit[m].resize(layers);
+        for (int l = 0; l < layers; ++l)
+        {
+            cnt_fibers += pGeomPar->getFibers(m, l);
+            layer_fiber_limit[m][l] = cnt_fibers;
+        }
+    }
 }
 
 bool ParticleFilter::initEvent(MMAPTManager * event_, double deltaE, double deltaPos, double deltaDir)
@@ -426,11 +448,31 @@ double ParticleFilter::evaluate(Particle* p, int volumeIndex)
     CADFiberCGAL* fiber = static_cast<CADFiberCGAL*> (geometry->getCurrentPart(volumeIndex));
     if (fiber != NULL)
     {
+        int address = fiber->getNumber();
+        int mod = fiber->getModule();
+        int lay = -1;
+        int fib = -1;
+
+        int layers = pGeomPar->getLayers(mod);
+        for (int l = 0; l < layers; ++l)
+        {
+            if (address < layer_fiber_limit[mod][l])
+            {
+                lay = l;
+                if (l > 0)
+                    fib = address - layer_fiber_limit[mod][l-1];
+                else
+                    fib = address;
+                break;
+            }
+        }
+
         //         p->print();
         double m = TMath::Abs(p->geteIn() - p->geteOut());
-        MLocator loc(2);
-        loc[0] = fiber->getModule();
-        loc[1] = fiber->getNumber();
+        MLocator loc(3);
+        loc[0] = mod;
+        loc[1] = lay;
+        loc[1] = fib;
 
         MFibersStackCalSim * hit = (MFibersStackCalSim*) catFibersCal->getObject(loc);
         if (!hit)

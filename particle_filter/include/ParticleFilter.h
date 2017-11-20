@@ -37,9 +37,9 @@
 
 #include "MMAPTManager.h"
 #include "MFibersStackCalSim.h"
+#include "MFibersStackGeomPar.h"
 
 using namespace std::chrono;
-
 
 //! \brief The Particle Filter class implementing the particle filter functionalities.
 /*!
@@ -146,6 +146,9 @@ private:
 
     //! \brief debug level (initialized in constructor)
     int debugLvl;
+
+    MFibersStackGeomPar * pGeomPar;
+    std::vector<std::vector<Int_t> > layer_fiber_limit;
 };
 
 #endif

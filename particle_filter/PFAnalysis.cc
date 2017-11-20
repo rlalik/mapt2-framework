@@ -127,10 +127,16 @@ int main(int argc,char** argv)
     dataManager->setInputFileName(data);
     dataManager->open();
 
+    // initialize parameters
+    MParManager * pm = MParManager::instance();
+    pm->setParamSource("params.txt");
+    pm->parseSource();
+
     // initialize detectors
     MDetectorManager * detm = MDetectorManager::instance();
 
     detm->addDetector(new MFibersStackDetector("FibersStack"));
+    detm->initParameterContainers();
     detm->initCategories();
 
     dataManager->openCategory(MCategory::CatGeantTrack);

@@ -20,8 +20,6 @@ void UserCGALGeometry::construct ()
     std::cout << "Finished geometry construction" << "\n";
 }
 
-
-
 void UserCGALGeometry::addPart (AbsPartCGAL* part_)
 {
     if (part_ != NULL) {
@@ -65,7 +63,6 @@ CADFiberCGAL* UserCGALGeometry::getFiber(int module, int fiber)
     }
     return NULL;
 }
-
 
 AbsPartCGAL* UserCGALGeometry::getCurrentPart (int volumeIndex_) {
     return parts[volumeIndex_];
