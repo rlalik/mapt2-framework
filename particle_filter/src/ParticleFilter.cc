@@ -473,7 +473,7 @@ double ParticleFilter::evaluate(Particle* p, int volumeIndex)
         MLocator loc(3);
         loc[0] = mod;
         loc[1] = lay;
-        loc[1] = fib;
+        loc[2] = fib;
 
         MFibersStackCalSim * hit = (MFibersStackCalSim*) catFibersCal->getObject(loc);
         if (!hit)
