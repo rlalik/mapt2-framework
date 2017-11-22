@@ -1,24 +1,55 @@
+// @(#)lib/base:$Id$
+// Author: Rafal Lalik  18/11/2017
+
+/*************************************************************************
+ * Copyright (C) 2017-2018, Rafał Lalik.                                 *
+ * All rights reserved.                                                  *
+ *                                                                       *
+ * For the licensing terms see $MAPTSYS/LICENSE.                         *
+ * For the list of contributors see $MAPTSYS/README/CREDITS.             *
+ *************************************************************************/
+
 #include "MMAPTManager.h"
 
 #include "MCategory.h"
 
 #include <iostream>
 
+/** \class MMAPTManager
+\ingroup lib_base
+
+Access point to load, read and write data.
+
+The main class of the MAPT Framework. The MMAPTManager is responsible for
+managing all data operations. It loads a root tree from specified file.
+*/
+
 MCategory * gNullMCategoryPtr = 0;
 
-// Needed for Creation of shared libs
-ClassImp(MMAPTManager);
+MMAPTManager * MMAPTManager::mm = nullptr;
 
-MMAPTManager * MMAPTManager::dm = nullptr;
-
+/** Returns instance of the Detector Manager class.
+ *
+ * \return manager instance
+ */
 MMAPTManager * MMAPTManager::instance()
 {
-    if (!dm)
-        dm = new MMAPTManager;
+    if (!mm)
+        mm = new MMAPTManager;
 
-    return dm;
+    return mm;
 }
 
+/** Shortcut
+ * \return MMAPTManager instance
+ */
+MMAPTManager * mapt()
+{
+    return MMAPTManager::instance();
+}
+
+/** Default constructor
+ */
 MMAPTManager::MMAPTManager() :
     outputFile(nullptr), outputTree(nullptr), outputTreeTitle("M"), outputTreeName("M"), outputFileName("output.root"),
     inputFile(nullptr), inputTree(nullptr), inputTreeTitle("M"), inputTreeName("M"), inputFileName("input.root"),
@@ -26,6 +57,10 @@ MMAPTManager::MMAPTManager() :
 {
 }
 
+/** Set simulation run.
+ *
+ * \param simulation is simulation run
+ */
 void MMAPTManager::setSimulation(bool simulation)
 {
     sim = simulation;
@@ -38,7 +73,9 @@ void MMAPTManager::setSimulation(bool simulation)
     }
 }
 
-
+/** Creates a new file and an empty root tree with output categories.
+ * \return true if success
+ */
 bool MMAPTManager::book()
 {
     // Create file and open it
@@ -55,6 +92,9 @@ bool MMAPTManager::book()
     return true;
 }
 
+/** Writes the tree to file and close it.
+ * \return success
+ */
 bool MMAPTManager::save()
 {
     if (outputFile)
@@ -68,7 +108,9 @@ bool MMAPTManager::save()
     return false;
 }
 
-
+/** Fills the current event into the tree.
+ * \return status of Fill() method
+ */
 Int_t MMAPTManager::fill()
 {
     if (!branches_set)
@@ -87,6 +129,9 @@ Int_t MMAPTManager::fill()
     return status;
 }
 
+/** Opens a file and loads the root tree.
+ * \return success
+ */
 bool MMAPTManager::open()
 {
     inputFile = TFile::Open(inputFileName.c_str());
@@ -106,6 +151,19 @@ bool MMAPTManager::open()
     return true;
 }
 
+/** Register category.
+ *
+ * Every category must be registered first before using i (reading or writing).
+ * The detector related categories should be registerd inside
+ * MDetector::initCategories() method.
+ *
+ * \param cat category ID
+ * \param name category name
+ * \param dim address dimension
+ * \param sizes dimension sizes
+ * \param simulation simulation run
+ * \return success
+ */
 bool MMAPTManager::registerCategory(MCategory::Cat cat, std::string name, size_t dim, size_t * sizes, bool simulation)
 {
     int pos = cat * (1+(int)simulation);
@@ -129,6 +187,12 @@ bool MMAPTManager::registerCategory(MCategory::Cat cat, std::string name, size_t
     return true;
 }
 
+/** Init all braches in the output tree.
+ *
+ * Uses registered categories info to init branches. If the category is
+ * persistent, will be written to output tree. The persistent input category
+ * will be rewritten to output tree.
+ */
 void MMAPTManager::initBranches()
 {
     size_t limit = MCategory::CatLimitDoNotUse * 2;
@@ -144,6 +208,12 @@ void MMAPTManager::initBranches()
     branches_set = true;
 }
 
+/** Build category based on its ID. Category must be first registered.
+ *
+ * \param cat category ID
+ * \param persistent set category persistent
+ * \return pointer to category object
+ */
 MCategory * MMAPTManager::buildCategory(MCategory::Cat cat, bool persistent)
 {
     if (!outputTree)
@@ -164,15 +234,20 @@ MCategory * MMAPTManager::buildCategory(MCategory::Cat cat, bool persistent)
     {
         categories[cat] = cat_ptr;
         cinfovec[pos] = cinfo;
-
-//         outputTree->Branch(cat_ptr->getName(), cinfo.ptr, 16000, 2);
-
         return cat_ptr;
     }
 
     return gNullMCategoryPtr;
 }
 
+/** Get the category.
+ *
+ * If category is not open, opens the category from input tree.
+ *
+ * \param cat category ID
+ * \param persistent set category persistent
+ * \return pointer to category object
+ */
 MCategory * MMAPTManager::getCategory(MCategory::Cat cat, bool persistent)
 {
     int pos = cat * (1+(int)sim);
@@ -188,6 +263,12 @@ MCategory * MMAPTManager::getCategory(MCategory::Cat cat, bool persistent)
     return gNullMCategoryPtr;
 }
 
+/** Open the category from input tree.
+ *
+ * \param cat category ID
+ * \param persistent set category persistent
+ * \return pointer to category object
+ */
 MCategory * MMAPTManager::openCategory(MCategory::Cat cat, bool persistent)
 {
     if (!inputTree)
@@ -226,6 +307,12 @@ MCategory * MMAPTManager::openCategory(MCategory::Cat cat, bool persistent)
         return gNullMCategoryPtr;
 }
 
+/** Reads entry of the current tree.
+ *
+ * The categories are filled with the data saved in tree entry i.
+ *
+ * \param i event number
+ */
 void MMAPTManager::getEntry(int i)
 {
     if (!inputTree)
@@ -241,6 +328,10 @@ void MMAPTManager::getEntry(int i)
     }
 }
 
+/** Returns number of entries in the current tree.
+ *
+ * \return number of entries
+ */
 int MMAPTManager::getEntriesFast ()
 {
     if (!inputTree)
@@ -252,6 +343,8 @@ int MMAPTManager::getEntriesFast ()
     return numberOfEntries;
 }
 
+/** Print info about the categories.
+ */
 void MMAPTManager::print() const
 {
     outputFile->cd();
@@ -262,6 +355,8 @@ void MMAPTManager::print() const
     }
 }
 
+/** Clear all categories.
+ */
 void MMAPTManager::clear()
 {
     for (CatMap::const_iterator it = categories.begin(); it != categories.end(); ++it)
@@ -270,6 +365,8 @@ void MMAPTManager::clear()
     }
 }
 
+/** Constructor
+ */
 MMAPTManager::CategoryInfo::CategoryInfo()
 {
     registered = false;
@@ -277,6 +374,8 @@ MMAPTManager::CategoryInfo::CategoryInfo()
     ptr = nullptr;
 }
 
+/** Copy constructor
+ */
 MMAPTManager::CategoryInfo::CategoryInfo(MMAPTManager::CategoryInfo& ci)
 {
     registered = ci.registered;
@@ -289,3 +388,5 @@ MMAPTManager::CategoryInfo::CategoryInfo(MMAPTManager::CategoryInfo& ci)
     persistent = ci.persistent;
     ptr = ci.ptr;
 }
+
+ClassImp(MMAPTManager);

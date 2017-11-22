@@ -1,3 +1,14 @@
+// @(#)lib/base:$Id$
+// Author: Rafal Lalik  18/11/2017
+
+/*************************************************************************
+ * Copyright (C) 2017-2018, Rafał Lalik.                                 *
+ * All rights reserved.                                                  *
+ *                                                                       *
+ * For the licensing terms see $MAPTSYS/LICENSE.                         *
+ * For the list of contributors see $MAPTSYS/README/CREDITS.             *
+ *************************************************************************/
+
 #ifndef MLOCATOR_H
 #define MLOCATOR_H
 
@@ -12,11 +23,31 @@
 
 class MLocator
 {
+private:
+    // members
+    std::size_t dim;                ///< dimension of the locator
+    std::vector<size_t> addr;       ///< cooridnates of the locator
+
+private:
+    // constructor
+    MLocator() {}
 public:
-    MLocator(std::size_t N = 1) : dim(N), addr(N) {}
+    // constructor
+    /// Constructor
+    /// \param N dimension of the locator
+    MLocator(std::size_t N) : dim(N), addr(N) {}
+    //destructor
     virtual ~MLocator() {}
 
+    //methods
+
+    /// Access coordinate at given position.
+    /// \param n dimension position (0..N)
+    /// \return coordinate
     size_t & operator[](size_t n) { return addr[n]; }
+    /// Same as operator[]()
+    /// \param n dimension position (0..N)
+    /// \return coordinate
     size_t at(size_t n) const { return addr[n]; }
 //     bool operator<(const MLocator & l) const
 //     {
@@ -36,14 +67,13 @@ public:
 //         return l < *this;
 //     }
 
+    /// Get locator dimensions
+    /// \return number of dimensions
     std::size_t getDim() const { return dim; }
 
     void print() const;
 
 private:
-    std::size_t dim;
-    std::vector<size_t> addr;
-
     ClassDef(MLocator, 1);
 };
 

@@ -18,6 +18,17 @@
  */
 
 #ifndef MPARMANAGER_H
+// @(#)lib/base:$Id$
+// Author: Rafal Lalik  18/11/2017
+
+/*************************************************************************
+ * Copyright (C) 2017-2018, Rafał Lalik.                                 *
+ * All rights reserved.                                                  *
+ *                                                                       *
+ * For the licensing terms see $MAPTSYS/LICENSE.                         *
+ * For the list of contributors see $MAPTSYS/README/CREDITS.             *
+ *************************************************************************/
+
 #define MPARMANAGER_H
 
 #include <map>
@@ -29,17 +40,37 @@ class MPar;
 
 class MParManager
 {
+protected:
+    std::string source;             ///< Parameters source file
+    std::string destination;        ///< Parameters destination file
+
+    std::map<std::string, MParContainer *> containers;  ///< Containers
+    std::map<std::string, MPar *> parconts;             ///< Parameters
+
+    static MParManager * pm;        ///< Instance of the MParManager
+
 private:
-    //! \brief Constructor.
+    // constructors
     MParManager();
     MParManager(MParManager const &) {}
+
+    // methods
+    /// Assignment operator
+    /// \return this object
     MParManager & operator=(MParManager const &) { return *this; }
 
 public:
+    // instance method
     static MParManager * instance();
+    // destructor
     ~MParManager();
 
+    // methods
+    /// Set parameters source
+    /// \param source source file name
     void setParamSource(const std::string & source) { this->source = source; }
+    /// Set parameters destination
+    /// \param dest destination file name
     void setParamDest(const std::string & dest) { this->destination = dest; }
 
     bool parseSource();
@@ -49,17 +80,14 @@ public:
     MPar * getParameterContainer(const std::string & cont_name);
 
     void print() const;
+
 private:
+    /// Parser stepes
     enum WhatNext { WNContainer, WNContainerOrParam, WNParam, WNParamCont };
     WhatNext parseValues(const std::string & str, std::vector<std::string> & values);
 
-    std::string source;
-    std::string destination;
-
-    std::map<std::string, MParContainer *> containers;
-    std::map<std::string, MPar *> parconts;
-
-    static MParManager * tm;
 };
+
+extern MParManager * pm();
 
 #endif // MPARMANAGER_H

@@ -1,21 +1,13 @@
-/*
- * <one line to give the program's name and a brief idea of what it does.>
- * Copyright (C) 2017  <copyright holder> <email>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
+// @(#)lib/base:$Id$
+// Author: Rafal Lalik  18/11/2017
+
+/*************************************************************************
+ * Copyright (C) 2017-2018, Rafał Lalik.                                 *
+ * All rights reserved.                                                  *
+ *                                                                       *
+ * For the licensing terms see $MAPTSYS/LICENSE.                         *
+ * For the list of contributors see $MAPTSYS/README/CREDITS.             *
+ *************************************************************************/
 
 #include <iostream>
 
@@ -23,8 +15,32 @@
 
 #include "MDetectorManager.h"
 
+/** \class MDetectorManager
+\ingroup lib_base
+
+Detector Manager class.
+
+It's a singleton class of which object can be obtained using instance() method.
+
+Each used detector must be registered here using addDetector() method.
+
+After all detectors are add, one can initialzie tasks for all detectors,
+parameters, and containers, using following methods:
+initTasks(), initParameterContainers(), initCategories().
+
+Particularly, the Parameter Containers must be initialized after the Parameter
+Manager MParameterManager as initParameterContainers() checks that all
+required parameter containers exists.
+
+*/
+
 MDetectorManager * MDetectorManager::detm = nullptr;
 
+/**
+ * Returns instance of the Detector Manager class.
+ *
+ * \return manager instance
+ */
 MDetectorManager * MDetectorManager::instance()
 {
     if (!detm)
@@ -33,22 +49,31 @@ MDetectorManager * MDetectorManager::instance()
     return detm;
 }
 
-MDetectorManager::MDetectorManager()
+/** Shortcut
+ * \return MDetectorManager instance
+ */
+MDetectorManager * dm()
 {
-
+    return MDetectorManager::instance();
 }
 
-MDetectorManager::~MDetectorManager()
-{
-
-}
-
+/**
+ * Add detector.
+ *
+ * \param detector pointer to a detector object
+ */
 void MDetectorManager::addDetector(MDetector* detector)
 {
     detectors.insert(std::pair<std::string, MDetector*>(detector->GetName(), detector));
     printf("Detector %s add\n", detector->GetName());
 }
 
+/**
+ * Get detector object by its name.
+ *
+ * \param name detector name
+ * \return pointer to the detector object
+ */
 MDetector * MDetectorManager::getDetector(const std::string& name)
 {
     DetectorsMap::iterator it = detectors.find(name);
@@ -58,6 +83,9 @@ MDetector * MDetectorManager::getDetector(const std::string& name)
         return nullptr;
 }
 
+/**
+ * Init all detectors tasks.
+ */
 void MDetectorManager::initTasks()
 {
     for (DetectorsMap::iterator it = detectors.begin(); it != detectors.end(); ++it)
@@ -72,6 +100,11 @@ void MDetectorManager::initTasks()
     }
 }
 
+/**
+ * Init all detectors parameter containers.
+ * 
+ * It must be called after the MParameterManager has been setup.
+ */
 void MDetectorManager::initParameterContainers()
 {
     for (DetectorsMap::iterator it = detectors.begin(); it != detectors.end(); ++it)
@@ -86,6 +119,12 @@ void MDetectorManager::initParameterContainers()
     }
 }
 
+/**
+ * Init all detectors categories.
+ * 
+ * It must be called before any detector categor is opened or created. See
+ * MMAPTManager and MCategory for details about categories.
+ */
 void MDetectorManager::initCategories()
 {
     for (DetectorsMap::iterator it = detectors.begin(); it != detectors.end(); ++it)

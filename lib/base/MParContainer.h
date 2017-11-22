@@ -1,21 +1,13 @@
-/*
- * <one line to give the program's name and a brief idea of what it does.>
- * Copyright (C) 2017  <copyright holder> <email>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
+// @(#)lib/base:$Id$
+// Author: Rafal Lalik  18/11/2017
+
+/*************************************************************************
+ * Copyright (C) 2017-2018, Rafał Lalik.                                 *
+ * All rights reserved.                                                  *
+ *                                                                       *
+ * For the licensing terms see $MAPTSYS/LICENSE.                         *
+ * For the list of contributors see $MAPTSYS/README/CREDITS.             *
+ *************************************************************************/
 
 #ifndef MPARCONTAINER_H
 #define MPARCONTAINER_H
@@ -34,10 +26,19 @@ typedef std::map<std::string, TypeDataField> ParMap;
 
 class MParContainer
 {
+protected:
+    // members
+    ParMap parameters;          ///< holds pairs of parameter string: key-values
+    std::string container;      ///< container name
+    size_t line_split;          ///< how many parameters per line in file
+
 public:
+    // constructor
     MParContainer(const std::string & container);
+    // destructor
     virtual ~MParContainer() {}
 
+    // methods
     virtual bool add(const std::string & name, Int_t val);
     virtual bool add(const std::string & name, Float_t val);
     virtual bool add(const std::string & name, Double_t val);
@@ -54,16 +55,13 @@ public:
 
     bool initParam(const std::string & name, const std::string & type, const std::vector<std::string> & values);
 
-    MMAPTManager * dm() { return MMAPTManager::instance(); }
-
-    void setLineSplit(size_t n) { line_split = n; }
-
     void print();
 
-private:
-    ParMap parameters;
-    std::string container;
-    size_t line_split;
+protected:
+    // methods
+    /// Set line split
+    /// \param n number of values per line
+    void setLineSplit(size_t n) { line_split = n; }
 };
 
 #endif // MPARCONTAINER_H

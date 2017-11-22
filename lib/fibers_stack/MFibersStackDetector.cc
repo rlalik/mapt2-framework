@@ -1,21 +1,13 @@
-/*
- * <one line to give the program's name and a brief idea of what it does.>
- * Copyright (C) 2017  <copyright holder> <email>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
+// @(#)lib/fibers_stack:$Id$
+// Author: Rafal Lalik  18/11/2017
+
+/*************************************************************************
+ * Copyright (C) 2017-2018, Rafał Lalik.                                 *
+ * All rights reserved.                                                  *
+ *                                                                       *
+ * For the licensing terms see $MAPTSYS/LICENSE.                         *
+ * For the list of contributors see $MAPTSYS/README/CREDITS.             *
+ *************************************************************************/
 
 #include "MFibersStackDetector.h"
 
@@ -26,20 +18,46 @@
 #include "MFibersStackUnpacker.h"
 #include "MFibersStackDigitizer.h"
 
+/** \class MFibersStackDetector
+\ingroup lib_fibers_stack
+
+An organizer class for the detector
+
+\sa MDetector
+*/
+
+/** Constructor
+ *
+ * \param name detetcor name
+ */
 MFibersStackDetector::MFibersStackDetector(const std::string & name) : MDetector(name),
 modules(1), layers(30), fibers(30)
 {
 }
 
+/** Constructor
+ *
+ * \param name detetcor name
+ * \param m number of modules
+ * \param l number oflayers
+ * \param f number of fibers
+ */
 MFibersStackDetector::MFibersStackDetector(const std::string & name, size_t m, size_t l, size_t f) :
     MDetector(name), modules(m), layers(l), fibers(f)
 {
 }
 
+/** Destructor
+ */
 MFibersStackDetector::~MFibersStackDetector()
 {
 }
 
+/** Init tasks
+ *
+ * \sa MPar::initTasks()
+ * \return success
+ */
 bool MFibersStackDetector::initTasks()
 {
     if (isSimulation())
@@ -54,6 +72,11 @@ bool MFibersStackDetector::initTasks()
     return true;
 }
 
+/** Init containers
+ *
+ * \sa MPar::initCategories()
+ * \return success
+ */
 bool MFibersStackDetector::initContainers()
 {
     pm()->addParameterContainer("MFibersStackGeomPar",  new MFibersStackGeomPar());
@@ -70,6 +93,11 @@ bool MFibersStackDetector::initContainers()
     return true;
 }
 
+/** Init categries
+ *
+ * \sa MPar::initCategories()
+ * \return success
+ */
 bool MFibersStackDetector::initCategories()
 {
     size_t sizes[3];

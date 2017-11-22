@@ -1,21 +1,13 @@
-/*
- * <one line to give the program's name and a brief idea of what it does.>
- * Copyright (C) 2017  <copyright holder> <email>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
+// @(#)lib/fibers_stack:$Id$
+// Author: Rafal Lalik  18/11/2017
+
+/*************************************************************************
+ * Copyright (C) 2017-2018, Rafał Lalik.                                 *
+ * All rights reserved.                                                  *
+ *                                                                       *
+ * For the licensing terms see $MAPTSYS/LICENSE.                         *
+ * For the list of contributors see $MAPTSYS/README/CREDITS.             *
+ *************************************************************************/
 
 #include <iostream>
 
@@ -28,31 +20,47 @@
 #include "MParManager.h"
 #include "MCategory.h"
 
+/** \class MFibersStackDigitizer
+\ingroup lib_fibers_stack
+
+A digitizer task.
+
+\sa MTask
+*/
+
+/** Constructor
+ */
 MFibersStackDigitizer::MFibersStackDigitizer() : MTask(), catGeantFibersRaw(nullptr), pDigiPar(nullptr), pGeomPar(nullptr)
 {
 }
 
+/** Destructor
+ */
 MFibersStackDigitizer::~MFibersStackDigitizer()
 {
 }
 
+/** Init task
+ * \sa MTask::init()
+ * \return success
+ */
 bool MFibersStackDigitizer::init()
 {
-    catGeantFibersRaw = dm()->getCategory(MCategory::CatGeantFibersRaw);
+    catGeantFibersRaw = mapt()->getCategory(MCategory::CatGeantFibersRaw);
     if (!catGeantFibersRaw)
     {
         std::cerr << "No CatGeantFibersRaw category" << "\n";
         return false;
     }
 
-    catFibersCalSim = dm()->buildCategory(MCategory::CatFibersStackCal);
+    catFibersCalSim = mapt()->buildCategory(MCategory::CatFibersStackCal);
     if (!catFibersCalSim)
     {
         std::cerr << "No CatFibersStackCal category" << "\n";
         return false;
     }
 
-    pGeomPar = (MFibersStackGeomPar*) MParManager::instance()->getParameterContainer("MFibersStackGeomPar");
+    pGeomPar = (MFibersStackGeomPar*) pm()->getParameterContainer("MFibersStackGeomPar");
     if (!pGeomPar)
     {
         std::cerr << "Parameter container 'MFibersStackGeomPar' was not obtained!" << std::endl;
@@ -75,6 +83,10 @@ bool MFibersStackDigitizer::init()
     return true;
 }
 
+/** Execute task
+ * \sa MTask::execute()
+ * \return success
+ */
 bool MFibersStackDigitizer::execute()
 {
     int size = catGeantFibersRaw->getEntries();
@@ -136,6 +148,10 @@ bool MFibersStackDigitizer::execute()
     return true;
 }
 
+/** Finalize task
+ * \sa MTask::finalize()
+ * \return success
+ */
 bool MFibersStackDigitizer::finalize()
 {
     return true;

@@ -1,21 +1,13 @@
-/*
- * <one line to give the program's name and a brief idea of what it does.>
- * Copyright (C) 2017  <copyright holder> <email>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
+// @(#)lib/fibers_stack:$Id$
+// Author: Rafal Lalik  18/11/2017
+
+/*************************************************************************
+ * Copyright (C) 2017-2018, Rafał Lalik.                                 *
+ * All rights reserved.                                                  *
+ *                                                                       *
+ * For the licensing terms see $MAPTSYS/LICENSE.                         *
+ * For the list of contributors see $MAPTSYS/README/CREDITS.             *
+ *************************************************************************/
 
 #ifndef MFIBERSSTACKDETECTOR_H
 #define MFIBERSSTACKDETECTOR_H
@@ -24,19 +16,23 @@
 
 class MFibersStackDetector : public MDetector
 {
+protected:
+    // members
+    const size_t modules;   ///< number of modules
+    const size_t layers;    ///< number of layers
+    const size_t fibers;    ///< number of fibers
+
 public:
+    // constructors
     MFibersStackDetector(const std::string & name);
     MFibersStackDetector(const std::string & name, size_t m, size_t l, size_t f);
+    // destructor
     ~MFibersStackDetector();
 
+    // methods
     bool initTasks();
     bool initContainers();
     bool initCategories();
-
-private:
-    const size_t modules;
-    const size_t layers;
-    const size_t fibers;
 };
 
 #endif // MFIBERSSTACKDETECTOR_H

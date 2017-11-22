@@ -1,31 +1,49 @@
-/*
- * <one line to give the program's name and a brief idea of what it does.>
- * Copyright (C) 2017  <copyright holder> <email>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
+// @(#)lib/base:$Id$
+// Author: Rafal Lalik  18/11/2017
+
+/*************************************************************************
+ * Copyright (C) 2017-2018, Rafał Lalik.                                 *
+ * All rights reserved.                                                  *
+ *                                                                       *
+ * For the licensing terms see $MAPTSYS/LICENSE.                         *
+ * For the list of contributors see $MAPTSYS/README/CREDITS.             *
+ *************************************************************************/
 
 #include <iostream>
 #include <sstream>
 
 #include "MParContainer.h"
 
+/** \class MParContainer
+\ingroup lib_base
+
+MPar is an abstract class to hold container and geometry parameters.
+
+It must be derivated and pure virtual members defined.
+
+The parameters are parsed from text file in MParManager and stored in the
+MParContainer. The getParam() method reads content of the MParContainer and
+fills variables inside the MPar object. The putParam method allows to update
+parameters in the container and write to param file.
+
+\sa MFibersStackCalibratorPar
+\sa MFibersStackDigitizerPar
+\sa MFibersStackGeomPar
+*/
+
+/** Constructor
+ * \param container container name
+ */
 MParContainer::MParContainer(const std::string& container) : container(container)
 {
 }
 
+/** Add key with integer value
+ *
+ * \param name key name
+ * \param val value
+ * \return success
+ */
 bool MParContainer::add(const std::string & name, Int_t val)
 {
     std::stringstream buff;
@@ -37,6 +55,12 @@ bool MParContainer::add(const std::string & name, Int_t val)
     return true;
 }
 
+/** Add key with float value
+ *
+ * \param name key name
+ * \param val value
+ * \return success
+ */
 bool MParContainer::add(const std::string & name, Float_t val)
 {
     std::stringstream buff;
@@ -48,6 +72,12 @@ bool MParContainer::add(const std::string & name, Float_t val)
     return true;
 }
 
+/** Add key with double precision float value
+ *
+ * \param name key name
+ * \param val value
+ * \return success
+ */
 bool MParContainer::add(const std::string & name, Double_t val)
 {
     std::stringstream buff;
@@ -59,6 +89,12 @@ bool MParContainer::add(const std::string & name, Double_t val)
     return true;
 }
 
+/** Add key with integer array value
+ *
+ * \param name key name
+ * \param val value
+ * \return success
+ */
 bool MParContainer::add(const std::string & name, const TArrayI & val)
 {
     std::stringstream buff;
@@ -73,6 +109,12 @@ bool MParContainer::add(const std::string & name, const TArrayI & val)
     return true;
 }
 
+/** Add key with float array value
+ *
+ * \param name key name
+ * \param val value
+ * \return success
+ */
 bool MParContainer::add(const std::string & name, const TArrayF & val)
 {
    std::stringstream buff;
@@ -87,6 +129,12 @@ bool MParContainer::add(const std::string & name, const TArrayF & val)
     return true;
 }
 
+/** Add key with double precision float array value
+ *
+ * \param name key name
+ * \param val value
+ * \return success
+ */
 bool MParContainer::add(const std::string & name, const TArrayD & val)
 {
     std::stringstream buff;
@@ -101,6 +149,12 @@ bool MParContainer::add(const std::string & name, const TArrayD & val)
     return true;
 }
 
+/** Get key with integer value
+ *
+ * \param name key name
+ * \param val value
+ * \return success
+ */
 bool MParContainer::fill(const std::string & name, Int_t& val)
 {
     ParMap::const_iterator it = parameters.find(name);
@@ -122,6 +176,12 @@ bool MParContainer::fill(const std::string & name, Int_t& val)
     return true;
 }
 
+/** Get key with float value
+ *
+ * \param name key name
+ * \param val value
+ * \return success
+ */
 bool MParContainer::fill(const std::string & name, Float_t& val)
 {
     ParMap::const_iterator it = parameters.find(name);
@@ -143,6 +203,12 @@ bool MParContainer::fill(const std::string & name, Float_t& val)
     return true;
 }
 
+/** Get key with double precision float value
+ *
+ * \param name key name
+ * \param val value
+ * \return success
+ */
 bool MParContainer::fill(const std::string & name, Double_t& val)
 {
     ParMap::const_iterator it = parameters.find(name);
@@ -164,6 +230,12 @@ bool MParContainer::fill(const std::string & name, Double_t& val)
     return true;
 }
 
+/** Get key with integer array value
+ *
+ * \param name key name
+ * \param val value
+ * \return success
+ */
 bool MParContainer::fill(const std::string & name, TArrayI& val)
 {
     ParMap::const_iterator it = parameters.find(name);
@@ -185,6 +257,12 @@ bool MParContainer::fill(const std::string & name, TArrayI& val)
     return true;
 }
 
+/** Get key with float array value
+ *
+ * \param name key name
+ * \param val value
+ * \return success
+ */
 bool MParContainer::fill(const std::string & name, TArrayF& val)
 {
     ParMap::const_iterator it = parameters.find(name);
@@ -206,6 +284,12 @@ bool MParContainer::fill(const std::string & name, TArrayF& val)
     return true;
 }
 
+/** Get key with double precision float array value
+ *
+ * \param name key name
+ * \param val value
+ * \return success
+ */
 bool MParContainer::fill(const std::string & name, TArrayD& val)
 {
     ParMap::const_iterator it = parameters.find(name);
@@ -227,6 +311,8 @@ bool MParContainer::fill(const std::string & name, TArrayD& val)
     return true;
 }
 
+/** Print container
+ */
 void MParContainer::print()
 {
     printf("Container [%s]\n", container.c_str());
@@ -242,6 +328,13 @@ void MParContainer::print()
     }
 }
 
+/** Init param with type and values
+ *
+ * \param name key name
+ * \param type key type
+ * \param values key values
+ * \return success
+ */
 bool MParContainer::initParam(const std::string& name, const std::string& type, const std::vector<std::string> & values)
 {
     parameters[name] = TypeDataField(type, values);

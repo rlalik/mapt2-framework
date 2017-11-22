@@ -1,21 +1,13 @@
-/*
- * <one line to give the program's name and a brief idea of what it does.>
- * Copyright (C) 2017  <copyright holder> <email>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
+// @(#)lib/fibers_stack:$Id$
+// Author: Rafal Lalik  18/11/2017
+
+/*************************************************************************
+ * Copyright (C) 2017-2018, Rafał Lalik.                                 *
+ * All rights reserved.                                                  *
+ *                                                                       *
+ * For the licensing terms see $MAPTSYS/LICENSE.                         *
+ * For the list of contributors see $MAPTSYS/README/CREDITS.             *
+ *************************************************************************/
 
 #ifndef MFIBERSSTACKGEOMPAR_H
 #define MFIBERSSTACKGEOMPAR_H
@@ -27,6 +19,21 @@
 
 class MFibersStackGeomPar : public MPar
 {
+protected:
+    // members
+    Int_t modules;                  ///< number of modules
+    struct SingleModule             ///< single module configuration
+    {
+        Int_t layers;               ///< numbre of layers
+        TArrayI fibers;             ///< number of fibers
+        TArrayF layer_rotation;     ///< layer rotation around the axis
+        TArrayF fiber_offset_x;     ///< offset of the first fiber in the layer
+        TArrayF fiber_offset_y;     ///< offset of the layers
+        TArrayF fibers_pitch;       ///< fibers pitch in a layer
+    };
+
+    SingleModule * mods;            ///< params for each module
+
 public:
     MFibersStackGeomPar();
     virtual ~MFibersStackGeomPar();
@@ -36,6 +43,8 @@ public:
     void clear();
     void print() const;
 
+    /// Get number of modules
+    /// \return number of modules
     Int_t getModules() const { return modules; }
     Int_t getLayers(Int_t m) const;
     Int_t getFibers(Int_t m, Int_t l) const;
@@ -43,20 +52,6 @@ public:
     Float_t getFiberOffsetX(Int_t m, Int_t l) const;
     Float_t getFiberOffsetY(Int_t m, Int_t l) const;
     Float_t getFibersPitch(Int_t m, Int_t l) const;
-
-private:
-    Int_t modules;
-    struct SingleModule
-    {
-        Int_t layers;
-        TArrayI fibers;
-        TArrayF layer_rotation;
-        TArrayF fiber_offset_x;
-        TArrayF fiber_offset_y;
-        TArrayF fibers_pitch;
-    };
-
-    SingleModule * mods;
 };
 
 #endif // MFIBERSSTACKGEOMPAR_H

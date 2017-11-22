@@ -1,3 +1,14 @@
+// @(#)lib/base:$Id$
+// Author: Rafal Lalik  18/11/2017
+
+/*************************************************************************
+ * Copyright (C) 2017-2018, Rafał Lalik.                                 *
+ * All rights reserved.                                                  *
+ *                                                                       *
+ * For the licensing terms see $MAPTSYS/LICENSE.                         *
+ * For the list of contributors see $MAPTSYS/README/CREDITS.             *
+ *************************************************************************/
+
 #include <iostream>
 
 #include "TClass.h"
@@ -5,14 +16,28 @@
 
 #include "MCategoryIndex.h"
 
-// Needed for Creation of shared libs
-ClassImp(MCategoryIndex);
+/** \class MCategoryIndex
+\ingroup lib_base
 
+An index object for the category. This class provides an interface to map
+n-dimensional array into linear array, and compress the array to reduce size
+of the linear array to the number of elements.
+
+*/
+
+/// Constructor
 MCategoryIndex::MCategoryIndex() : TObject(), compressed(kFALSE)
 {
     clear();
 }
 
+/**
+ * Map uncompressed index pos into compressed index val.
+ *
+ * \param pos input index of the original coordinate
+ * \param val index of the mapped value
+ * \return false is the object is compressed and no further indexes can be map
+ */
 Bool_t MCategoryIndex::setMapIndex(Int_t pos, Int_t val)
 {
     if (compressed)
@@ -23,6 +48,12 @@ Bool_t MCategoryIndex::setMapIndex(Int_t pos, Int_t val)
     return kTRUE;
 }
 
+/**
+ * Return map index for given position
+ *
+ * \param pos input index of the original coordinate
+ * \return index of the mapped value
+ */
 Int_t MCategoryIndex::getMapIndex(Int_t pos)
 {
     IndexMap::const_iterator it = idxmap.find(pos);
@@ -31,12 +62,24 @@ Int_t MCategoryIndex::getMapIndex(Int_t pos)
     return it->second;
 }
 
+/**
+ * Clear object
+ */
 void MCategoryIndex::clear()
 {
     compressed = kFALSE;
     idxmap.clear();
 }
 
+/**
+ * Compress the mapped indexes. After the category is compressed to linear array
+ * of the number of elements size, the mapping of the indexes must be also
+ * updated. The compression is linear though the mapped indexes receive new
+ * values based of their order in the map.
+ * Set compressed flag to true.
+ * 
+ * \sa MCategory::compress()
+ */
 void MCategoryIndex::compress()
 {
     Int_t j = 0;
@@ -46,3 +89,5 @@ void MCategoryIndex::compress()
 
     compressed = kTRUE;
 }
+
+ClassImp(MCategoryIndex);

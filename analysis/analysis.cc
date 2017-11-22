@@ -139,8 +139,8 @@ int analysis(const std::string & file, int events = 1000)
                 if (track->getStopInDetector())
                 {
                     h_acc->Fill(2);
-                    h_range->Fill(track->getRange());
-                    h_distance->Fill(track->getDistance());
+                    h_range->Fill(track->getRange(TVector3(0, 36, 0)));
+                    h_distance->Fill(track->getDistance(TVector3(0, 36, 0)));
                 }
 
                 prim_stop_in_det = track->getStopInDetector();
