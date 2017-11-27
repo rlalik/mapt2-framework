@@ -1,4 +1,4 @@
-// @(#)lib/geant:$Id$
+// @(#)lib/tools:$Id$
 // Author: Rafal Lalik  18/11/2017
 
 /*************************************************************************
@@ -11,8 +11,6 @@
 
 #ifdef __CINT__
 
-#pragma link C++ class MGeantTrack+;
-#pragma link C++ class MGeantTrack::Point+;
-#pragma link C++ class MGeantFibersRaw+;
+#pragma link C++ class MProgressBar+;
 
 #endif

@@ -19,6 +19,7 @@ using namespace std;
 #include <map>
 
 #include "TROOT.h"
+#include "TChain.h"
 #include "TFile.h"
 #include "TTree.h"
 
@@ -28,18 +29,17 @@ class MMAPTManager: public TObject
 {
 protected:
     // members
-    TFile* outputFile;          ///< Pointer to output file
-    TTree* outputTree;          ///< Pointer to output tree
-    string outputTreeTitle;     ///< Output tree title
-    string outputTreeName;      ///< Output tree name
-    string outputFileName;      ///< Output file name
-    TFile* inputFile;           ///< Pointer to input file
-    TTree* inputTree;           ///< Pointer to input tree
-    string inputTreeTitle;      ///< Input tree title
-    string inputTreeName;       ///< Input tree name
-    string inputFileName;       ///< Input file name
-    int numberOfEntries;        ///< Number of input entries
-    int currentEntry;           ///< Current input entry number
+    TFile* outputFile;                          ///< Pointer to output file
+    TTree* outputTree;                          ///< Pointer to output tree
+    string outputTreeTitle;                     ///< Output tree title
+    string outputTreeName;                      ///< Output tree name
+    string outputFileName;                      ///< Output file name
+    TChain* inputTree;                          ///< Pointer to input tree
+    string inputTreeTitle;                      ///< Input tree title
+    string inputTreeName;                       ///< Input tree name
+    std::vector<std::string> inputFiles;        ///< Input file name
+    int numberOfEntries;                        ///< Number of input entries
+    int currentEntry;                           ///< Current input entry number
 
     /// Ctaegory info
     struct CategoryInfo
@@ -105,11 +105,12 @@ public:
     MCategory * openCategory(MCategory::Cat cat, bool persistent = true);
 
     /// Set output file name
-    /// \param s file name
-    void setOutputFileName(string s) { outputFileName = s; }
-    /// Set input file name
-    /// \param s file name
-    void setInputFileName(string s) { inputFileName = s; }
+    /// \param file file name
+    void setOutputFileName(const std::string & file) { outputFileName = file; }
+    void setInputFileName(const std::string & file);
+    void addInputFileName(const std::string & file);
+    void setInputFileNames(const std::vector<std::string> & files);
+    void addInputFileNames(const std::vector<std::string> & files);
 
     /// Get entry number
     /// \return entry number
@@ -117,6 +118,10 @@ public:
     /// Get number of entries
     /// \return number of entries
     int getEntries() { return numberOfEntries; }
+
+    /// Get input tree
+    /// \return input tree
+    TChain * getTree() const { return inputTree; }
 
 private:
     void initBranches();

@@ -51,8 +51,9 @@ MMAPTManager * mapt()
 /** Default constructor
  */
 MMAPTManager::MMAPTManager() :
-    outputFile(nullptr), outputTree(nullptr), outputTreeTitle("M"), outputTreeName("M"), outputFileName("output.root"),
-    inputFile(nullptr), inputTree(nullptr), inputTreeTitle("M"), inputTreeName("M"), inputFileName("input.root"),
+    outputFile(nullptr), outputTree(nullptr), outputTreeTitle("M"),
+    outputTreeName("M"), outputFileName("output.root"),
+    inputTree(nullptr), inputTreeTitle("M"), inputTreeName("M"),
     numberOfEntries(-1), currentEntry(-1), branches_set(false)
 {
 }
@@ -73,6 +74,39 @@ void MMAPTManager::setSimulation(bool simulation)
     }
 }
 
+/** Set single input file.
+ *\param file file name
+ */
+void MMAPTManager::setInputFileName(const std::string& file)
+{
+    inputFiles.clear();
+    inputFiles.push_back(file);
+}
+
+/** Add single input file to the list.
+ * \param file file name
+ */
+void MMAPTManager::addInputFileName(const std::string& file)
+{
+    inputFiles.push_back(file);
+}
+
+/** Set multiple input files to the list.
+ * \param files file names
+ */
+void MMAPTManager::setInputFileNames(const std::vector<std::string> & files)
+{
+    inputFiles = files;
+}
+
+/** Add multiple input files to the list.
+ * \param files file names
+ */
+void MMAPTManager::addInputFileNames(const std::vector<std::string> & files)
+{
+    inputFiles.insert(inputFiles.end(), files.begin(), files.end());
+}
+
 /** Creates a new file and an empty root tree with output categories.
  * \return true if success
  */
@@ -82,7 +116,8 @@ bool MMAPTManager::book()
     outputFile = new TFile(outputFileName.c_str(), "RECREATE");
     if (!outputFile->IsOpen())
     {
-        std::cerr  << "[Error] in MMAPTManager: could not create saveFile" << std::endl;
+        std::cerr  << "[Error] in MMAPTManager: could not create " <<
+        outputFileName.c_str() << std::endl;
         return false;
     }
 
@@ -134,17 +169,29 @@ Int_t MMAPTManager::fill()
  */
 bool MMAPTManager::open()
 {
-    inputFile = TFile::Open(inputFileName.c_str());
-	if (inputFile == 0)
+    if (inputTree)
+        delete inputTree;
+
+    inputTree = new TChain(inputTreeName.c_str());
+
+    if (inputTree == 0)
     {
-		std::cerr << "[Error] in MMAPTManager: cannot open ROOT file" << "\n";
-		return false;
-	}
-	inputTree = (TTree*) inputFile->Get(inputTreeName.c_str());
+        std::cerr << "[Error] in MMAPTManager: cannot open ROOT file" << "\n";
+        return false;
+    }
+
+    for (uint i = 0; i < inputFiles.size(); ++i)
+    {
+        printf("Add file %s\n", inputFiles[i].c_str());
+        inputTree->Add(inputFiles[i].c_str());
+    }
+
     if (!inputTree) {
         std::cerr << "[Error] in MMAPTManager open: openTree == NULL" << "\n";
         return false;
     }
+
+    inputTree->SetBranchStatus("*");
 
     numberOfEntries = inputTree->GetEntriesFast();
 

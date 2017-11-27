@@ -24,20 +24,24 @@
 
 #include "MMAPTManager.h"
 
+#include "MProgressBar.h"
+
 using namespace std;
 
-int analysis(const std::string & file, int events = 1000)
+struct ana_params
 {
-    TString oname = file;
+    int events;
+    string ofile;
+};
 
-    if (oname.EndsWith(".root"))
-        oname.ReplaceAll(".root", "_ana.root");
-    else
-        oname.Append("_ana.root");
+int analysis(const std::vector<std::string> & files, const ana_params & pars)
+{
+    int events = pars.events;
+    TString oname = pars.ofile;
 
     MMAPTManager * dataManager = MMAPTManager::instance();
     dataManager->setSimulation(true);
-    dataManager->setInputFileName(file);
+    dataManager->setInputFileNames(files);
     dataManager->open();
     dataManager->openCategory(MCategory::CatGeantTrack);
     dataManager->openCategory(MCategory::CatGeantFibersRaw);
@@ -75,32 +79,44 @@ int analysis(const std::string & file, int events = 1000)
         "Na", "Mg", "Al", "Si", "P", "S", "Cl", "Ar",
         "K", "Ca", "Sc", "Ti", "V", "Cr", "Mn", "Fe" };
 
-    int ev_limit = events < dataManager->getEntriesFast() ? events : dataManager->getEntriesFast();
+    int ev_limit = 0;
+    if (events < 0)
+        ev_limit = dataManager->getEntriesFast();
+    else
+        ev_limit = events < dataManager->getEntriesFast() ? events : dataManager->getEntriesFast();
+
     std::cout << dataManager->getEntriesFast() << " events, analyze " << ev_limit << std::endl;
 
-    int secs = 0;
-    for (int i=0 ; i < ev_limit; ++i)
+    MProgressBar pb(ev_limit);
+
+    MCategory * catGeantTrack = dataManager->getCategory(MCategory::CatGeantTrack);
+    if (!catGeantTrack)
     {
-        dataManager->getEntry(i);
-        MCategory * catGeantTrack = dataManager->getCategory(MCategory::CatGeantTrack);
-        if (!catGeantTrack)
-        {
 //             std::cerr << "event NULL" << "\n";
 //             return -1;
-        }
+    }
+
+    MCategory * catGeantFibersRaw = dataManager->getCategory(MCategory::CatGeantFibersRaw);
+    if (!catGeantFibersRaw)
+    {
+//             std::cerr << "event NULL" << "\n";
+//             return -1;
+    }
+
+//     dataManager->getTree()->Print();
+
+    int secs = 0;
+    for (long int i=0 ; i < ev_limit; ++i)
+    {
+        ++pb;
+        dataManager->getEntry(i);
+
 //         std::cout << event->getSimulatedEvent()->getPrimary()->Get_stop_in_detector() << "\n";
 //         event->getSimulatedEvent()->getPrimary()->print();
 
         size_t tracks_num = catGeantTrack->getEntries();
         if (tracks_num == 0)
             continue;
-
-        MCategory * catGeantFibersRaw = dataManager->getCategory(MCategory::CatGeantFibersRaw);
-        if (!catGeantFibersRaw)
-        {
-//             std::cerr << "event NULL" << "\n";
-//             return -1;
-        }
 
         h_acc->Fill(0);
 
@@ -115,7 +131,6 @@ int analysis(const std::string & file, int events = 1000)
 
             if (track->getTrackID() == 1)
             {
-
                 TH1I * h = nullptr;
                 long id = track->getG4Id();
                 PidMap::iterator it = pid_spectrum.find(id);
@@ -130,7 +145,11 @@ int analysis(const std::string & file, int events = 1000)
                 {
                     h = it->second;
                 }
-
+if (i > 9990)
+{
+//     printf("e=%f  ", track->getStartE());
+    track->print();
+}
                 h_ene_spectrum->Fill(log10(track->getStartE()));
                 h->Fill(log10(track->getStartE()));
 
@@ -278,18 +297,22 @@ int analysis(const std::string & file, int events = 1000)
 
 int main(int argc,char** argv)
 {
-    int events = 10000;
+    ana_params ap;
+    ap.events = 10000;
+    ap.ofile = "output.root";
+
     int c;
     while(1)
     {
         static struct option long_options[] = {
             { "events", required_argument, 0, 'e' },
+            { "output", required_argument, 0, 'o' },
             { 0, 0, 0, 0 }
         };
 
         int option_index = 0;
 
-        c = getopt_long(argc, argv, "e:", long_options, &option_index);
+        c = getopt_long(argc, argv, "e:o:", long_options, &option_index);
 
         if (c == -1)
             break;
@@ -297,28 +320,29 @@ int main(int argc,char** argv)
         switch (c)
         {
             case 'e':
-                events = atoi(optarg);
+                ap.events = atoi(optarg);
+                printf("Set number of events = %d\n", ap.events);
+                break;
+            case 'o':
+                ap.ofile = optarg;
+                printf("Set output file = %s\n", ap.ofile.c_str());
                 break;
             default:
                 break;
         }
     }
 
-    std:vector< std::pair<std::string, int> > ana_status;
+    std::vector<std::string> files;
+
     while (optind < argc)
     {
-        std::cout << "Analyze " << argv[optind] << std::endl;
-        int status = analysis(argv[optind], events);
-        std::string f = argv[optind];
-        ana_status.push_back({f, status});
+        files.push_back(argv[optind]);
         ++optind;
     }
 
-    for (int i = 0; i < ana_status.size(); ++i)
-    {
-        std::cout << "Analysis for " << ana_status[i].first << " with status " << ana_status[i].second << std::endl;
-//         std::cout << "Output file is " << oname.Data() << std::endl;
-    }
+    int status = analysis(files, ap);
+    std::string f = argv[optind];
+    std::cout << "Analysis with status " << status << std::endl;
 
     return 0;
 }
