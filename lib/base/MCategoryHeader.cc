@@ -27,4 +27,42 @@ void MCategoryHeader::clear()
     writable = kFALSE;
 }
 
+void MCategoryHeader::Streamer(TBuffer &R__b)
+{
+    // Stream an object of class HLinearCategory.
+    Char_t clase[200];
+    if (R__b.IsReading())
+    {
+        TObject::Streamer(R__b);
+        R__b >> name;
+        R__b >> simulation;
+        R__b >> dim;
+        Int_t a, b;
+        dim_sizes.Set(dim);
+        dim_offsets.Set(dim);
+        for (int i = 0; i < dim; ++i)
+        {
+            R__b >> a >> b;
+            dim_sizes[i] = a;
+            dim_offsets[i] = b;
+        }
+        R__b >> data_size;
+        R__b >> writable;
+    } else {
+        TObject::Streamer(R__b);
+        R__b << name;
+        R__b << simulation;
+        R__b << dim;
+        Int_t a, b;
+        for (int i = 0; i < dim; ++i)
+        {
+            a = dim_sizes[i];
+            b = dim_offsets[i];
+            R__b << a << b;
+        }
+        R__b << data_size;
+        R__b << writable;
+    }
+}
+
 ClassImp(MCategoryHeader);

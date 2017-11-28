@@ -43,8 +43,8 @@ int analysis(const std::vector<std::string> & files, const ana_params & pars)
     dataManager->setSimulation(true);
     dataManager->setInputFileNames(files);
     dataManager->open();
-    dataManager->openCategory(MCategory::CatGeantTrack);
-    dataManager->openCategory(MCategory::CatGeantFibersRaw);
+    dataManager->openCategory(MCategory::CatGeantTrack, false);
+    dataManager->openCategory(MCategory::CatGeantFibersRaw, false);
     dataManager->setOutputFileName(oname.Data());
     dataManager->book();
 
@@ -81,22 +81,22 @@ int analysis(const std::vector<std::string> & files, const ana_params & pars)
 
     int ev_limit = 0;
     if (events < 0)
-        ev_limit = dataManager->getEntriesFast();
+        ev_limit = dataManager->getEntries();
     else
-        ev_limit = events < dataManager->getEntriesFast() ? events : dataManager->getEntriesFast();
+        ev_limit = events < dataManager->getEntries() ? events : dataManager->getEntries();
 
-    std::cout << dataManager->getEntriesFast() << " events, analyze " << ev_limit << std::endl;
+    std::cout << dataManager->getEntries() << " events, analyze " << ev_limit << std::endl;
 
     MProgressBar pb(ev_limit);
 
-    MCategory * catGeantTrack = dataManager->getCategory(MCategory::CatGeantTrack);
+    MCategory * catGeantTrack = dataManager->getCategory(MCategory::CatGeantTrack, false);
     if (!catGeantTrack)
     {
 //             std::cerr << "event NULL" << "\n";
 //             return -1;
     }
 
-    MCategory * catGeantFibersRaw = dataManager->getCategory(MCategory::CatGeantFibersRaw);
+    MCategory * catGeantFibersRaw = dataManager->getCategory(MCategory::CatGeantFibersRaw, false);
     if (!catGeantFibersRaw)
     {
 //             std::cerr << "event NULL" << "\n";
@@ -105,7 +105,7 @@ int analysis(const std::vector<std::string> & files, const ana_params & pars)
 
 //     dataManager->getTree()->Print();
 
-    int secs = 0;
+    long secs = 0;
     for (long int i=0 ; i < ev_limit; ++i)
     {
         ++pb;
@@ -274,7 +274,7 @@ int analysis(const std::vector<std::string> & files, const ana_params & pars)
             int a = (pid % 10000) / 10;
             int z = (pid % 10000000) / 10000;
             char buff[200];
-            sprintf(buff, "=^{%d}_{%d}%s", a, z, elements_names[z]);
+            sprintf(buff, "=^{%d}_{%d}%s", a, z, elements_names[z-1]);
             leg->AddEntry(h, buff, "l");
         }
         else
@@ -337,7 +337,6 @@ int main(int argc,char** argv)
     }
 
     int status = analysis(files, ap);
-    std::string f = argv[optind];
     std::cout << "Analysis with status " << status << std::endl;
 
     return 0;

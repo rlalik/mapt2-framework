@@ -330,11 +330,13 @@ MCategory * MMAPTManager::openCategory(MCategory::Cat cat, bool persistent)
         return gNullMCategoryPtr;
     }
 
-    MCategory ** cat_ptr = new MCategory*;
-    *cat_ptr = new MCategory;
+    if (categories[cat])
+            return categories[cat];
 
-    TBranch ** br = nullptr;
-    br = new TBranch*;
+    MCategory ** cat_ptr = new MCategory*;
+	*cat_ptr = new MCategory;
+
+    TBranch ** br = new TBranch*;
 
     Int_t res = inputTree->SetBranchAddress(cinfo.name.c_str(), &*cat_ptr, br);
     if (!br)
@@ -344,7 +346,7 @@ MCategory * MMAPTManager::openCategory(MCategory::Cat cat, bool persistent)
     }
 
     cinfo.persistent = persistent;
-    if (cat_ptr)
+    if (*cat_ptr)
     {
         cinfo.ptr = *cat_ptr;
         cinfovec[pos] = cinfo;
@@ -381,14 +383,14 @@ void MMAPTManager::getEntry(int i)
  *
  * \return number of entries
  */
-int MMAPTManager::getEntriesFast ()
+Long64_t MMAPTManager::getEntries()
 {
     if (!inputTree)
     {
         std::cerr << "[Warning] in MMAPTManager: no input tree is opened. cannot get any entry." << "\n";
         return -1;
     }
-    numberOfEntries = inputTree->GetEntriesFast();
+    numberOfEntries = inputTree->GetEntries();
     return numberOfEntries;
 }
 

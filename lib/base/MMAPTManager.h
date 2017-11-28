@@ -91,7 +91,7 @@ public:
     bool open();
 
     void getEntry(int i);
-    int getEntriesFast();
+    Long64_t getEntries();
 
     void setSimulation(bool simulation);
     /// Check if simulation run
@@ -115,9 +115,6 @@ public:
     /// Get entry number
     /// \return entry number
     int getEntryNumber() { return currentEntry; }
-    /// Get number of entries
-    /// \return number of entries
-    int getEntries() { return numberOfEntries; }
 
     /// Get input tree
     /// \return input tree
