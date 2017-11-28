@@ -331,15 +331,17 @@ MCategory * MMAPTManager::openCategory(MCategory::Cat cat, bool persistent)
     }
 
     MCategory ** cat_ptr = new MCategory*;
-
     *cat_ptr = new MCategory;
-    TBranch * br = inputTree->GetBranch(cinfo.name.c_str());
+
+    TBranch ** br = nullptr;
+    br = new TBranch*;
+
+    Int_t res = inputTree->SetBranchAddress(cinfo.name.c_str(), &*cat_ptr, br);
     if (!br)
     {
         fprintf(stderr, "Category %s (%d) does not exists!\n", cinfo.name.c_str(), cat);
         return gNullMCategoryPtr;
     }
-    br->SetAddress(&*cat_ptr);
 
     cinfo.persistent = persistent;
     if (cat_ptr)

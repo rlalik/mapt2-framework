@@ -145,11 +145,7 @@ int analysis(const std::vector<std::string> & files, const ana_params & pars)
                 {
                     h = it->second;
                 }
-if (i > 9990)
-{
-//     printf("e=%f  ", track->getStartE());
-    track->print();
-}
+
                 h_ene_spectrum->Fill(log10(track->getStartE()));
                 h->Fill(log10(track->getStartE()));
 
