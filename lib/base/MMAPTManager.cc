@@ -108,12 +108,16 @@ void MMAPTManager::addInputFileNames(const std::vector<std::string> & files)
 }
 
 /** Creates a new file and an empty root tree with output categories.
+ * \param with_tree create output tree
  * \return true if success
  */
-bool MMAPTManager::book()
+bool MMAPTManager::book(bool with_tree)
 {
     // Create file and open it
     outputFile = new TFile(outputFileName.c_str(), "RECREATE");
+
+    if (!with_tree) return true;
+
     if (!outputFile->IsOpen())
     {
         std::cerr  << "[Error] in MMAPTManager: could not create " <<
@@ -135,7 +139,8 @@ bool MMAPTManager::save()
     if (outputFile)
     {
         outputFile->cd();
-        outputTree->Write();        // Writing the tree to the file
+        if (outputTree)
+            outputTree->Write();        // Writing the tree to the file
         outputFile->Close();        // and closing the tree (and the file)
         return true;
     }
@@ -334,7 +339,7 @@ MCategory * MMAPTManager::openCategory(MCategory::Cat cat, bool persistent)
             return categories[cat];
 
     MCategory ** cat_ptr = new MCategory*;
-	*cat_ptr = new MCategory;
+    *cat_ptr = new MCategory;
 
     TBranch ** br = new TBranch*;
 

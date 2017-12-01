@@ -46,9 +46,9 @@ int analysis(const std::vector<std::string> & files, const ana_params & pars)
     dataManager->openCategory(MCategory::CatGeantTrack, false);
     dataManager->openCategory(MCategory::CatGeantFibersRaw, false);
     dataManager->setOutputFileName(oname.Data());
-    dataManager->book();
+    dataManager->book(false);
 
-    typedef std::map<long, TH1I *> PidMap;
+    typedef std::map<long, std::pair<TH1I *, TH1F *> > PidMap;
     PidMap pid_spectrum;
 
     TH1I * h_pi_mult = new TH1I("h_pi_mult", "h_pi_mult", 20, 0, 20);
@@ -68,10 +68,11 @@ int analysis(const std::vector<std::string> & files, const ana_params & pars)
     TH1I * h_range = new TH1I("h_range", "h_range", 220, 0, 110);
     TH1I * h_distance = new TH1I("h_distance", "h_distance", 200, 0, 100);
 
-    Int_t bins = 700;
-    Int_t bin_min = 1;
-    Int_t bin_max = 8;
-    TH1 * h_ene_spectrum = new TH1I("h_ene_spectrum", "h_ene_spectrum;log10(E) / MeV;Counts", bins, bin_min, bin_max);
+    Int_t bins = 425;
+    Float_t bin_min = 1;
+    Float_t bin_max = 9.5;
+    TH1I * h_ene_spectrum = new TH1I("h_ene_spectrum", "h_ene_spectrum;log10(E) / MeV;Counts", bins, bin_min, bin_max);
+    TH1F * h_ene_spectrum_w = new TH1F("h_ene_spectrum_w", "h_ene_spectrum;log10(E) / MeV;Counts/bin width", bins, bin_min, bin_max);
 
     const char * elements_names[28] = {
         "H", "He",
@@ -132,6 +133,8 @@ int analysis(const std::vector<std::string> & files, const ana_params & pars)
             if (track->getTrackID() == 1)
             {
                 TH1I * h = nullptr;
+                TH1F * h_w = nullptr;
+
                 long id = track->getG4Id();
                 PidMap::iterator it = pid_spectrum.find(id);
                 if (it == pid_spectrum.end())
@@ -139,15 +142,24 @@ int analysis(const std::vector<std::string> & files, const ana_params & pars)
                     char buff[200];
                     sprintf(buff, "h_pid_%ld", id);
                     h = new TH1I(buff, buff, bins, bin_min, bin_max);
-                    pid_spectrum.insert(std::pair<long, TH1I*>(id, h));
+
+                    sprintf(buff, "h_pid_%ld_w", id);
+                    h_w = new TH1F(buff, buff, bins, bin_min, bin_max);
+
+                    pid_spectrum.insert(std::pair<long, std::pair<TH1I*,TH1F*> >(id, {h, h_w} ));
+
                 }
                 else
                 {
-                    h = it->second;
+                    h = it->second.first;
+                    h_w = it->second.second;
                 }
 
                 h_ene_spectrum->Fill(log10(track->getStartE()));
+                h_ene_spectrum_w->Fill(log10(track->getStartE()));
+
                 h->Fill(log10(track->getStartE()));
+                h_w->Fill(log10(track->getStartE()));
 
                 if (track->getInAcceptance())
                     h_acc->Fill(1);
@@ -225,11 +237,28 @@ int analysis(const std::vector<std::string> & files, const ana_params & pars)
             }
         }
 
-        if (prim_stop_in_det)
-            dataManager->fill();
+//        if (prim_stop_in_det)
+//            dataManager->fill();
     }
 
-//     dataManager.save();
+    for (int i = 0; i < bins; ++i)
+    {
+        Float_t x1 = h_ene_spectrum_w->GetBinLowEdge(1+i);
+        Float_t x2 = h_ene_spectrum_w->GetBinLowEdge(2+i);
+
+        Float_t w1 = TMath::Power(10.0, x1);
+        Float_t w2 = TMath::Power(10.0, x2);
+
+        Float_t w = w2 - w1;
+        h_ene_spectrum_w->SetBinContent(1+i, h_ene_spectrum_w->GetBinContent(1+i)/w);
+    }
+	Float_t max_v = h_ene_spectrum_w->GetMaximum();
+	Float_t max_exp = TMath::Floor(log10(max_v)) + 1;
+	Float_t max = 1;
+	for (int i = 0; i < max_exp; ++i)
+			max *= 10.0;
+	Float_t min = max * 1e-18;
+	h_ene_spectrum_w->GetYaxis()->SetRangeUser(min, max);
 
     std::cout << "Number of secs total: " << secs << "\n";
 
@@ -256,16 +285,41 @@ int analysis(const std::vector<std::string> & files, const ana_params & pars)
     h_ene_spectrum->SetLineWidth(2);
     h_ene_spectrum->Draw();
 
+    TCanvas * can_w = new TCanvas("can_ene_spectrum_w", "ene_spectrum_w", 800, 600);
+    can_w->cd();
+    h_ene_spectrum_w->SetLineWidth(2);
+    h_ene_spectrum_w->Draw();
+
     TLegend * leg = new TLegend(0.8, 0.1, 1.0, 0.8);
     leg->AddEntry(h_ene_spectrum, "Total", "l");
 
     int color = 1;
     for(PidMap::iterator it = pid_spectrum.begin(); it != pid_spectrum.end(); ++it)
     {
-        TH1I * h = it->second;
+        can->cd();
+        TH1I * h = it->second.first;
         h->Draw("same");
-        h->Write();
         h->SetLineColor(color);
+        h->Write();
+
+        can_w->cd();
+        TH1F * h_w = it->second.second;
+        h_w->Draw("same");
+        h_w->SetLineColor(color);
+
+        for (int i = 0; i < bins; ++i)
+        {
+            Float_t x1 = h_w->GetBinLowEdge(1+i);
+            Float_t x2 = h_w->GetBinLowEdge(2+i);
+
+            Float_t w1 = TMath::Power(10.0, x1);
+            Float_t w2 = TMath::Power(10.0, x2);
+
+            Float_t w = w2 - w1;
+            h_w->SetBinContent(1+i, h_w->GetBinContent(1+i)/w);
+        }
+        h_w->Write();
+
         ++color;
 
         long pid = it->first;
@@ -282,9 +336,15 @@ int analysis(const std::vector<std::string> & files, const ana_params & pars)
             leg->AddEntry(h, "=^{1}_{1}H", "l");
         }
     }
+    can->cd();
     leg->Draw();
     can->SetLogy(kTRUE);
     can->Write();
+
+    can_w->cd();
+    leg->Draw();
+    can_w->SetLogy(kTRUE);
+    can_w->Write();
 
     dataManager->save();
 

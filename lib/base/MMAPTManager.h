@@ -85,7 +85,7 @@ public:
     void print() const;
     void clear();
 
-    bool book();
+    bool book(bool with_tree = true);
     bool save();
     Int_t fill();
     bool open();
