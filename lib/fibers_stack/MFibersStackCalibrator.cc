@@ -1,21 +1,13 @@
-/*
- * <one line to give the program's name and a brief idea of what it does.>
- * Copyright (C) 2017  <copyright holder> <email>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
+// @(#)lib/fibers_stack:$Id$
+// Author: Rafal Lalik  18/11/2017
+
+/*************************************************************************
+ * Copyright (C) 2017-2018, Rafał Lalik.                                 *
+ * All rights reserved.                                                  *
+ *                                                                       *
+ * For the licensing terms see $MAPTSYS/LICENSE.                         *
+ * For the list of contributors see $MAPTSYS/README/CREDITS.             *
+ *************************************************************************/
 
 #include <iostream>
 
@@ -27,31 +19,53 @@
 #include "MParManager.h"
 #include "MCategory.h"
 
+/** \class MFibersStackCalibrator
+\ingroup lib_fibers_stack
+
+A calibraror task for Fibers Stack.
+
+Takes MGeantFibersStackRaw data and applies calibration. See MTask for the
+interface description.
+
+*/
+
+/** Default constructor
+ */
 MFibersStackCalibrator::MFibersStackCalibrator() : MTask(), catFibersRaw(nullptr), catFibersCal(nullptr), pCalibratorPar(nullptr)
 {
 }
 
+/** Default destructor
+ */
 MFibersStackCalibrator::~MFibersStackCalibrator()
 {
 }
 
+/** Init task
+ *
+ * \sa MTask::init()
+ * \return success
+ */
 bool MFibersStackCalibrator::init()
 {
-    catFibersRaw = dm()->getCategory(MCategory::CatFibersStackRaw);
+    // get Raw category
+    catFibersRaw = mapt()->getCategory(MCategory::CatFibersStackRaw);
     if (!catFibersRaw)
     {
         std::cerr << "No CatFibersStackRaw category" << "\n";
         return false;
     }
 
-    catFibersCal = dm()->buildCategory(MCategory::CatFibersStackCal);
+    // create Cal category
+    catFibersCal = mapt()->buildCategory(MCategory::CatFibersStackCal);
     if (!catFibersCal)
     {
         std::cerr << "No CatFibersStackCal category" << "\n";
         return false;
     }
 
-    pCalibratorPar = (MFibersStackCalibratorPar*) MParManager::instance()->getParameterContainer("MFibersStackCalibratorPar");
+    // get calibrator parameters
+    pCalibratorPar = (MFibersStackCalibratorPar*) pm()->getParameterContainer("MFibersStackCalibratorPar");
     if (!pCalibratorPar)
     {
         std::cerr << "Parameter container 'MFibersStackCalibratorPar' was not obtained!" << std::endl;
@@ -61,6 +75,11 @@ bool MFibersStackCalibrator::init()
     return true;
 }
 
+/** Execute task
+ *
+ * \sa MTask::execute()
+ * \return success
+ */
 bool MFibersStackCalibrator::execute()
 {
     int size = catFibersRaw->getEntries();
@@ -113,6 +132,11 @@ bool MFibersStackCalibrator::execute()
     return true;
 }
 
+/** Finalize task
+ *
+ * \sa MTask::finalize()
+ * \return success
+ */
 bool MFibersStackCalibrator::finalize()
 {
     return true;

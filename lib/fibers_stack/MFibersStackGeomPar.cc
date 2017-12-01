@@ -1,36 +1,44 @@
-/*
- * <one line to give the program's name and a brief idea of what it does.>
- * Copyright (C) 2017  <copyright holder> <email>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
+// @(#)lib/fibers_stack:$Id$
+// Author: Rafal Lalik  18/11/2017
+
+/*************************************************************************
+ * Copyright (C) 2017-2018, Rafał Lalik.                                 *
+ * All rights reserved.                                                  *
+ *                                                                       *
+ * For the licensing terms see $MAPTSYS/LICENSE.                         *
+ * For the list of contributors see $MAPTSYS/README/CREDITS.             *
+ *************************************************************************/
+
 #include <iostream>
 
 #include "MFibersStackGeomPar.h"
 
 #include "MParContainer.h"
 
+/** \class MFibersStackGeomPar
+\ingroup lib_fibers_stack
+
+A container for Fibers Stack geometry parameters
+
+\sa MPar
+
+*/
+
+/** Constructor
+ */
 MFibersStackGeomPar::MFibersStackGeomPar() : MPar(), mods(nullptr)
 {
 }
 
+/** Destructor
+ */
 MFibersStackGeomPar::~MFibersStackGeomPar()
 {
     delete [] mods;
 }
 
+/** Clear parameters
+ */
 void MFibersStackGeomPar::clear()
 {
     delete [] mods;
@@ -38,6 +46,11 @@ void MFibersStackGeomPar::clear()
     modules = 0;
 }
 
+/** Get parameters
+ * \sa MPar::getParams()
+ * \param parcont pointer to container object
+ * \return success
+ */
 bool MFibersStackGeomPar::getParams(MParContainer* parcont)
 {
     if (!parcont->fill("nModules", modules)) return false;
@@ -125,10 +138,17 @@ bool MFibersStackGeomPar::getParams(MParContainer* parcont)
     return true;
 }
 
+/** Put parameters
+ * \sa MPar::putParams()
+ * \param parcont pointer to container object
+ * \return success
+ */
 bool MFibersStackGeomPar::putParams(MParContainer* parcont) const
 {
 }
 
+/** Print parameters
+ */
 void MFibersStackGeomPar::print() const
 {
     printf("Number of modules = %d\n", modules);
@@ -154,6 +174,10 @@ void MFibersStackGeomPar::print() const
     }
 }
 
+/** Get number of layers in the module
+ * \param m module
+ * \return number of layers
+ */
 Int_t MFibersStackGeomPar::getLayers(Int_t m) const
 {
     if (mods and m < modules)
@@ -162,6 +186,11 @@ Int_t MFibersStackGeomPar::getLayers(Int_t m) const
         return -1;
 }
 
+/** Get number of fibers in the layer
+ * \param m module
+ * \param l layer
+ * \return number of fibers
+ */
 Int_t MFibersStackGeomPar::getFibers(Int_t m, Int_t l) const
 {
     if (mods and m < modules and l < mods[m].layers)
@@ -170,6 +199,11 @@ Int_t MFibersStackGeomPar::getFibers(Int_t m, Int_t l) const
         return -1;
 }
 
+/** Get layer rotation
+ * \param m module
+ * \param l layer
+ * \return layer rotation
+ */
 Float_t MFibersStackGeomPar::getLayerRotation(Int_t m, Int_t l) const
 {
     if (mods and m < modules and l < mods[m].layers)
@@ -178,6 +212,11 @@ Float_t MFibersStackGeomPar::getLayerRotation(Int_t m, Int_t l) const
         return -10000.;
 }
 
+/** Get fibers offset X
+ * \param m module
+ * \param l layer
+ * \return offset X
+ */
 Float_t MFibersStackGeomPar::getFiberOffsetX(Int_t m, Int_t l) const
 {
     if (mods and m < modules and l < mods[m].layers)
@@ -186,6 +225,11 @@ Float_t MFibersStackGeomPar::getFiberOffsetX(Int_t m, Int_t l) const
         return -10000.;
 }
 
+/** Get layers offset Y
+ * \param m module
+ * \param l layer
+ * \return offset Y
+ */
 Float_t MFibersStackGeomPar::getFiberOffsetY(Int_t m, Int_t l) const
 {
     if (mods and m < modules and l < mods[m].layers)
@@ -194,6 +238,11 @@ Float_t MFibersStackGeomPar::getFiberOffsetY(Int_t m, Int_t l) const
         return -10000.;
 }
 
+/** Get fibers pitch in a layer
+ * \param m module
+ * \param l layer
+ * \return fibers pitch
+ */
 Float_t MFibersStackGeomPar::getFibersPitch(Int_t m, Int_t l) const
 {
     if (mods and m < modules and l < mods[m].layers)

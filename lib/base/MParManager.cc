@@ -1,21 +1,13 @@
-/*
- * <one line to give the program's name and a brief idea of what it does.>
- * Copyright (C) 2017  <copyright holder> <email>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
+// @(#)lib/base:$Id$
+// Author: Rafal Lalik  18/11/2017
+
+/*************************************************************************
+ * Copyright (C) 2017-2018, Rafał Lalik.                                 *
+ * All rights reserved.                                                  *
+ *                                                                       *
+ * For the licensing terms see $MAPTSYS/LICENSE.                         *
+ * For the list of contributors see $MAPTSYS/README/CREDITS.             *
+ *************************************************************************/
 
 #include <algorithm> 
 #include <cctype>
@@ -30,48 +22,84 @@
 #include "MParContainer.h"
 #include "MPar.h"
 
+/** \class MParManager
+\ingroup lib_base
+
+Parameters Manager class. Stores and dumps all parameters used by the framework.
+
+It's a singleton class of which object can be obtained using instance() method.
+
+Paramaters mamager must be initializatied before
+MDetectorManager::initParameterContainers() is called since it checks whether
+the requested parameter containers exists.
+*/
+
 // for trim functions see
 // https://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
 
-// trim from start (in place)
+/** Trim from start (in place)
+ *
+ * \param s string
+ */
 static inline void ltrim(std::string &s) {
     s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](int ch) {
         return !std::isspace(ch);
     }));
 }
 
-// trim from end (in place)
+/** Trim from end (in place)
+ *
+ * \param s string
+ */
 static inline void rtrim(std::string &s) {
     s.erase(std::find_if(s.rbegin(), s.rend(), [](int ch) {
         return !std::isspace(ch);
     }).base(), s.end());
 }
 
-// trim from both ends (in place)
+/** Trim from both ends (in place)
+ *
+ * \param s string
+ */
 static inline void trim(std::string &s) {
     ltrim(s);
     rtrim(s);
 }
 
-// trim from start (copying)
+/** Trim from start (copying)
+ *
+ * \param s string
+ * \return trimmed string
+ */
 static inline std::string ltrim_copy(std::string s) {
     ltrim(s);
     return s;
 }
 
-// trim from end (copying)
+/** Trim from end (copying)
+ *
+ * \param s string
+ * \return trimmed string
+ */
 static inline std::string rtrim_copy(std::string s) {
     rtrim(s);
     return s;
 }
 
-// trim from both ends (copying)
+/** Trim from both ends (copying)
+ *
+ * \param s string
+ * \return trimmed string
+ */
 static inline std::string trim_copy(std::string s) {
     trim(s);
     return s;
 }
 
-
+/** Remove all tabs (in place)
+ *
+ * \param s string
+ */
 void simplify(std::string & s)
 {
     size_t pos = 0;
@@ -84,7 +112,13 @@ void simplify(std::string & s)
     }
 }
 
-// see stackoverflow #447206
+/** Check if float.
+ *
+ * \sa Stackoverflow #447206
+ *
+ * \param str string
+ * \return is float
+ */
 bool isFloat(const string & str)
 {
     std::istringstream iss(str);
@@ -93,24 +127,44 @@ bool isFloat(const string & str)
     return iss.eof() && !iss.fail();
 }
 
-MParManager * MParManager::tm = nullptr;
+MParManager * MParManager::pm = nullptr;
 
+/** Returns instance of the Detector Manager class.
+ *
+ * \return manager instance
+ */
 MParManager * MParManager::instance()
 {
-    if (!tm)
-        tm = new MParManager;
+    if (!pm)
+        pm = new MParManager;
 
-    return tm;
+    return pm;
 }
 
+/** Shortcut
+ * \return MParManager instance
+ */
+MParManager * pm()
+{
+    return MParManager::instance();
+}
+
+/** Default constructor
+ */
 MParManager::MParManager()
 {
 }
 
+/** Destructor
+ */
 MParManager::~MParManager()
 {
 }
 
+/** Parse source file
+ *
+ * \return success
+ */
 bool MParManager::parseSource()
 {
     ifstream ifs(source);
@@ -233,6 +287,12 @@ bool MParManager::parseSource()
     return true;
 }
 
+/** Parse single value.
+ *
+ * \param str string with values
+ * \param values vector to store values
+ * \return next parsing step
+ */
 MParManager::WhatNext MParManager::parseValues(const std::string & str, std::vector<std::string> & values)
 {
     size_t pos = 0, pos2 = 0;
@@ -268,10 +328,16 @@ MParManager::WhatNext MParManager::parseValues(const std::string & str, std::vec
     return WNContainerOrParam;
 }
 
+/** Write params to destination.
+ *
+ * Needs to be implemented.
+ */
 void MParManager::writeDestination() const
 {
 }
 
+/** Print containers
+ */
 void MParManager::print() const
 {
      std::map<std::string, MParContainer *>::const_iterator it = containers.begin();
@@ -279,6 +345,12 @@ void MParManager::print() const
          it->second->print();
 }
 
+/** Add new parameter container.
+ *
+ * \param cont_name container name
+ * \param parcont container object
+ * \return success
+ */
 bool MParManager::addParameterContainer(const std::string& cont_name, MPar* parcont)
 {
     MParContainer * pc = containers[cont_name];
@@ -300,6 +372,11 @@ bool MParManager::addParameterContainer(const std::string& cont_name, MPar* parc
     return true;
 }
 
+/** Get parameter container by name.
+ *
+ * \param cont_name container name
+ * \return pointer to container
+ */
 MPar * MParManager::getParameterContainer(const std::string& cont_name)
 {
     return parconts[cont_name];

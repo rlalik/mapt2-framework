@@ -148,7 +148,7 @@ void C_MainWindow::OpenEvent()
 
     int numb;
 
-    numb = input->getInteger(this,"Open Eventnumber", "Eventnumber",dataManager->getCurrentEntryNumber(),0,dataManager->getNumberOfEntries(),1,&ok,0);
+    numb = input->getInteger(this,"Open Eventnumber", "Eventnumber",dataManager->getEntryNumber(),0,dataManager->getEntries(),1,&ok,0);
 
     dataManager->getEntry(numb);
 
@@ -177,8 +177,8 @@ void C_MainWindow::Open3D()
 void C_MainWindow::next()
 {
     // next in event in tree
-    int n = dataManager->getCurrentEntryNumber();
-    if (n+1<= dataManager->getNumberOfEntries()) {
+    int n = dataManager->getEntryNumber();
+    if (n+1<= dataManager->getEntries()) {
         dataManager->getEntry(n+1);
     }
 
@@ -188,7 +188,7 @@ void C_MainWindow::next()
 void C_MainWindow::last()
 {
     // next in event in tree
-    int n = dataManager->getCurrentEntryNumber();
+    int n = dataManager->getEntryNumber();
     if (n-1 >= 0) {
         dataManager->getEntry(n-1);
     }
@@ -207,12 +207,12 @@ void C_MainWindow::update()
 
     // Aktuelle Eventnummer aktualisieren und ausgeben
     QString s = "eventnumber ";
-    s = s + QString::number(dataManager->getCurrentEntryNumber());
+    s = s + QString::number(dataManager->getEntryNumber());
     m_Label2->setText(s);
 
-    int n = dataManager->getCurrentEntryNumber();
+    int n = dataManager->getEntryNumber();
 
-    if (n+1<= dataManager->getNumberOfEntries()) {
+    if (n+1<= dataManager->getEntries()) {
         m_next->setEnabled(true);
     }
     else {

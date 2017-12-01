@@ -1,3 +1,14 @@
+// @(#)lib/base:$Id$
+// Author: Rafal Lalik  18/11/2017
+
+/*************************************************************************
+ * Copyright (C) 2017-2018, Rafał Lalik.                                 *
+ * All rights reserved.                                                  *
+ *                                                                       *
+ * For the licensing terms see $MAPTSYS/LICENSE.                         *
+ * For the list of contributors see $MAPTSYS/README/CREDITS.             *
+ *************************************************************************/
+
 #ifndef MMAPTMANAGER_H
 #define MMAPTMANAGER_H
 
@@ -13,46 +24,78 @@ using namespace std;
 
 #include "MCategory.h"
 
-//! \brief Access point to load, read and write data.
-/*!
-  The MMAPTManager is responsible to manage all data operations. It loads a root
-  tree from specified file.
-*/
 class MMAPTManager: public TObject
 {
+protected:
+    // members
+    TFile* outputFile;          ///< Pointer to output file
+    TTree* outputTree;          ///< Pointer to output tree
+    string outputTreeTitle;     ///< Output tree title
+    string outputTreeName;      ///< Output tree name
+    string outputFileName;      ///< Output file name
+    TFile* inputFile;           ///< Pointer to input file
+    TTree* inputTree;           ///< Pointer to input tree
+    string inputTreeTitle;      ///< Input tree title
+    string inputTreeName;       ///< Input tree name
+    string inputFileName;       ///< Input file name
+    int numberOfEntries;        ///< Number of input entries
+    int currentEntry;           ///< Current input entry number
+
+    /// Ctaegory info
+    struct CategoryInfo
+    {
+        CategoryInfo();
+        CategoryInfo(CategoryInfo & ci);
+
+        bool registered = false;    ///< Category is registered
+        bool persistent = false;    ///< Category is persistent
+        MCategory::Cat cat;         ///< Category ID
+        std::string name;           ///< Category name
+        bool simulation;            ///< Simulation run
+        size_t dim;                 ///< Dimension of ctageory
+        size_t sizes[16];           ///< Sizes of dimension
+        MCategory * ptr = nullptr;  ///< Pointer to category object
+    };
+
+    /// Category info array
+    CategoryInfo cinfovec[MCategory::CatLimitDoNotUse * 2];
+
+    typedef std::map<MCategory::Cat, MCategory *> CatMap;
+    CatMap categories;              ///< Map of categories
+    static MMAPTManager * mm;       ///< Instance of the MMAPTManager
+    bool sim;                       ///< Simulation run
+    bool branches_set;              ///< Has branches set
+
 private:
-    //! \brief Constructor.
+    // constructor
     MMAPTManager();
-    MMAPTManager(MMAPTManager const &) {}
+    MMAPTManager(MMAPTManager const &) {}   ///< Copy constructor
+    /// Assignment operator
+    /// \return this object
     MMAPTManager & operator=(MMAPTManager const &) { return *this; }
 
 public:
+    // instance method
     static MMAPTManager * instance();
 
+    // destructor
     virtual ~MMAPTManager() {};
 
+    // methods
     void print() const;
     void clear();
 
-    //! \brief Creates a new file and an empty root tree with Event objects as leafs.
     bool book();
-
-    //! \brief Writes the tree to file and close it.
     bool save();
-
-    //! \brief Fills the current event attribute into the tree.
     Int_t fill();
-
-    //! \brief Opens a file and loads the root tree.
     bool open();
 
-    //! \brief Reads entry i of the current tree. The event attribute is filled with the event information saved in tree entry i.
     void getEntry(int i);
-
-    //! \brief Returns number of entries in the current tree.
     int getEntriesFast();
 
     void setSimulation(bool simulation);
+    /// Check if simulation run
+    /// \return is simulation
     bool isSimulation() const { return sim; }
 
     bool registerCategory(MCategory::Cat cat, std::string name, size_t dim, size_t * sizes, bool simulation);
@@ -61,59 +104,26 @@ public:
     MCategory * getCategory(MCategory::Cat cat, bool persistent = true);
     MCategory * openCategory(MCategory::Cat cat, bool persistent = true);
 
+    /// Set output file name
+    /// \param s file name
     void setOutputFileName(string s) { outputFileName = s; }
+    /// Set input file name
+    /// \param s file name
     void setInputFileName(string s) { inputFileName = s; }
 
-    int getCurrentEntryNumber() { return currentEntry; }
-    int getNumberOfEntries() { return numberOfEntries; }
+    /// Get entry number
+    /// \return entry number
+    int getEntryNumber() { return currentEntry; }
+    /// Get number of entries
+    /// \return number of entries
+    int getEntries() { return numberOfEntries; }
 
 private:
     void initBranches();
 
-    //! \brief Needed for creation of shared library
     ClassDef(MMAPTManager, 1);
-
-private:
-    // file and tree to save the events
-    TFile* outputFile;
-    //! \brief The save tree.
-    TTree* outputTree;
-    string outputTreeTitle;
-    string outputTreeName;
-    string outputFileName;
-
-    // for opening a file with an event tree
-    TFile* inputFile;
-    //! \brief The open tree.
-    TTree* inputTree;
-    string inputTreeTitle;
-    string inputTreeName;
-    string inputFileName;
-    int numberOfEntries;
-    int currentEntry;
-
-    struct CategoryInfo
-    {
-        CategoryInfo();
-        CategoryInfo(CategoryInfo & ci);
-
-        bool registered = false;
-        bool persistent = false;
-        MCategory::Cat cat;
-        std::string name;
-        bool simulation;
-        size_t dim;
-        size_t sizes[16];
-        MCategory * ptr = nullptr;
-    };
-
-    CategoryInfo cinfovec[MCategory::CatLimitDoNotUse * 2];
-
-    typedef std::map<MCategory::Cat, MCategory *> CatMap;
-    CatMap categories;
-    static MMAPTManager * dm;
-    bool sim;
-    bool branches_set;
 };
+
+extern MMAPTManager * mapt();
 
 #endif /* DATAMANAGER_H */

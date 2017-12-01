@@ -1,12 +1,31 @@
+// @(#)lib/geant:$Id$
+// Author: Rafal Lalik  18/11/2017
+
+/*************************************************************************
+ * Copyright (C) 2017-2018, Rafał Lalik.                                 *
+ * All rights reserved.                                                  *
+ *                                                                       *
+ * For the licensing terms see $MAPTSYS/LICENSE.                         *
+ * For the list of contributors see $MAPTSYS/README/CREDITS.             *
+ *************************************************************************/
+
 #include "MGeantTrack.h"
+/** \class MGeantTrack
+\ingroup lib_geant
 
-ClassImp(MGeantTrack);
+A container for Geant tracks
 
+*/
+
+/** Constructor
+ */
 MGeantTrack::MGeantTrack()
 {
     clear();
 }
 
+/** Clear container
+ */
 void MGeantTrack::clear()
 {
     TVector3 p(0,0,0);
@@ -41,30 +60,43 @@ void MGeantTrack::clear()
     proc_arr[ATREST]                    = kFALSE;
 }
 
-void MGeantTrack::addProcess(string name)
+/** Add process
+ * \param name process name;
+ */
+void MGeantTrack::addProcess(const std::string & name)
 {
     processes.push_back(name);
 }
 
-
-void MGeantTrack::addDaughterID(Int_t ID)
+/** Add child ID
+ * \param ID child ID
+ */
+void MGeantTrack::addChildID(Int_t ID)
 {
     secondariesID.push_back(ID);
 }
 
-Double_t MGeantTrack::getDistance() const
+/** Get dostance from the reference of the stop point
+ * \param ref reference point
+ * \return distance (mm)
+ */
+Double_t MGeantTrack::getDistance(const TVector3 & ref) const
 {
-    TVector3 end_ = TVector3(stop.x, stop.y, stop.z) - TVector3(0, 36, 0);
+    TVector3 end_ = TVector3(stop.x, stop.y, stop.z) - ref;
     return end_.Mag();
 }
 
-Double_t MGeantTrack::getRange() const
+/** Get range in the detector
+ * \param ref reference
+ * \return range
+ */
+Double_t MGeantTrack::getRange(const TVector3 & ref) const
 {
     if (!stopInDetector)
         return -100.;
 
-    TVector3 sta = TVector3(start.x, start.y, start.z) - TVector3(0, 36, 0);
-    TVector3 sto = TVector3(stop.x, stop.y, stop.z) - TVector3(0, 36, 0);
+    TVector3 sta = TVector3(start.x, start.y, start.z) - ref;
+    TVector3 sto = TVector3(stop.x, stop.y, stop.z) - ref;
 
     TVector3 psta = TVector3(start.px, start.py, start.pz);
     TVector3 psto = TVector3(stop.px, stop.py, stop.pz);
@@ -74,7 +106,7 @@ Double_t MGeantTrack::getRange() const
 
     Double_t t = 0.0;
 
-    const Double_t limit = 36.0;
+    const Double_t limit = ref.Y();
     while (true)
     {
         if (
@@ -96,6 +128,8 @@ Double_t MGeantTrack::getRange() const
     return (intsec - sto).Mag();
 }
 
+/** Print track
+ */
 void MGeantTrack::print() const
 {
     TVector3 psta = TVector3(start.px, start.py, start.pz);
@@ -121,7 +155,13 @@ void MGeantTrack::print() const
     //   Double_t endEnergy;
 }
 
-void MGeantTrack::Clear(Option_t* options)
+/** Clear object.
+ * Parameter options are ignored, for ROOT compatibility.
+ * \param opt options
+ */
+void MGeantTrack::Clear(Option_t* opt)
 {
     clear();
 }
+
+ClassImp(MGeantTrack);
