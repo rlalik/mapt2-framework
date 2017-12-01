@@ -27,6 +27,8 @@
 
 #include "MFibersStackDetector.h"
 
+#include "MProgressBar.h"
+
 using namespace std;
 
 int simdst(const std::string & file, int events = 1000)
@@ -51,8 +53,8 @@ int simdst(const std::string & file, int events = 1000)
     dataManager->book();
 
     // how many events to proceed
-    int ev_limit = events < dataManager->getEntriesFast() ? events : dataManager->getEntriesFast();
-    std::cout << dataManager->getEntriesFast() << " events, analyze " << ev_limit << std::endl;
+    int ev_limit = events < dataManager->getEntries() ? events : dataManager->getEntries();
+    std::cout << dataManager->getEntries() << " events, analyze " << ev_limit << std::endl;
 
     dataManager->openCategory(MCategory::CatGeantTrack, true);
 
@@ -74,9 +76,12 @@ int simdst(const std::string & file, int events = 1000)
     MTaskManager * tm = MTaskManager::instance();
     tm->initTasks();
 
+    MProgressBar pb(ev_limit);
+
     // go over all events
     for (int i=0 ; i < ev_limit; ++i)
     {
+        ++pb;
         dataManager->clear();
 
         dataManager->getEntry(i);

@@ -24,27 +24,31 @@
 
 #include "MMAPTManager.h"
 
+#include "MProgressBar.h"
+
 using namespace std;
 
-int analysis(const std::string & file, int events = 1000)
+struct ana_params
 {
-    TString oname = file;
+    int events;
+    string ofile;
+};
 
-    if (oname.EndsWith(".root"))
-        oname.ReplaceAll(".root", "_ana.root");
-    else
-        oname.Append("_ana.root");
+int analysis(const std::vector<std::string> & files, const ana_params & pars)
+{
+    int events = pars.events;
+    TString oname = pars.ofile;
 
     MMAPTManager * dataManager = MMAPTManager::instance();
     dataManager->setSimulation(true);
-    dataManager->setInputFileName(file);
+    dataManager->setInputFileNames(files);
     dataManager->open();
-    dataManager->openCategory(MCategory::CatGeantTrack);
-    dataManager->openCategory(MCategory::CatGeantFibersRaw);
+    dataManager->openCategory(MCategory::CatGeantTrack, false);
+    dataManager->openCategory(MCategory::CatGeantFibersRaw, false);
     dataManager->setOutputFileName(oname.Data());
-    dataManager->book();
+    dataManager->book(false);
 
-    typedef std::map<long, TH1I *> PidMap;
+    typedef std::map<long, std::pair<TH1I *, TH1F *> > PidMap;
     PidMap pid_spectrum;
 
     TH1I * h_pi_mult = new TH1I("h_pi_mult", "h_pi_mult", 20, 0, 20);
@@ -64,10 +68,11 @@ int analysis(const std::string & file, int events = 1000)
     TH1I * h_range = new TH1I("h_range", "h_range", 220, 0, 110);
     TH1I * h_distance = new TH1I("h_distance", "h_distance", 200, 0, 100);
 
-    Int_t bins = 700;
-    Int_t bin_min = 1;
-    Int_t bin_max = 8;
-    TH1 * h_ene_spectrum = new TH1I("h_ene_spectrum", "h_ene_spectrum;log10(E) / MeV;Counts", bins, bin_min, bin_max);
+    Int_t bins = 425;
+    Float_t bin_min = 1;
+    Float_t bin_max = 9.5;
+    TH1I * h_ene_spectrum = new TH1I("h_ene_spectrum", "h_ene_spectrum;log10(E) / MeV;Counts", bins, bin_min, bin_max);
+    TH1F * h_ene_spectrum_w = new TH1F("h_ene_spectrum_w", "h_ene_spectrum;log10(E) / MeV;Counts/bin width", bins, bin_min, bin_max);
 
     const char * elements_names[28] = {
         "H", "He",
@@ -75,32 +80,44 @@ int analysis(const std::string & file, int events = 1000)
         "Na", "Mg", "Al", "Si", "P", "S", "Cl", "Ar",
         "K", "Ca", "Sc", "Ti", "V", "Cr", "Mn", "Fe" };
 
-    int ev_limit = events < dataManager->getEntriesFast() ? events : dataManager->getEntriesFast();
-    std::cout << dataManager->getEntriesFast() << " events, analyze " << ev_limit << std::endl;
+    int ev_limit = 0;
+    if (events < 0)
+        ev_limit = dataManager->getEntries();
+    else
+        ev_limit = events < dataManager->getEntries() ? events : dataManager->getEntries();
 
-    int secs = 0;
-    for (int i=0 ; i < ev_limit; ++i)
+    std::cout << dataManager->getEntries() << " events, analyze " << ev_limit << std::endl;
+
+    MProgressBar pb(ev_limit);
+
+    MCategory * catGeantTrack = dataManager->getCategory(MCategory::CatGeantTrack, false);
+    if (!catGeantTrack)
     {
-        dataManager->getEntry(i);
-        MCategory * catGeantTrack = dataManager->getCategory(MCategory::CatGeantTrack);
-        if (!catGeantTrack)
-        {
 //             std::cerr << "event NULL" << "\n";
 //             return -1;
-        }
+    }
+
+    MCategory * catGeantFibersRaw = dataManager->getCategory(MCategory::CatGeantFibersRaw, false);
+    if (!catGeantFibersRaw)
+    {
+//             std::cerr << "event NULL" << "\n";
+//             return -1;
+    }
+
+//     dataManager->getTree()->Print();
+
+    long secs = 0;
+    for (long int i=0 ; i < ev_limit; ++i)
+    {
+        ++pb;
+        dataManager->getEntry(i);
+
 //         std::cout << event->getSimulatedEvent()->getPrimary()->Get_stop_in_detector() << "\n";
 //         event->getSimulatedEvent()->getPrimary()->print();
 
         size_t tracks_num = catGeantTrack->getEntries();
         if (tracks_num == 0)
             continue;
-
-        MCategory * catGeantFibersRaw = dataManager->getCategory(MCategory::CatGeantFibersRaw);
-        if (!catGeantFibersRaw)
-        {
-//             std::cerr << "event NULL" << "\n";
-//             return -1;
-        }
 
         h_acc->Fill(0);
 
@@ -115,8 +132,9 @@ int analysis(const std::string & file, int events = 1000)
 
             if (track->getTrackID() == 1)
             {
-
                 TH1I * h = nullptr;
+                TH1F * h_w = nullptr;
+
                 long id = track->getG4Id();
                 PidMap::iterator it = pid_spectrum.find(id);
                 if (it == pid_spectrum.end())
@@ -124,15 +142,24 @@ int analysis(const std::string & file, int events = 1000)
                     char buff[200];
                     sprintf(buff, "h_pid_%ld", id);
                     h = new TH1I(buff, buff, bins, bin_min, bin_max);
-                    pid_spectrum.insert(std::pair<long, TH1I*>(id, h));
+
+                    sprintf(buff, "h_pid_%ld_w", id);
+                    h_w = new TH1F(buff, buff, bins, bin_min, bin_max);
+
+                    pid_spectrum.insert(std::pair<long, std::pair<TH1I*,TH1F*> >(id, {h, h_w} ));
+
                 }
                 else
                 {
-                    h = it->second;
+                    h = it->second.first;
+                    h_w = it->second.second;
                 }
 
                 h_ene_spectrum->Fill(log10(track->getStartE()));
+                h_ene_spectrum_w->Fill(log10(track->getStartE()));
+
                 h->Fill(log10(track->getStartE()));
+                h_w->Fill(log10(track->getStartE()));
 
                 if (track->getInAcceptance())
                     h_acc->Fill(1);
@@ -210,11 +237,28 @@ int analysis(const std::string & file, int events = 1000)
             }
         }
 
-        if (prim_stop_in_det)
-            dataManager->fill();
+//        if (prim_stop_in_det)
+//            dataManager->fill();
     }
 
-//     dataManager.save();
+    for (int i = 0; i < bins; ++i)
+    {
+        Float_t x1 = h_ene_spectrum_w->GetBinLowEdge(1+i);
+        Float_t x2 = h_ene_spectrum_w->GetBinLowEdge(2+i);
+
+        Float_t w1 = TMath::Power(10.0, x1);
+        Float_t w2 = TMath::Power(10.0, x2);
+
+        Float_t w = w2 - w1;
+        h_ene_spectrum_w->SetBinContent(1+i, h_ene_spectrum_w->GetBinContent(1+i)/w);
+    }
+	Float_t max_v = h_ene_spectrum_w->GetMaximum();
+	Float_t max_exp = TMath::Floor(log10(max_v)) + 1;
+	Float_t max = 1;
+	for (int i = 0; i < max_exp; ++i)
+			max *= 10.0;
+	Float_t min = max * 1e-18;
+	h_ene_spectrum_w->GetYaxis()->SetRangeUser(min, max);
 
     std::cout << "Number of secs total: " << secs << "\n";
 
@@ -241,16 +285,41 @@ int analysis(const std::string & file, int events = 1000)
     h_ene_spectrum->SetLineWidth(2);
     h_ene_spectrum->Draw();
 
+    TCanvas * can_w = new TCanvas("can_ene_spectrum_w", "ene_spectrum_w", 800, 600);
+    can_w->cd();
+    h_ene_spectrum_w->SetLineWidth(2);
+    h_ene_spectrum_w->Draw();
+
     TLegend * leg = new TLegend(0.8, 0.1, 1.0, 0.8);
     leg->AddEntry(h_ene_spectrum, "Total", "l");
 
     int color = 1;
     for(PidMap::iterator it = pid_spectrum.begin(); it != pid_spectrum.end(); ++it)
     {
-        TH1I * h = it->second;
+        can->cd();
+        TH1I * h = it->second.first;
         h->Draw("same");
-        h->Write();
         h->SetLineColor(color);
+        h->Write();
+
+        can_w->cd();
+        TH1F * h_w = it->second.second;
+        h_w->Draw("same");
+        h_w->SetLineColor(color);
+
+        for (int i = 0; i < bins; ++i)
+        {
+            Float_t x1 = h_w->GetBinLowEdge(1+i);
+            Float_t x2 = h_w->GetBinLowEdge(2+i);
+
+            Float_t w1 = TMath::Power(10.0, x1);
+            Float_t w2 = TMath::Power(10.0, x2);
+
+            Float_t w = w2 - w1;
+            h_w->SetBinContent(1+i, h_w->GetBinContent(1+i)/w);
+        }
+        h_w->Write();
+
         ++color;
 
         long pid = it->first;
@@ -259,7 +328,7 @@ int analysis(const std::string & file, int events = 1000)
             int a = (pid % 10000) / 10;
             int z = (pid % 10000000) / 10000;
             char buff[200];
-            sprintf(buff, "=^{%d}_{%d}%s", a, z, elements_names[z]);
+            sprintf(buff, "=^{%d}_{%d}%s", a, z, elements_names[z-1]);
             leg->AddEntry(h, buff, "l");
         }
         else
@@ -267,9 +336,15 @@ int analysis(const std::string & file, int events = 1000)
             leg->AddEntry(h, "=^{1}_{1}H", "l");
         }
     }
+    can->cd();
     leg->Draw();
     can->SetLogy(kTRUE);
     can->Write();
+
+    can_w->cd();
+    leg->Draw();
+    can_w->SetLogy(kTRUE);
+    can_w->Write();
 
     dataManager->save();
 
@@ -278,18 +353,22 @@ int analysis(const std::string & file, int events = 1000)
 
 int main(int argc,char** argv)
 {
-    int events = 10000;
+    ana_params ap;
+    ap.events = 10000;
+    ap.ofile = "output.root";
+
     int c;
     while(1)
     {
         static struct option long_options[] = {
             { "events", required_argument, 0, 'e' },
+            { "output", required_argument, 0, 'o' },
             { 0, 0, 0, 0 }
         };
 
         int option_index = 0;
 
-        c = getopt_long(argc, argv, "e:", long_options, &option_index);
+        c = getopt_long(argc, argv, "e:o:", long_options, &option_index);
 
         if (c == -1)
             break;
@@ -297,28 +376,28 @@ int main(int argc,char** argv)
         switch (c)
         {
             case 'e':
-                events = atoi(optarg);
+                ap.events = atoi(optarg);
+                printf("Set number of events = %d\n", ap.events);
+                break;
+            case 'o':
+                ap.ofile = optarg;
+                printf("Set output file = %s\n", ap.ofile.c_str());
                 break;
             default:
                 break;
         }
     }
 
-    std:vector< std::pair<std::string, int> > ana_status;
+    std::vector<std::string> files;
+
     while (optind < argc)
     {
-        std::cout << "Analyze " << argv[optind] << std::endl;
-        int status = analysis(argv[optind], events);
-        std::string f = argv[optind];
-        ana_status.push_back({f, status});
+        files.push_back(argv[optind]);
         ++optind;
     }
 
-    for (int i = 0; i < ana_status.size(); ++i)
-    {
-        std::cout << "Analysis for " << ana_status[i].first << " with status " << ana_status[i].second << std::endl;
-//         std::cout << "Output file is " << oname.Data() << std::endl;
-    }
+    int status = analysis(files, ap);
+    std::cout << "Analysis with status " << status << std::endl;
 
     return 0;
 }

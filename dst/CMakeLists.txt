@@ -9,11 +9,12 @@ link_directories(${PROJECT_SOURCE_DIR}/../lib)
 include_directories(${PROJECT_SOURCE_DIR}/../lib/base)
 include_directories(${PROJECT_SOURCE_DIR}/../lib/geant)
 include_directories(${PROJECT_SOURCE_DIR}/../lib/fibers_stack)
+include_directories(${PROJECT_SOURCE_DIR}/../lib/tools)
 
 add_executable(mapt_simdst simdst.cc)
 target_link_libraries(mapt_simdst ${ROOT_LIBRARIES})
 
-target_link_libraries(mapt_simdst MAPT GeantSim FibersStack)
+target_link_libraries(mapt_simdst MAPT GeantSim FibersStack Tools)
 
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX

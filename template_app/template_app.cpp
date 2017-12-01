@@ -87,8 +87,8 @@ int analysis(const std::string & file, int events = 1000)
     // build this category if you need access to tracks: fibers
     //MCategory * catFibersStackTracks = dataManager->buildCategory(MCategory::CatFibersTracks);   // example
     
-    int ev_limit = events < dataManager->getEntriesFast() ? events : dataManager->getEntriesFast();
-    std::cout << dataManager->getEntriesFast() << " events, analyze " << ev_limit << std::endl;
+    int ev_limit = events < dataManager->getEntries() ? events : dataManager->getEntries();
+    std::cout << dataManager->getEntries() << " events, analyze " << ev_limit << std::endl;
 
     size_t tracks_num = 0;
     int secs = 0;

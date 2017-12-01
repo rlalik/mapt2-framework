@@ -11,6 +11,7 @@
 
 #include <iostream>
 
+#include "TArrayI.h"
 #include "TClass.h"
 #include "TClonesArray.h"
 
@@ -88,6 +89,37 @@ void MCategoryIndex::compress()
         it->second = j++;
 
     compressed = kTRUE;
+}
+
+void MCategoryIndex::Streamer(TBuffer &R__b)
+{
+    // Stream an object of class HLinearCategory.
+    Char_t clase[200];
+    if (R__b.IsReading())
+    {
+        TObject::Streamer(R__b);
+        size_t s;
+        R__b >> s;
+        Int_t a, b;
+        idxmap.clear();
+        for (size_t i = 0; i < s; ++i)
+        {
+            R__b >> a >> b;
+            idxmap[a] = b;
+        }
+        R__b >> compressed;
+    } else {
+        TObject::Streamer(R__b);
+        size_t s = idxmap.size();
+        R__b << s;
+        for (IndexMap::const_iterator it = idxmap.begin(); it != idxmap.end(); ++it)
+        {
+            Int_t a = it->first;
+            Int_t b = it->second;
+            R__b << a << b;
+        }
+        R__b << compressed;
+    }
 }
 
 ClassImp(MCategoryIndex);

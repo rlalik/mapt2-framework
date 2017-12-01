@@ -51,8 +51,9 @@ MMAPTManager * mapt()
 /** Default constructor
  */
 MMAPTManager::MMAPTManager() :
-    outputFile(nullptr), outputTree(nullptr), outputTreeTitle("M"), outputTreeName("M"), outputFileName("output.root"),
-    inputFile(nullptr), inputTree(nullptr), inputTreeTitle("M"), inputTreeName("M"), inputFileName("input.root"),
+    outputFile(nullptr), outputTree(nullptr), outputTreeTitle("M"),
+    outputTreeName("M"), outputFileName("output.root"),
+    inputTree(nullptr), inputTreeTitle("M"), inputTreeName("M"),
     numberOfEntries(-1), currentEntry(-1), branches_set(false)
 {
 }
@@ -73,16 +74,54 @@ void MMAPTManager::setSimulation(bool simulation)
     }
 }
 
+/** Set single input file.
+ *\param file file name
+ */
+void MMAPTManager::setInputFileName(const std::string& file)
+{
+    inputFiles.clear();
+    inputFiles.push_back(file);
+}
+
+/** Add single input file to the list.
+ * \param file file name
+ */
+void MMAPTManager::addInputFileName(const std::string& file)
+{
+    inputFiles.push_back(file);
+}
+
+/** Set multiple input files to the list.
+ * \param files file names
+ */
+void MMAPTManager::setInputFileNames(const std::vector<std::string> & files)
+{
+    inputFiles = files;
+}
+
+/** Add multiple input files to the list.
+ * \param files file names
+ */
+void MMAPTManager::addInputFileNames(const std::vector<std::string> & files)
+{
+    inputFiles.insert(inputFiles.end(), files.begin(), files.end());
+}
+
 /** Creates a new file and an empty root tree with output categories.
+ * \param with_tree create output tree
  * \return true if success
  */
-bool MMAPTManager::book()
+bool MMAPTManager::book(bool with_tree)
 {
     // Create file and open it
     outputFile = new TFile(outputFileName.c_str(), "RECREATE");
+
+    if (!with_tree) return true;
+
     if (!outputFile->IsOpen())
     {
-        std::cerr  << "[Error] in MMAPTManager: could not create saveFile" << std::endl;
+        std::cerr  << "[Error] in MMAPTManager: could not create " <<
+        outputFileName.c_str() << std::endl;
         return false;
     }
 
@@ -100,7 +139,8 @@ bool MMAPTManager::save()
     if (outputFile)
     {
         outputFile->cd();
-        outputTree->Write();        // Writing the tree to the file
+        if (outputTree)
+            outputTree->Write();        // Writing the tree to the file
         outputFile->Close();        // and closing the tree (and the file)
         return true;
     }
@@ -134,17 +174,29 @@ Int_t MMAPTManager::fill()
  */
 bool MMAPTManager::open()
 {
-    inputFile = TFile::Open(inputFileName.c_str());
-	if (inputFile == 0)
+    if (inputTree)
+        delete inputTree;
+
+    inputTree = new TChain(inputTreeName.c_str());
+
+    if (inputTree == 0)
     {
-		std::cerr << "[Error] in MMAPTManager: cannot open ROOT file" << "\n";
-		return false;
-	}
-	inputTree = (TTree*) inputFile->Get(inputTreeName.c_str());
+        std::cerr << "[Error] in MMAPTManager: cannot open ROOT file" << "\n";
+        return false;
+    }
+
+    for (uint i = 0; i < inputFiles.size(); ++i)
+    {
+        printf("Add file %s\n", inputFiles[i].c_str());
+        inputTree->Add(inputFiles[i].c_str());
+    }
+
     if (!inputTree) {
         std::cerr << "[Error] in MMAPTManager open: openTree == NULL" << "\n";
         return false;
     }
+
+    inputTree->SetBranchStatus("*");
 
     numberOfEntries = inputTree->GetEntriesFast();
 
@@ -283,19 +335,23 @@ MCategory * MMAPTManager::openCategory(MCategory::Cat cat, bool persistent)
         return gNullMCategoryPtr;
     }
 
-    MCategory ** cat_ptr = new MCategory*;
+    if (categories[cat])
+            return categories[cat];
 
+    MCategory ** cat_ptr = new MCategory*;
     *cat_ptr = new MCategory;
-    TBranch * br = inputTree->GetBranch(cinfo.name.c_str());
+
+    TBranch ** br = new TBranch*;
+
+    Int_t res = inputTree->SetBranchAddress(cinfo.name.c_str(), &*cat_ptr, br);
     if (!br)
     {
         fprintf(stderr, "Category %s (%d) does not exists!\n", cinfo.name.c_str(), cat);
         return gNullMCategoryPtr;
     }
-    br->SetAddress(&*cat_ptr);
 
     cinfo.persistent = persistent;
-    if (cat_ptr)
+    if (*cat_ptr)
     {
         cinfo.ptr = *cat_ptr;
         cinfovec[pos] = cinfo;
@@ -332,14 +388,14 @@ void MMAPTManager::getEntry(int i)
  *
  * \return number of entries
  */
-int MMAPTManager::getEntriesFast ()
+Long64_t MMAPTManager::getEntries()
 {
     if (!inputTree)
     {
         std::cerr << "[Warning] in MMAPTManager: no input tree is opened. cannot get any entry." << "\n";
         return -1;
     }
-    numberOfEntries = inputTree->GetEntriesFast();
+    numberOfEntries = inputTree->GetEntries();
     return numberOfEntries;
 }
 

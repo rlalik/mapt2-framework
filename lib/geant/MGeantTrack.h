@@ -30,7 +30,6 @@ public:
         ATREST                          ///< Stopped at rest
     };
 
-protected:
     struct Point {                      ///< track point
         Float_t x;                      ///< x coordinate
         Float_t y;                      ///< y coordinate
@@ -40,6 +39,8 @@ protected:
         Float_t pz;                     ///< pz momentum
         Float_t E;                      ///< total energy
     };
+
+protected:
     Point start;                        ///< start point
     Point stop;                         ///< stop point
     Bool_t scattering;                  ///< was scattering

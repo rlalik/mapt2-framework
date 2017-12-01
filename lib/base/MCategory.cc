@@ -190,7 +190,7 @@ void MCategory::compress()
  */
 void MCategory::clear()
 {
-    data->Clear("C");
+    if (data) data->Clear("C");
     index.clear();
 }
 
@@ -222,5 +222,37 @@ int MCategory::loc2pos(const MLocator& loc)
     }//printf("pos=%d\n", pos);
     return pos;
 }
+
+void MCategory::Streamer(TBuffer &R__b)
+{
+    // Stream an object of class HLinearCategory.
+    Char_t clase[200];
+    if (R__b.IsReading())
+    {
+        Version_t R__v = R__b.ReadVersion();
+        TObject::Streamer(R__b);
+        header.Streamer(R__b);
+        index.Streamer(R__b);
+        R__b.ReadString(clase,200);
+        if ( data && strcmp(clase,data->GetClass()->GetName())==0)
+            data->Clear();
+        else {
+            delete data;
+            data = new TClonesArray(clase);
+        }
+        data->Streamer(R__b);
+        R__b >> entries;
+    } else {
+        R__b.WriteVersion(MCategory::IsA());
+        TObject::Streamer(R__b);
+        header.Streamer(R__b);
+        index.Streamer(R__b);
+        strcpy(clase, data->GetClass()->GetName());
+        R__b.WriteString(clase);
+        data->Streamer(R__b);
+        R__b << entries;
+    }
+}
+
 
 ClassImp(MCategory);
