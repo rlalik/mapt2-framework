@@ -21,7 +21,7 @@ Display progress of the analysis.
 */
 
 /** Constructor
- * \param limit limit of the bar
+ * \param cnt_limit limit of the bar
  * \param point_width width of the point
  * \param bar_width width of teh bar
  */

@@ -5,6 +5,7 @@
 #include <list>
 #include <iostream>
 #include <chrono>
+#include <cstdlib>
 
 #include <getopt.h>
 
@@ -88,7 +89,7 @@ int analysis(const std::vector<std::string> & files, const ana_params & pars)
 
     std::cout << dataManager->getEntries() << " events, analyze " << ev_limit << std::endl;
 
-    MProgressBar pb(ev_limit);
+    MProgressBar pb(ev_limit, 1000, 50);
 
     MCategory * catGeantTrack = dataManager->getCategory(MCategory::CatGeantTrack, false);
     if (!catGeantTrack)
@@ -252,13 +253,13 @@ int analysis(const std::vector<std::string> & files, const ana_params & pars)
         Float_t w = w2 - w1;
         h_ene_spectrum_w->SetBinContent(1+i, h_ene_spectrum_w->GetBinContent(1+i)/w);
     }
-	Float_t max_v = h_ene_spectrum_w->GetMaximum();
-	Float_t max_exp = TMath::Floor(log10(max_v)) + 1;
-	Float_t max = 1;
-	for (int i = 0; i < max_exp; ++i)
-			max *= 10.0;
-	Float_t min = max * 1e-18;
-	h_ene_spectrum_w->GetYaxis()->SetRangeUser(min, max);
+    Float_t max_v = h_ene_spectrum_w->GetMaximum();
+    Float_t max_exp = TMath::Floor(log10(max_v)) + 1;
+    Float_t max = 1;
+    for (int i = 0; i < max_exp; ++i)
+            max *= 10.0;
+    Float_t min = max * 1e-18;
+    h_ene_spectrum_w->GetYaxis()->SetRangeUser(min, max);
 
     std::cout << "Number of secs total: " << secs << "\n";
 
@@ -307,6 +308,14 @@ int analysis(const std::vector<std::string> & files, const ana_params & pars)
         h_w->Draw("same");
         h_w->SetLineColor(color);
 
+        char buff[200];
+        sprintf(buff, "data_%s.txt", h_w->GetName());
+        FILE * fp = fopen(buff, "w");
+        if (!fp)
+        {
+                fprintf(stderr, "Could not create %s\n", buff);
+        }
+
         for (int i = 0; i < bins; ++i)
         {
             Float_t x1 = h_w->GetBinLowEdge(1+i);
@@ -317,7 +326,17 @@ int analysis(const std::vector<std::string> & files, const ana_params & pars)
 
             Float_t w = w2 - w1;
             h_w->SetBinContent(1+i, h_w->GetBinContent(1+i)/w);
+            if (fp)
+            {
+                Float_t bc = h_w->GetBinContent(1+i);
+                if (bc != 0.0)
+                {
+                    Float_t cc = TMath::Power(10.0, h_w->GetBinCenter(1+i));
+                    fprintf(fp, "%g  %g\n", cc, bc);
+                }
+            }
         }
+        if (fp)  fclose(fp);
         h_w->Write();
 
         ++color;
