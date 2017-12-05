@@ -1,0 +1,63 @@
+#!/bin/bash
+#$ -wd /nfs/freenas/tuph/e18/project/e18sat/rlalik/CR/sim
+#$ -o /nfs/freenas/tuph/e18/project/e18sat/rlalik/CR/sim/log/
+#$ -t 0001-10000
+#$ -l h_pmem=400M
+#$ -l h_rt=1:00:00
+#$ -m as
+#$ -N QGPS
+
+echo Execution with $@
+
+ENERGY=50
+EVENTS=10000
+MODEL="qgsp"
+#model="ftfp"
+
+while getopts "e:t:m:" opt; do
+    case $opt in
+        e)
+            EVENTS=$OPTARG
+            ;;
+        t)
+            ENERGY=$OPTARG
+            ;;
+        m)
+            MODEL=$OPTARG
+            ;;
+    esac
+done
+
+# Put your profile file here and comment out the echo line below.
+echo "Your script is not prepared, edit it and rerun" && exit 1
+# Example of source
+# source /nfs/freenas/tuph/e18/project/e18sat/rlalik/profile-test.sh
+
+echo "Simulation for CR $EVENTS events"
+echo Machine:
+echo $ROOTSYS
+echo $SHELL
+hostname
+env
+
+#echo "Start of Analysis script"
+#ulimit -c unlimited
+
+seed=${SGE_TASK_ID}
+
+t_task=$(printf "%04d" $((${SGE_TASK_ID} - 1)))
+
+# prepare output file name
+ofile=output/CR_${MODEL}_${EVENTS}_ev_${t_task}.root
+
+echo $seed
+echo $gpsfile
+echo $ofile
+echo $jc
+
+time mapt_simdst $ofile -e ${EVENTS} || exit
+
+# Uncomment to remove simulation file after the succesfull dst job (simulation data are also written in DST files).
+# rm $ofile
+
+exit 0

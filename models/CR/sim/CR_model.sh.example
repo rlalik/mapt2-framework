@@ -1,0 +1,84 @@
+#!/bin/bash
+#$ -wd /nfs/freenas/tuph/e18/project/e18sat/rlalik/CR/sim
+#$ -o /nfs/freenas/tuph/e18/project/e18sat/rlalik/CR/sim/log/
+#$ -t 0001-10000
+#$ -l h_pmem=400M
+#$ -l h_rt=5:00:00
+#$ -m as
+#$ -N QGPS
+
+echo Execution with $@
+
+ENERGY=50
+EVENTS=10000
+MODEL="qgsp"
+#model="ftfp"
+
+while getopts "e:t:m:" opt; do
+    case $opt in
+        e)
+            EVENTS=$OPTARG
+            ;;
+        t)
+            ENERGY=$OPTARG
+            ;;
+        m)
+            MODEL=$OPTARG
+            ;;
+    esac
+done
+
+# Put your profile file here and comment out the echo line below.
+echo "Your script is not prepared, edit it and rerun" && exit 1
+# Example of source
+# source /nfs/freenas/tuph/e18/project/e18sat/rlalik/profile-test.sh
+
+echo "Simulation for CR $EVENTS events"
+echo Machine:
+echo $ROOTSYS
+echo $SHELL
+hostname
+env
+
+#echo "Start of Analysis script"
+#ulimit -c unlimited
+
+seed=${SGE_TASK_ID}
+
+t_task=$(printf "%04d" $((${SGE_TASK_ID} - 1)))
+
+# prepare gps
+gpsfile=cards_gps_CR/gps_cr.mac
+
+# prepare output file name
+ofile=output/CR_${MODEL}_${EVENTS}_ev_${t_task}.root
+
+# prepare jobcard
+jc=cards_job/Config_CR_${MODEL}_${EVENTS}_ev_${t_task}.txt
+
+if [ ! -e $jc ]; then
+    cp config_CR.txt $jc -v
+    sed -e "s|cr_test.root|${ofile}|g" \
+        -e "s|\"666\"|\"${seed}\"|g" \
+        -e "s|\(Gun mac file:.*\"\).*\(\"\)|\1${gpsfile}\2|g" \
+        -e "s|\(Number of Events:.*\"\).*\(\"\)|\1${EVENTS}\2|g" \
+        -i $jc
+fi
+
+#cmd="/nfs/freenas/tuph/e18/project/e18sat/rlalik/install/bin/exampleB1 --model=$model $jobcards/Config_ap_qgps_${seed}.txt"
+#echo $CMD
+
+# Uncomment to remove output file if exists
+#[ -e $ofile ] && rm -v $ofile
+# Comment to rerun simulation even if file exists
+[ -e $ofile ] && exit
+
+echo $seed
+echo $gpsfile
+echo $ofile
+echo $jc
+
+time mapt_simulation --model=$MODEL $jc
+#time mapt_simdst $ofile -e ${EVENTS}
+
+exit 0

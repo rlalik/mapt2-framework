@@ -1,0 +1,21 @@
+# Config
+# Parameters in quotation marks
+# ----------------------------------------------------------------------------------------------------------
+InitVis file:           "/nfs/hicran/project/e18sat/geant4.10.1/geant4.10.01/examples/basic/B1/init_vis.mac"
+Visualisation file:     "/nfs/hicran/project/e18sat/geant4.10.1/geant4.10.01/examples/basic/B1/vis2.mac"
+Gun mac file:           "cards_gps_CR/gps_cr.mac"
+Geometry file:          "geometry.txt"
+Mode:                   "1"
+Optical processes:      "false"
+Number of Events:       "10000"
+Root filename:          "cr_test.root"
+Root tree title:        "TestTree"
+Root tree name:         "TreeName"
+Cluster job:            "true"
+Job number:             "666"
+Birks coefficient:      "0.13"
+Maximal Step in Fiber:  "10000.00"          // In nanometer
+Electron Cut Value:     "100.0"                 // In millimeter
+Root Histo for gun:     "false"
+Path to Gun Histo:      "/nfs/hicran/project/e18sat/milde_sim/root_histo_gen/histoTest.root"
+Particle type:          "anti_proton"

@@ -53,7 +53,11 @@ int simdst(const std::string & file, int events = 1000)
     dataManager->book();
 
     // how many events to proceed
-    int ev_limit = events < dataManager->getEntries() ? events : dataManager->getEntries();
+    int ev_limit = 0;
+    if (events < 0)
+        ev_limit = dataManager->getEntries();
+    else
+        ev_limit = events < dataManager->getEntries() ? events : dataManager->getEntries();
     std::cout << dataManager->getEntries() << " events, analyze " << ev_limit << std::endl;
 
     dataManager->openCategory(MCategory::CatGeantTrack, true);
