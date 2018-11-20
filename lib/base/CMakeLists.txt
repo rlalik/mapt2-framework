@@ -18,6 +18,9 @@ SET (LIBRARY_HDRS
     MParManager.h
     MParContainer.h
     MPar.h
+    MLookupManager.h
+    MLookupContainer.h
+    MLookup.h
 )
 
 SET(LIBRARY_SRCS
@@ -33,6 +36,9 @@ SET(LIBRARY_SRCS
     MParManager.cc
     MParContainer.cc
     MPar.cc
+    MLookupManager.cc
+    MLookupContainer.cc
+    MLookup.cc
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})

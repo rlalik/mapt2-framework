@@ -48,7 +48,7 @@ MTaskManager * MTaskManager::instance()
 /** Shortcut
  * \return MTaskManager instance
  */
-MTaskManager * tm()
+MTaskManager * MAPT::tm()
 {
     return MTaskManager::instance();
 }

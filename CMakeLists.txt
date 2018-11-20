@@ -50,18 +50,19 @@ include_directories(${PROJECT_SOURCE_DIR}/geometry/include)
 
 #----------------------------------------------------------------------------
 add_subdirectory(lib)
-add_subdirectory(geometry)
-add_subdirectory(simulation)
-add_subdirectory(event_display)
-add_subdirectory(analysis)
+# add_subdirectory(geometry)
+# add_subdirectory(simulation)
+# add_subdirectory(event_display)
+# add_subdirectory(analysis)
 add_subdirectory(dst)
-add_subdirectory(particle_filter)
+#add_subdirectory(particle_filter)
 
 option(BUILD_PYTHON_WRAPPER "Build python wrapper" OFF)
 if(BUILD_PYTHON_WRAPPER)
 add_subdirectory(python)
 endif()
 
+#add_subdirectory(tests)
 
 # Export the package for use from the build-tree
 # (this registers the build-tree with a global CMake-registry)
