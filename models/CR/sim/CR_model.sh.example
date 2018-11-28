@@ -1,9 +1,9 @@
 #!/bin/bash
-#$ -wd /nfs/freenas/tuph/e18/project/e18sat/rlalik/CR/sim
-#$ -o /nfs/freenas/tuph/e18/project/e18sat/rlalik/CR/sim/log/
+#$ -wd /nfs/freenas/tuph/e18/project/e18sat/rlalik/MAPT-clean/models/CR/sim
+#$ -o log/
 #$ -t 0001-10000
-#$ -l h_pmem=400M
-#$ -l h_rt=5:00:00
+#$ -l h_pmem=500M
+#$ -l h_rt=1:00:00
 #$ -m as
 #$ -N QGPS
 
@@ -29,9 +29,9 @@ while getopts "e:t:m:" opt; do
 done
 
 # Put your profile file here and comment out the echo line below.
-echo "Your script is not prepared, edit it and rerun" && exit 1
+#echo "Your script is not prepared, edit it and rerun" && exit 1
 # Example of source
-# source /nfs/freenas/tuph/e18/project/e18sat/rlalik/profile-test.sh
+ source /nfs/freenas/tuph/e18/project/e18sat/rlalik/profile-test.sh
 
 echo "Simulation for CR $EVENTS events"
 echo Machine:
@@ -80,5 +80,3 @@ echo $jc
 
 time mapt_simulation --model=$MODEL $jc
 #time mapt_simdst $ofile -e ${EVENTS}
-
-exit 0

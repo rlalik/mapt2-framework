@@ -28,9 +28,9 @@ Use template script from `CR_model.sh.example` and copy it as your script, e.g.
 
     cp CR_model.sh.example CR_model.sh
 
-Edit the script (line #34) to put your profile there. Comment or remove line #32. Uncomment line #82 is you want dst to run automatically after simulation.
+Edit the script (line #34) to put your profile there. Comment or remove line #32. Uncomment line #82 is you want dst to run automatically after simulation. Set yourworking directory in line #2.
 
-You can also change number of jobs (line 4) and number of events (line 13).
+You can also change number of jobs (line #4) and number of events (line #13).
 
 Make sure directories from point 1. exists, otherwise simulation will not run.
 
