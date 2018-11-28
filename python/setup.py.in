@@ -1,0 +1,72 @@
+from distutils.core import setup, Extension
+from Cython.Build import cythonize
+
+modules = [
+    Extension(
+        "mgeanttrack",
+        sources=[
+            "${CMAKE_CURRENT_SOURCE_DIR}/mgeanttrack.pyx",
+        ],
+        language="c++",              # generate C++ code
+        extra_compile_args=["-std=c++11"],
+        include_dirs=["${ROOT_INCLUDE_DIR}"],
+        library_dirs=["${CMAKE_BINARY_DIR}/lib/geant", "${CMAKE_BINARY_DIR}/lib/base"],
+        libraries=["GeantSim", "MAPT"],
+    ),
+    Extension(
+        "mgeantfibersstackraw",
+        sources=[
+            "${CMAKE_CURRENT_SOURCE_DIR}/mgeantfibersstackraw.pyx",
+        ],
+        language="c++",              # generate C++ code
+        extra_compile_args=["-std=c++11"],
+        include_dirs=["${ROOT_INCLUDE_DIR}"],
+        library_dirs=["${CMAKE_BINARY_DIR}/lib/geant", "${CMAKE_BINARY_DIR}/lib/base"],
+        libraries=["GeantSim", "MAPT"],
+    ),
+    Extension(
+        "mfibersstackcalsim",
+        sources=[
+            "${CMAKE_CURRENT_SOURCE_DIR}/mfibersstackcalsim.pyx",
+        ],
+        language="c++",              # generate C++ code
+        extra_compile_args=["-std=c++11"],
+        include_dirs=["${ROOT_INCLUDE_DIR}"],
+        library_dirs=["${CMAKE_BINARY_DIR}/lib/fibersstack", "${CMAKE_BINARY_DIR}/lib/base"],
+        libraries=["FibersStack", "MAPT"],
+    ),
+    Extension(
+        "mfibersstackcal",
+        sources=[
+            "${CMAKE_CURRENT_SOURCE_DIR}/mfibersstackcal.pyx",
+        ],
+        language="c++",              # generate C++ code
+        extra_compile_args=["-std=c++11"],
+        include_dirs=["${ROOT_INCLUDE_DIR}"],
+        library_dirs=["${CMAKE_BINARY_DIR}/lib/fibersstack", "${CMAKE_BINARY_DIR}/lib/base"],
+        libraries=["FibersStack", "MAPT"],
+    ),
+    Extension(
+        "mapt_python",
+        sources=[
+            "${CMAKE_CURRENT_SOURCE_DIR}/mapt_python.pyx",
+            "${CMAKE_CURRENT_SOURCE_DIR}/MAPT.cpp",
+        ],
+        language="c++",              # generate C++ code
+        extra_compile_args=["-std=c++11"],
+        include_dirs=[
+            "${CMAKE_CURRENT_SOURCE_DIR}/../lib/base",
+            "${CMAKE_CURRENT_SOURCE_DIR}/../lib/geant",
+            "${CMAKE_CURRENT_SOURCE_DIR}/../lib/fibers_stack",
+            "${ROOT_INCLUDE_DIR}"
+        ],
+        library_dirs=["${CMAKE_BINARY_DIR}/lib/fibers_stack", "${CMAKE_BINARY_DIR}/lib/geant", "${CMAKE_BINARY_DIR}/lib/base"],
+        libraries=["FibersStack", "GeantSim", "MAPT"],
+    ),
+]
+
+setup(
+    name='pyMAPT',
+    package_dir={'' : '${CMAKE_CURRENT_SOURCE_DIR}' },
+    ext_modules=cythonize(modules, build_dir="${CMAKE_CURRENT_BINARY_DIR}")
+)
