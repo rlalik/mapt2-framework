@@ -1,0 +1,336 @@
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0. 3.5 0. cm
+/gps/pos/radius 7 cm
+/gps/ang/type cos
+/gps/particle proton
+/gps/ene/type Arb
+/gps/hist/type arb
+/gps/hist/file cards_gps_CR/1_H.txt
+/gps/hist/inter Lin
+
+/gps/source/add 6.475425E-02
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0. 3.5 0. cm
+/gps/pos/radius 7 cm
+/gps/ang/type cos
+/gps/particle ion
+/gps/ion 2 4
+/gps/ene/type Arb
+/gps/hist/type arb
+/gps/hist/file cards_gps_CR/4_2_He.txt
+/gps/hist/inter Lin
+
+/gps/source/add 4.270540E-04
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0. 3.5 0. cm
+/gps/pos/radius 7 cm
+/gps/ang/type cos
+/gps/particle ion
+/gps/ion 3 7
+/gps/ene/type Arb
+/gps/hist/type arb
+/gps/hist/file cards_gps_CR/7_3_Li.txt
+/gps/hist/inter Lin
+
+/gps/source/add 3.377804E-04
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0. 3.5 0. cm
+/gps/pos/radius 7 cm
+/gps/ang/type cos
+/gps/particle ion
+/gps/ion 4 9
+/gps/ene/type Arb
+/gps/hist/type arb
+/gps/hist/file cards_gps_CR/9_4_Be.txt
+/gps/hist/inter Lin
+
+/gps/source/add 9.526782E-04
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0. 3.5 0. cm
+/gps/pos/radius 7 cm
+/gps/ang/type cos
+/gps/particle ion
+/gps/ion 5 11
+/gps/ene/type Arb
+/gps/hist/type arb
+/gps/hist/file cards_gps_CR/11_5_B.txt
+/gps/hist/inter Lin
+
+/gps/source/add 2.804914E-03
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0. 3.5 0. cm
+/gps/pos/radius 7 cm
+/gps/ang/type cos
+/gps/particle ion
+/gps/ion 6 12
+/gps/ene/type Arb
+/gps/hist/type arb
+/gps/hist/file cards_gps_CR/12_6_C.txt
+/gps/hist/inter Lin
+
+/gps/source/add 7.447486E-04
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0. 3.5 0. cm
+/gps/pos/radius 7 cm
+/gps/ang/type cos
+/gps/particle ion
+/gps/ion 7 14
+/gps/ene/type Arb
+/gps/hist/type arb
+/gps/hist/file cards_gps_CR/14_7_N.txt
+/gps/hist/inter Lin
+
+/gps/source/add 3.496531E-03
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0. 3.5 0. cm
+/gps/pos/radius 7 cm
+/gps/ang/type cos
+/gps/particle ion
+/gps/ion 8 16
+/gps/ene/type Arb
+/gps/hist/type arb
+/gps/hist/file cards_gps_CR/16_8_O.txt
+/gps/hist/inter Lin
+
+/gps/source/add 5.008583E-05
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0. 3.5 0. cm
+/gps/pos/radius 7 cm
+/gps/ang/type cos
+/gps/particle ion
+/gps/ion 9 19
+/gps/ene/type Arb
+/gps/hist/type arb
+/gps/hist/file cards_gps_CR/19_9_F.txt
+/gps/hist/inter Lin
+
+/gps/source/add 4.234877E-04
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0. 3.5 0. cm
+/gps/pos/radius 7 cm
+/gps/ang/type cos
+/gps/particle ion
+/gps/ion 10 20
+/gps/ene/type Arb
+/gps/hist/type arb
+/gps/hist/file cards_gps_CR/20_10_Ne.txt
+/gps/hist/inter Lin
+
+/gps/source/add 8.262463E-05
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0. 3.5 0. cm
+/gps/pos/radius 7 cm
+/gps/ang/type cos
+/gps/particle ion
+/gps/ion 11 23
+/gps/ene/type Arb
+/gps/hist/type arb
+/gps/hist/file cards_gps_CR/23_11_Na.txt
+/gps/hist/inter Lin
+
+/gps/source/add 6.336655E-04
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0. 3.5 0. cm
+/gps/pos/radius 7 cm
+/gps/ang/type cos
+/gps/particle ion
+/gps/ion 12 24
+/gps/ene/type Arb
+/gps/hist/type arb
+/gps/hist/file cards_gps_CR/24_12_Mg.txt
+/gps/hist/inter Lin
+
+/gps/source/add 9.164835E-05
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0. 3.5 0. cm
+/gps/pos/radius 7 cm
+/gps/ang/type cos
+/gps/particle ion
+/gps/ion 13 27
+/gps/ene/type Arb
+/gps/hist/type arb
+/gps/hist/file cards_gps_CR/27_13_Al.txt
+/gps/hist/inter Lin
+
+/gps/source/add 4.830828E-04
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0. 3.5 0. cm
+/gps/pos/radius 7 cm
+/gps/ang/type cos
+/gps/particle ion
+/gps/ion 14 28
+/gps/ene/type Arb
+/gps/hist/type arb
+/gps/hist/file cards_gps_CR/28_14_Si.txt
+/gps/hist/inter Lin
+
+/gps/source/add 2.363330E-05
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0. 3.5 0. cm
+/gps/pos/radius 7 cm
+/gps/ang/type cos
+/gps/particle ion
+/gps/ion 15 31
+/gps/ene/type Arb
+/gps/hist/type arb
+/gps/hist/file cards_gps_CR/31_15_P.txt
+/gps/hist/inter Lin
+
+/gps/source/add 1.173148E-04
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0. 3.5 0. cm
+/gps/pos/radius 7 cm
+/gps/ang/type cos
+/gps/particle ion
+/gps/ion 16 32
+/gps/ene/type Arb
+/gps/hist/type arb
+/gps/hist/file cards_gps_CR/32_16_S.txt
+/gps/hist/inter Lin
+
+/gps/source/add 1.930383E-05
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0. 3.5 0. cm
+/gps/pos/radius 7 cm
+/gps/ang/type cos
+/gps/particle ion
+/gps/ion 17 35
+/gps/ene/type Arb
+/gps/hist/type arb
+/gps/hist/file cards_gps_CR/35_17_Cl.txt
+/gps/hist/inter Lin
+
+/gps/source/add 3.754502E-05
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0. 3.5 0. cm
+/gps/pos/radius 7 cm
+/gps/ang/type cos
+/gps/particle ion
+/gps/ion 18 40
+/gps/ene/type Arb
+/gps/hist/type arb
+/gps/hist/file cards_gps_CR/40_18_Ar.txt
+/gps/hist/inter Lin
+
+/gps/source/add 2.785786E-05
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0. 3.5 0. cm
+/gps/pos/radius 7 cm
+/gps/ang/type cos
+/gps/particle ion
+/gps/ion 19 39
+/gps/ene/type Arb
+/gps/hist/type arb
+/gps/hist/file cards_gps_CR/39_19_K.txt
+/gps/hist/inter Lin
+
+/gps/source/add 8.378143E-05
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0. 3.5 0. cm
+/gps/pos/radius 7 cm
+/gps/ang/type cos
+/gps/particle ion
+/gps/ion 20 40
+/gps/ene/type Arb
+/gps/hist/type arb
+/gps/hist/file cards_gps_CR/40_20_Ca.txt
+/gps/hist/inter Lin
+
+/gps/source/add 2.069915E-05
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0. 3.5 0. cm
+/gps/pos/radius 7 cm
+/gps/ang/type cos
+/gps/particle ion
+/gps/ion 21 45
+/gps/ene/type Arb
+/gps/hist/type arb
+/gps/hist/file cards_gps_CR/45_21_Sc.txt
+/gps/hist/inter Lin
+
+/gps/source/add 4.816047E-05
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0. 3.5 0. cm
+/gps/pos/radius 7 cm
+/gps/ang/type cos
+/gps/particle ion
+/gps/ion 22 48
+/gps/ene/type Arb
+/gps/hist/type arb
+/gps/hist/file cards_gps_CR/48_22_Ti.txt
+/gps/hist/inter Lin
+
+/gps/source/add 2.659609E-05
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0. 3.5 0. cm
+/gps/pos/radius 7 cm
+/gps/ang/type cos
+/gps/particle ion
+/gps/ion 23 51
+/gps/ene/type Arb
+/gps/hist/type arb
+/gps/hist/file cards_gps_CR/51_23_V.txt
+/gps/hist/inter Lin
+
+/gps/source/add 4.891433E-05
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0. 3.5 0. cm
+/gps/pos/radius 7 cm
+/gps/ang/type cos
+/gps/particle ion
+/gps/ion 24 52
+/gps/ene/type Arb
+/gps/hist/type arb
+/gps/hist/file cards_gps_CR/52_24_Cr.txt
+/gps/hist/inter Lin
+
+/gps/source/add 3.580296E-05
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0. 3.5 0. cm
+/gps/pos/radius 7 cm
+/gps/ang/type cos
+/gps/particle ion
+/gps/ion 25 55
+/gps/ene/type Arb
+/gps/hist/type arb
+/gps/hist/file cards_gps_CR/55_25_Mn.txt
+/gps/hist/inter Lin
+
+/gps/source/add 2.928910E-04
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0. 3.5 0. cm
+/gps/pos/radius 7 cm
+/gps/ang/type cos
+/gps/particle ion
+/gps/ion 26 56
+/gps/ene/type Arb
+/gps/hist/type arb
+/gps/hist/file cards_gps_CR/56_26_Fe.txt
+/gps/hist/inter Lin
+
