@@ -70,7 +70,7 @@ void MLookupBoard::print()
 MLookupTable::MLookupTable(const std::string& container, UInt_t addr_min, UInt_t addr_max, UInt_t channels) :
     container(container), a_min(addr_min), a_max(addr_max), channels(channels), is_init(false)
 {
-    size_t nboards = addr_max - addr_min;
+    size_t nboards = addr_max - addr_min + 1;
     boards = new MLookupBoard*[nboards];
     memset(boards, 0, sizeof(MLookupBoard*) * nboards);
 }
@@ -116,7 +116,7 @@ void MLookupTable::print()
     if (!is_init) init();
 
     printf("[%s]\n", container.c_str());
-    size_t nboards = a_max - a_min;
+    size_t nboards = a_max - a_min + 1;
     for (uint i = 0; i < nboards; ++i)
         if (boards[i]) boards[i]->print();
 }

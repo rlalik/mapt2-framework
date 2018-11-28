@@ -9,7 +9,7 @@
  * For the list of contributors see $MAPTSYS/README/CREDITS.             *
  *************************************************************************/
 
-#include <algorithm> 
+#include <algorithm>
 #include <cctype>
 #include <fstream>
 #include <iostream>
@@ -179,7 +179,7 @@ bool MLookupManager::addLookupContainer(const std::string& cont_name, MLookupCon
 //         std::cerr << "Container " << cont_name << " doesn't exists!" << std::endl;
 //         exit(EXIT_FAILURE);
 //     }
-// 
+//
 //     lookupcont->clear();
 //     bool ret = lookupcont->getParams(lc);
 //     if (!ret)
@@ -187,7 +187,7 @@ bool MLookupManager::addLookupContainer(const std::string& cont_name, MLookupCon
 //         std::cerr << "Initialization of " << cont_name << " param container failed!" << std::endl;
 //         exit(EXIT_FAILURE);
 //     }
-// 
+//
     containers.insert(std::pair<std::string, MLookupContainer*>(cont_name, lookupcont));
     return true;
 }
