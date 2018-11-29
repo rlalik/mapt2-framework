@@ -1,4 +1,4 @@
-cdef class MFibersCalSim:
+cdef class MFibersStackCalSim:
     def __cinit__(self,):
         pass
 
@@ -33,7 +33,7 @@ cdef class MFibersCalSim:
         self.c_obj._print()
 
     @staticmethod
-    cdef MFibersCalSim create(_MFibersCalSim * ptr):
-        cdef MFibersCalSim res = MFibersCalSim()
+    cdef MFibersStackCalSim create(_MFibersStackCalSim * ptr):
+        cdef MFibersStackCalSim res = MFibersStackCalSim()
         res.c_obj = ptr
         return res

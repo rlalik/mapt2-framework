@@ -25,22 +25,20 @@ else()
   find_package(Geant4 REQUIRED)
 endif()
 
-add_definitions("-std=c++11")
+add_definitions("-std=c++14")
 
 # Root
-find_package(ROOT QUIET REQUIRED COMPONENTS Core Cint)
-include(RootNewMacros)
+find_package(ROOT QUIET REQUIRED COMPONENTS Core)
 include_directories(${ROOT_INCLUDE_DIR})
-
-# set(CMAKE_INSTALL_INCLUDEDIR ${CMAKE_INSTALL_PREFIX}/include)
-# set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib)
-# set(CMAKE_INSTALL_LIBDIR ${CMAKE_INSTALL_PREFIX}/lib)
 
 if (DEFINED ROOT_USE_FILE)
 include(${ROOT_USE_FILE})
 endif()
 
-add_custom_target(rlibmap)
+include(GNUInstallDirs)
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 #----------------------------------------------------------------------------
 # Setup include directory for this project
@@ -58,8 +56,11 @@ add_subdirectory(event_display)
 add_subdirectory(analysis)
 add_subdirectory(dst)
 add_subdirectory(particle_filter)
-# add_subdirectory(python)
 
+option(BUILD_PYTHON_WRAPPER "Build python wrapper" OFF)
+if(BUILD_PYTHON_WRAPPER)
+add_subdirectory(python)
+endif()
 
 
 # Export the package for use from the build-tree

@@ -3,8 +3,8 @@ from libcpp.string cimport string
 
 from mgeanttrack cimport _MGeantTrack, MGeantTrack
 from mgeantfibersraw cimport _MGeantFibersRaw, MGeantFibersRaw
-from mfiberscalsim cimport _MFibersCalSim, MFibersCalSim
-from mfiberscal cimport _MFibersCal, MFibersCal
+from mfibersstackcalsim cimport _MFibersStackCalSim, MFibersStackCalSim
+from mfibersstackcal cimport _MFibersStackCal, MFibersStackCal
 
 cdef extern from "MAPT.h":
     cdef cppclass _MAPT "MAPT":
@@ -17,13 +17,13 @@ cdef extern from "MAPT.h":
 
         int getGeantTrackNum()
         int getGeantFibersRawNum()
-        int getFibersCalSimNum()
-        int getFibersCalNum()
+        int getFibersStackCalSimNum()
+        int getFibersStackCalNum()
 
         _MGeantTrack * getGeantTrack(int)
         _MGeantFibersRaw * getGeantFibersRaw(int)
-        _MFibersCalSim * getFibersCalSim(int)
-        _MFibersCal * getFibersCal(int)
+        _MFibersStackCalSim * getFibersStackCalSim(int)
+        _MFibersStackCal * getFibersStackCal(int)
 
 cdef class MAPT:
     cdef _MAPT c_obj      # hold a C++ instance which we're wrapping
@@ -46,10 +46,10 @@ cdef class MAPT:
         return self.c_obj.getGeantTrackNum()
     def getGeantFibersRawNum(self):
         return self.c_obj.getGeantFibersRawNum()
-    def getFibersCalSimNum(self):
-        return self.c_obj.getFibersCalSimNum()
-    def getFibersCalNum(self):
-        return self.c_obj.getFibersCalNum()
+    def getFibersStackCalSimNum(self):
+        return self.c_obj.getFibersStackCalSimNum()
+    def getFibersStackCalNum(self):
+        return self.c_obj.getFibersStackCalNum()
 
     def getGeantTrack(self, i):
         _mgt = self.c_obj.getGeantTrack(i)
@@ -61,12 +61,12 @@ cdef class MAPT:
         cdef mgfr = MGeantFibersRaw.create(_mgfr)
         return mgfr
 
-    def getFibersCalSim(self, i):
-        _mfcs = self.c_obj.getFibersCalSim(i)
-        cdef mfcs = MFibersCalSim.create(_mfcs)
+    def getFibersStackCalSim(self, i):
+        _mfcs = self.c_obj.getFibersStackCalSim(i)
+        cdef mfcs = MFibersStackCalSim.create(_mfcs)
         return mfcs
 
-    def getFibersCal(self, i):
-        _mfc = self.c_obj.getFibersCal(i)
-        cdef mfc = MFibersCal.create(_mfc)
+    def getFibersStackCal(self, i):
+        _mfc = self.c_obj.getFibersStackCal(i)
+        cdef mfc = MFibersStackCal.create(_mfc)
         return mfc

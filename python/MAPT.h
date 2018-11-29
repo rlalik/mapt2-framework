@@ -25,8 +25,8 @@ class MDetectorManager;
 class MCategory;
 class MGeantTrack;
 class MGeantFibersRaw;
-class MFibersCalSim;
-class MFibersCal;
+class MFibersStackCalSim;
+class MFibersStackCal;
 
 class MAPT
 {
@@ -41,13 +41,13 @@ public:
 
     int getGeantTrackNum() const;
     int getGeantFibersRawNum() const;
-    int getFibersCalSimNum() const;
-    int getFibersCalNum() const;
+    int getFibersStackCalSimNum() const;
+    int getFibersStackCalNum() const;
 
     MGeantTrack * getGeantTrack(int i) const;
     MGeantFibersRaw * getGeantFibersRaw(int i) const;
-    MFibersCalSim * getFibersCalSim(int i) const;
-    MFibersCal * getFibersCal(int i) const;
+    MFibersStackCalSim * getFibersStackCalSim(int i) const;
+    MFibersStackCal * getFibersStackCal(int i) const;
 
     void fill();
     void save();
@@ -57,7 +57,7 @@ private:
     MDetectorManager * detm;
     MCategory * catGeantTrack;
     MCategory * catGeantFibersRaw;
-    MCategory * catFibersCalSim;
+    MCategory * catFibersStackCalSim;
 
     long ev_limit;
 };

@@ -2,8 +2,8 @@
 
 #----------------------------------------------------------------------------
 # Setup the project
-cmake_minimum_required(VERSION 3.4 FATAL_ERROR)
-project(MAPT-Framework-Python CXX)
+#cmake_minimum_required(VERSION 3.4 FATAL_ERROR)
+#project(MAPT-Framework-Python CXX)
 
 OPTION(WITH_PYTHON "Build Python Bindings" ON)
 if (WITH_PYTHON)
@@ -12,7 +12,7 @@ endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../lib)
 
-link_directories(${PROJECT_SOURCE_DIR}/../lib)
+link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/)
 include_directories(${PROJECT_SOURCE_DIR}/../lib/base)
 include_directories(${PROJECT_SOURCE_DIR}/../lib/geant)
 
@@ -27,7 +27,7 @@ if (PYTHONLIBS_FOUND)
     set(DEPS        ${CMAKE_CURRENT_SOURCE_DIR}/mapt_python.pyx
                     ${CMAKE_CURRENT_SOURCE_DIR}/mgeanttrack.pyx
                     ${CMAKE_CURRENT_SOURCE_DIR}/mgeantfibersraw.pyx
-                    ${CMAKE_CURRENT_SOURCE_DIR}/mfiberscal.pyx
+                    ${CMAKE_CURRENT_SOURCE_DIR}/mfibersstackcal.pyx
                     ${CMAKE_CURRENT_SOURCE_DIR}/MAPT.cpp
                     )
     set(OUT         "${CMAKE_CURRENT_SOURCE_DIR}/mapt_python.cpp")

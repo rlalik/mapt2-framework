@@ -25,9 +25,9 @@
 
 #include "MGeantTrack.h"
 #include "MGeantFibersRaw.h"
-#include "MFibersCalSim.h"
+#include "MFibersStackCalSim.h"
 
-#include "MFibersDetector.h"
+#include "MFibersStackDetector.h"
 
 #include "MAPT.h"
 
@@ -58,28 +58,28 @@ int MAPT::initAnalysis(const std::string & file, int events)
 
     // initialize detectors
     detm = MDetectorManager::instance();
-    detm->addDetector(new MFibersDetector("FibersStack"));
+    detm->addDetector(new MFibersStackDetector("FibersStack"));
     detm->initTasks();
 //     detm->initParameterContainers();
     detm->initCategories();
 
     dataManager->openCategory(MCategory::CatGeantTrack, true);
     dataManager->openCategory(MCategory::CatGeantFibersRaw, true);
-    dataManager->openCategory(MCategory::CatFibersCal, true);
+    dataManager->openCategory(MCategory::CatFibersStackCal, true);
 
     dataManager->setOutputFileName(oname.Data());
     dataManager->book();
     dataManager->print();
 
-    ev_limit = events < dataManager->getEntriesFast() ? events : dataManager->getEntriesFast();
-    std::cout << dataManager->getEntriesFast() << " events, analyze " << ev_limit << std::endl;
+    ev_limit = events < dataManager->getEntries() ? events : dataManager->getEntries();
+    std::cout << dataManager->getEntries() << " events, analyze " << ev_limit << std::endl;
 
     return 0;
 }
 
 int MAPT::getEvent(long i)
 {
-    printf("dupa = %d\n", i);
+    printf("dupa = %ld\n", i);
     dataManager->getEntry(i);
     catGeantTrack = dataManager->getCategory(MCategory::CatGeantTrack);
     if (!catGeantTrack)
@@ -91,8 +91,8 @@ int MAPT::getEvent(long i)
     {
     }
 
-    catFibersCalSim = dataManager->getCategory(MCategory::CatFibersCal);
-    if (!catFibersCalSim)
+    catFibersStackCalSim = dataManager->getCategory(MCategory::CatFibersStackCal);
+    if (!catFibersStackCalSim)
     {
     }
 
@@ -121,17 +121,17 @@ if (catGeantFibersRaw)
         return -1;
 }
 
-int MAPT::getFibersCalSimNum() const
+int MAPT::getFibersStackCalSimNum() const
 {
-if (catFibersCalSim)
-        return catFibersCalSim->getEntries();
+if (catFibersStackCalSim)
+        return catFibersStackCalSim->getEntries();
     else
         return -1;
 }
 
-int MAPT::getFibersCalNum() const
+int MAPT::getFibersStackCalNum() const
 {
-    return getFibersCalSimNum();
+    return getFibersStackCalSimNum();
 }
 
 MGeantTrack * MAPT::getGeantTrack(int i) const
@@ -144,14 +144,14 @@ MGeantFibersRaw * MAPT::getGeantFibersRaw(int i) const
     return (MGeantFibersRaw *) catGeantFibersRaw->getObject(i);
 }
 
-MFibersCalSim * MAPT::getFibersCalSim(int i) const
+MFibersStackCalSim * MAPT::getFibersStackCalSim(int i) const
 {
-    return (MFibersCalSim *) catFibersCalSim->getObject(i);
+    return (MFibersStackCalSim *) catFibersStackCalSim->getObject(i);
 }
 
-MFibersCal * MAPT::getFibersCal(int i) const
+MFibersStackCal * MAPT::getFibersStackCal(int i) const
 {
-    return (MFibersCal *) catFibersCalSim->getObject(i);
+    return (MFibersStackCal *) catFibersStackCalSim->getObject(i);
 }
 
 void MAPT::fill()

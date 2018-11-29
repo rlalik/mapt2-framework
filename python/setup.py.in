@@ -8,20 +8,20 @@ modules = [
             "${CMAKE_CURRENT_SOURCE_DIR}/mgeanttrack.pyx",
         ],
         language="c++",              # generate C++ code
-        extra_compile_args=["-std=c++11"],
-        include_dirs=["${ROOT_INCLUDE_DIR}"],
-        library_dirs=["${CMAKE_BINARY_DIR}/lib/geant", "${CMAKE_BINARY_DIR}/lib/base"],
+        extra_compile_args=["-std=c++14"],
+        include_dirs=["${ROOT_INCLUDE_DIRS}"],
+        library_dirs=["${CMAKE_BINARY_DIR}/lib"],
         libraries=["GeantSim", "MAPT"],
     ),
     Extension(
-        "mgeantfibersstackraw",
+        "mgeantfibersraw",
         sources=[
-            "${CMAKE_CURRENT_SOURCE_DIR}/mgeantfibersstackraw.pyx",
+            "${CMAKE_CURRENT_SOURCE_DIR}/mgeantfibersraw.pyx",
         ],
         language="c++",              # generate C++ code
-        extra_compile_args=["-std=c++11"],
-        include_dirs=["${ROOT_INCLUDE_DIR}"],
-        library_dirs=["${CMAKE_BINARY_DIR}/lib/geant", "${CMAKE_BINARY_DIR}/lib/base"],
+        extra_compile_args=["-std=c++14"],
+        include_dirs=["${ROOT_INCLUDE_DIRS}"],
+        library_dirs=["${CMAKE_BINARY_DIR}/lib"],
         libraries=["GeantSim", "MAPT"],
     ),
     Extension(
@@ -30,9 +30,9 @@ modules = [
             "${CMAKE_CURRENT_SOURCE_DIR}/mfibersstackcalsim.pyx",
         ],
         language="c++",              # generate C++ code
-        extra_compile_args=["-std=c++11"],
-        include_dirs=["${ROOT_INCLUDE_DIR}"],
-        library_dirs=["${CMAKE_BINARY_DIR}/lib/fibersstack", "${CMAKE_BINARY_DIR}/lib/base"],
+        extra_compile_args=["-std=c++14"],
+        include_dirs=["${ROOT_INCLUDE_DIRS}"],
+        library_dirs=["${CMAKE_BINARY_DIR}/lib"],
         libraries=["FibersStack", "MAPT"],
     ),
     Extension(
@@ -41,9 +41,9 @@ modules = [
             "${CMAKE_CURRENT_SOURCE_DIR}/mfibersstackcal.pyx",
         ],
         language="c++",              # generate C++ code
-        extra_compile_args=["-std=c++11"],
-        include_dirs=["${ROOT_INCLUDE_DIR}"],
-        library_dirs=["${CMAKE_BINARY_DIR}/lib/fibersstack", "${CMAKE_BINARY_DIR}/lib/base"],
+        extra_compile_args=["-std=c++14"],
+        include_dirs=["${ROOT_INCLUDE_DIRS}"],
+        library_dirs=["${CMAKE_BINARY_DIR}/lib"],
         libraries=["FibersStack", "MAPT"],
     ),
     Extension(
@@ -53,14 +53,14 @@ modules = [
             "${CMAKE_CURRENT_SOURCE_DIR}/MAPT.cpp",
         ],
         language="c++",              # generate C++ code
-        extra_compile_args=["-std=c++11"],
+        extra_compile_args=["-std=c++14"],
         include_dirs=[
-            "${CMAKE_CURRENT_SOURCE_DIR}/../lib/base",
-            "${CMAKE_CURRENT_SOURCE_DIR}/../lib/geant",
-            "${CMAKE_CURRENT_SOURCE_DIR}/../lib/fibers_stack",
-            "${ROOT_INCLUDE_DIR}"
+            "${CMAKE_SOURCE_DIR}/lib/base",
+            "${CMAKE_SOURCE_DIR}/lib/geant",
+            "${CMAKE_SOURCE_DIR}/lib/fibers_stack",
+            "${ROOT_INCLUDE_DIRS}"
         ],
-        library_dirs=["${CMAKE_BINARY_DIR}/lib/fibers_stack", "${CMAKE_BINARY_DIR}/lib/geant", "${CMAKE_BINARY_DIR}/lib/base"],
+        library_dirs=["${CMAKE_BINARY_DIR}/lib"],
         libraries=["FibersStack", "GeantSim", "MAPT"],
     ),
 ]

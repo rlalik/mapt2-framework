@@ -1,7 +1,7 @@
 #----------------------------------------------------------------------------
 # Setup the project
-cmake_minimum_required(VERSION 3.4 FATAL_ERROR)
-project(MAPT-Framework-Library CXX)
+#cmake_minimum_required(VERSION 3.4 FATAL_ERROR)
+#project(MAPT-Framework-Library CXX)
 
 SET (LIBRARY_NAME GeantSim)
 
@@ -17,7 +17,7 @@ SET(LIBRARY_SRCS
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-ROOT_GENERATE_DICTIONARY(G__${LIBRARY_NAME}
+ROOT_GENERATE_DICTIONARY(G__${LIBRARY_NAME}_cc
     ${LIBRARY_HDRS}
     LINKDEF Linkdef.h
 )
@@ -26,7 +26,7 @@ ROOT_GENERATE_DICTIONARY(G__${LIBRARY_NAME}
 
 add_library(${LIBRARY_NAME} SHARED
     ${LIBRARY_SRCS}
-    G__${LIBRARY_NAME}.cxx
+    G__${LIBRARY_NAME}_cc
 )
 
 target_link_libraries(${LIBRARY_NAME} ${ROOT_LIBRARIES})

@@ -1,9 +1,9 @@
 from libcpp cimport bool
 from libcpp.string cimport string
 
-cdef extern from "../lib/fibers/MFibersCal.h":
-    cdef cppclass _MFibersCal "MFibersCal":
-        _MFibersCal() except +
+cdef extern from "../lib/fibers_stack/MFibersStackCal.h":
+    cdef cppclass _MFibersStackCal "MFibersStackCal":
+        _MFibersStackCal() except +
 
         void setAddress(int, int, int)
         void getAddress(int &, int &, int &)
@@ -19,8 +19,8 @@ cdef extern from "../lib/fibers/MFibersCal.h":
         
         void _print "print"()
 
-cdef class MFibersCal:
-    cdef _MFibersCal * c_obj      # hold a C++ instance which we're wrapping
+cdef class MFibersStackCal:
+    cdef _MFibersStackCal * c_obj      # hold a C++ instance which we're wrapping
 
     cpdef setAddress(self, m, l, f)
     cpdef getAddress(self)
@@ -38,4 +38,4 @@ cdef class MFibersCal:
     cpdef _print(self)
 
     @staticmethod
-    cdef MFibersCal create(_MFibersCal * ptr)
+    cdef MFibersStackCal create(_MFibersStackCal * ptr)

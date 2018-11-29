@@ -35,16 +35,6 @@ cdef class MGeantFibersRaw:
     cpdef getKineticEnergy(self):
         return self.c_obj.getKineticEnergy()
 
-    cpdef setX(self, x):
-        self.c_obj.setX(x)
-    cpdef getX(self):
-        return self.c_obj.getX()
-
-    cpdef setY(self, y):
-        self.c_obj.setY(y)
-    cpdef getY(self):
-        return self.c_obj.getY()
-
     cpdef _print(self):
         self.c_obj._print()
 

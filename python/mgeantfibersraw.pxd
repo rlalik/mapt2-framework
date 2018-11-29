@@ -21,12 +21,6 @@ cdef extern from "../lib/geant/MGeantFibersRaw.h":
         void setKineticEnergy(double e)
         double getKineticEnergy()
 
-        void setX(int)
-        void setY(int)
-
-        int getX()
-        int getY()
-
         void _print "print"()
 
 cdef class MGeantFibersRaw:
@@ -48,12 +42,6 @@ cdef class MGeantFibersRaw:
 
     cpdef setKineticEnergy(self, e)
     cpdef getKineticEnergy(self)
-
-    cpdef setX(self, x)
-    cpdef getX(self)
-
-    cpdef setY(self, y)
-    cpdef getY(self)
 
     cpdef _print(self)
 

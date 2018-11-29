@@ -3,7 +3,7 @@
 import ROOT
 from mgeanttrack import MGeantTrack
 from mgeantfibersraw import MGeantFibersRaw
-from mfiberscal import MFibersCal
+from mfiberscal import MFibersStackCal
 from mapt_python import MAPT
 
 from optparse import OptionParser
@@ -28,7 +28,7 @@ if __name__ == "__main__":
         print("Get event {0}".format(i))
         m.getEvent(i)
 
-        print(m.getGeantTrackNum(), m.getGeantFibersRawNum(), m.getFibersCalSimNum(), m.getFibersCalNum())
+        print(m.getGeantTrackNum(), m.getGeantFibersRawNum(), m.getFibersStackCalSimNum(), m.getFibersStackCalNum())
 
         n = m.getGeantTrackNum()
         if n < 0:
@@ -48,20 +48,20 @@ if __name__ == "__main__":
                 fiber = m.getGeantFibersRaw(j)
                 fiber._print()
 
-        n = m.getFibersCalSimNum()
+        n = m.getFibersStackCalSimNum()
         if n < 0:
-            print("Nothing in FibersCalSim")
+            print("Nothing in FibersStackCalSim")
         else:
-            print("{0} objects in {1!s}".format(m, "FibersCalSim"))
+            print("{0} objects in {1!s}".format(m, "FibersStackCalSim"))
             for j in range(0, n):
-                fiber = m.getFibersCalSim(j)
+                fiber = m.getFibersStackCalSim(j)
                 fiber._print()
 
-        n = m.getFibersCalNum()
+        n = m.getFibersStackCalNum()
         if n < 0:
-            print("Nothing in FibersCal")
+            print("Nothing in FibersStackCal")
         else:
-            print("{0} objects in {1!s}".format(m, "FibersCal"))
+            print("{0} objects in {1!s}".format(m, "FibersStackCal"))
             for j in range(0, n):
-                fiber = m.getFibersCal(j)
+                fiber = m.getFibersStackCal(j)
                 fiber._print()
