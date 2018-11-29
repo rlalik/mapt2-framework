@@ -11,6 +11,7 @@
 
 #include "MDetector.h"
 #include "MTask.h"
+#include "MTaskManager.h"
 
 /** \class MDetector
 \ingroup lib_base
@@ -42,7 +43,7 @@ void MDetector::addTask(MTask * task, Int_t step)
 {
     // add task only is mask allows for it
     if (task_mask & (1 << step))
-        tm()->addTask(task, step);
+        MTaskManager::instance()->addTask(task, step);
 }
 
 ClassImp(MDetector);

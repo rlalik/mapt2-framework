@@ -11,8 +11,8 @@
 
 #include <iostream>
 
-#include "TClass.h"
-#include "TClonesArray.h"
+#include <TClass.h>
+#include <TClonesArray.h>
 
 #include "MLocator.h"
 
@@ -37,9 +37,9 @@ output.
  */
 void MLocator::print() const
 {
-    printf("Locator: n=%d => ", dim);
+    printf("Locator: n=%ld => ", dim);
     for (int i = 0; i < dim; ++i)
-        printf("  %d", addr[i]);
+        printf("  %ld", addr[i]);
     putchar('\n');
 }
 

@@ -404,7 +404,7 @@ Long64_t MMAPTManager::getEntries()
 void MMAPTManager::print() const
 {
     outputFile->cd();
-    printf("There are %d categories in the output tree\n", categories.size());
+    printf("There are %ld categories in the output tree\n", categories.size());
     for (CatMap::const_iterator it = categories.begin(); it != categories.end(); ++it)
     {
         it->second->print();

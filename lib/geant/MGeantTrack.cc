@@ -146,8 +146,8 @@ void MGeantTrack::print() const
     for (Int_t i = 0; i < processes.size(); ++i)
         printf("%s,", processes[i].c_str());
     printf("\n");
-    printf("  PID=%d  stop in det=%d\n", g4Id, stopInDetector);
-    printf("  num of sec=%d\n", secondariesID.size());
+    printf("  PID=%ld  stop in det=%d\n", g4Id, stopInDetector);
+    printf("  num of sec=%ld\n", secondariesID.size());
     //   std::vector<Int_t> secondaries_ID;
     //   Int_t particle_ID;
     //   string generationProcess;

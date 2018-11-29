@@ -11,8 +11,9 @@
 
 #include <iostream>
 
-#include "TClass.h"
-#include "TClonesArray.h"
+#include <TBuffer.h>
+#include <TClass.h>
+#include <TClonesArray.h>
 
 #include "MCategory.h"
 
@@ -81,7 +82,7 @@ void MCategory::setup(const char * name, size_t dim, size_t * sizes, bool simula
 
     data = new TClonesArray(name, header.data_size);
 
-    printf("Category %s created with linear size of %d\n", name, header.data_size);
+    printf("Category %s created with linear size of %ld\n", name, header.data_size);
 }
 
 /** Returns the object at the address from n locator.
@@ -168,8 +169,8 @@ TObject * MCategory::getObject(Int_t i)
  */
 void MCategory::print() const
 {
-    printf("Category: %s  length=%d  sim=%d\n", header.name.Data(), header.data_size, header.simulation);
-    printf("  index: objects=%d  compressed=%d\n", index.size(), index.isCompressed());
+    printf("Category: %s  length=%ld  sim=%d\n", header.name.Data(), header.data_size, header.simulation);
+    printf("  index: objects=%ld  compressed=%d\n", index.size(), index.isCompressed());
     printf("  %d objects in the category:\n", data->GetEntries());
 }
 
