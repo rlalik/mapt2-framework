@@ -25,7 +25,7 @@ else()
   find_package(Geant4 REQUIRED)
 endif()
 
-add_definitions("-std=c++14")
+add_definitions("-std=c++17")
 
 # Root
 find_package(ROOT QUIET REQUIRED COMPONENTS Core)
