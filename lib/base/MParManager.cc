@@ -61,7 +61,7 @@ static inline void rtrim(std::string &s) {
  *
  * \param s string
  */
-inline void trim(std::string &s) {
+void trim(std::string &s) {
     ltrim(s);
     rtrim(s);
 }

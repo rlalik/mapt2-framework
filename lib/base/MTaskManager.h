@@ -50,8 +50,4 @@ public:
     void finalizeTasks();
 };
 
-namespace MAPT {
-    extern MTaskManager * tm();
-}
-
 #endif // MTASKMANAGER_H

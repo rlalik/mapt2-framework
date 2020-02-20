@@ -45,14 +45,6 @@ MTaskManager * MTaskManager::instance()
     return tm;
 }
 
-/** Shortcut
- * \return MTaskManager instance
- */
-MTaskManager * MAPT::tm()
-{
-    return MTaskManager::instance();
-}
-
 /** Default constructor
  */
 MTaskManager::MTaskManager()

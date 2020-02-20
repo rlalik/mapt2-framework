@@ -62,7 +62,7 @@ if(BUILD_PYTHON_WRAPPER)
 add_subdirectory(python)
 endif()
 
-#add_subdirectory(tests)
+add_subdirectory(tests)
 
 # Export the package for use from the build-tree
 # (this registers the build-tree with a global CMake-registry)
